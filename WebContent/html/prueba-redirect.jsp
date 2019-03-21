@@ -6,8 +6,8 @@
 
 	<form action="/SeeDsWebTraining/PruebaRedirect" method="post">
 	
-		<a href= "/SeeDsWebTraining/PruebaRedirect?redirect=https://www.w3schools.com/">w3</a>
-		<a href= "/SeeDsWebTraining/PruebaRedirect?redirect=https://www.google.com/">Google</a>
+		<a href= "/SeeDsWeb/PruebaRedirect?redirect=https://www.w3schools.com/">w3</a>
+		<a href= "/SeeDsWeb/PruebaRedirect?redirect=https://www.google.com/">Google</a>
 	
 	</form>
 

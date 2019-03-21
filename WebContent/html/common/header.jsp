@@ -19,7 +19,7 @@
 <body>
 		
 		<div id="mainLogoDiv">
-			<a href="/SeeDsWebTraining/html/index.jsp">
+			<a href="/SeeDsWeb/html/index.jsp">
 				<img id="mainLogo" src="/SeeDsWeb/img/seedsLogo.JPG" alt="SeeDs Logo"/>
 			</a>
 		</div>

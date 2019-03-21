@@ -74,7 +74,9 @@ public class UsuarioServlet extends HttpServlet {
 			
 			// Limpieza
 			// ...
-
+			if (logger.isDebugEnabled()) {
+				logger.debug("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+			}
 			
 			// Validacion 
 			// ...			
