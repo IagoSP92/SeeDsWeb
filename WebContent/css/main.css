@@ -1,0 +1,108 @@
+@charset "ISO-8859-1";
+
+html, body{
+	width: 98%;
+	height: 98%;
+}
+
+button:hover{ cursor: pointer; }
+
+#mainLogo{
+	width: 140px;
+	height: 60px;
+	alt: "SeeDs Logo";
+}
+#mainLogoDiv{
+	top:0%;
+	position: fixed;
+	width: 140px;
+	height: 60px;
+	display: inline-block;
+}
+
+#registro-form{
+	text-align: center;
+	background-color: rgb(149, 199, 240);
+	border: 1px solid  rgb(62, 141, 206);
+	width: 800px;
+	height:800px;
+	left:50%;
+}
+
+#user-menu { /* MENU SUPERIOR */
+	top:0%;
+	position: fixed;
+	left:150px;
+	display: inline-block;
+	width: 100%;
+	height: 35px;
+	background-color: rgb(1, 122, 221);
+	border: 1px solid black;
+}
+.userButton{
+	margin:5px;
+	background-color: rgb(149, 199, 240);
+	height: 25px;
+	margin-left: 3%;
+	border: none;
+	box-shadow: 1px 1px white;
+	color: rgb(0, 58, 244);
+
+}
+
+#nav-menu { /* MENU LATERAL */
+	position: fixed;
+	top: 80px;
+	left: 0%;
+	width: 130px;
+	height: 100%;
+	background-color: rgb(1, 136, 247);
+	border: 1px solid black;
+	text-align: center;
+	justify-content: center;
+	text-justify: distribute;
+}
+.navButton{
+	display: block;
+	margin:5px;
+	padding:5px;
+	background-color: rgb(149, 199, 240);
+	position: relative;
+	left:10px;
+	width:100px;
+	margin-top:15px;
+
+	font-weight: bolder;
+	font-family:Georgia, 'Times New Roman', Times, serif;
+	color: rgb(0, 58, 244);
+
+}
+#nav-menu a {text-decoration: none;}
+
+.mainWindow{
+	margin-top: 70px;
+	margin-left: 160px;
+}
+
+#buscador-form {
+	background-color: rgb(149, 199, 240);
+	border: 1px solid  rgb(62, 141, 206);
+	padding:10px;
+	margin: 10px;
+	display: inline-block;
+}
+
+#buscarButton{
+
+}
+
+.thumbDiv{
+	background-color: rgb(149, 199, 240);
+	border: 1px solid black;
+	padding:10px;
+	margin: 20px;
+}
+
+#footer{
+	bottom: 0%;
+}
