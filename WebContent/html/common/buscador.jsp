@@ -28,7 +28,7 @@
 	</p>
 </div>
 <div id="buscador-results">
-<h1>Resultados de l abiusqueda</h1>
+<h1>Resultados de la búsqueda</h1>
 		
 	<%		
 		List<String> resultados = (List<String>) request.getAttribute(AttributeNames.RESULTADOS);	

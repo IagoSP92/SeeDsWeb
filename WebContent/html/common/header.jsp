@@ -13,8 +13,8 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/main.css">
 </head>
 <%
-	Errors errors = (Errors) request.getAttribute(AttributeNames.ERRORS);
-	if (errors == null) errors = new Errors();
+	ErrorManager errors = (ErrorManager) request.getAttribute(AttributeNames.ERRORS);
+	if (errors == null) errors = new ErrorManager();
 %>
 <body>
 		

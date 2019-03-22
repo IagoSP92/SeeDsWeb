@@ -1,4 +1,4 @@
-package com.sacra.ecommerce.web.util;
+package com.seeds.web.utils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

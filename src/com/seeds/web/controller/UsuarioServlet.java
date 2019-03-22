@@ -27,7 +27,7 @@ import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.PaisService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.seeds.web.model.ErrorCodes;
-import com.seeds.web.model.Errors;
+import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
@@ -63,28 +63,20 @@ public class UsuarioServlet extends HttpServlet {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 		}
 
-		Errors errors = new Errors(); 
+		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
 
 		if (Actions.ENTRAR.equalsIgnoreCase(action)) {			
-			// Recuperacion
+
 			String email = request.getParameter(ParameterNames.EMAIL);
 			String password = request.getParameter(ParameterNames.PASSWORD);
-			
-			// Limpieza
-			// ...
-			if (logger.isDebugEnabled()) {
-				logger.debug("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-			}
-			
-			// Validacion 
-			// ...			
-			if (StringUtils.isEmpty(email)) {
-				errors.add(ParameterNames.EMAIL,ErrorCodes.MANDATORY_PARAMETER);
-			}
+						
+			email= ValidationUtils.validMail(errors, email, ParameterNames.EMAIL, true);
+			password= ValidationUtils.validMail(errors, password, ParameterNames.PASSWORD, true);			
 			
 			Usuario usuario = null;
+			
 			if (!errors.hasErrors()) {
 				try {
 					usuario = usuarioSvc.logIn(email, password);
