@@ -2,7 +2,9 @@ package com.seeds.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,6 +46,7 @@ public class UsuarioServlet extends HttpServlet {
 	private ContenidoService contenidoSvc = null;
 	private PaisService paisSvc = null;
 
+	private List<String> idsPais;
 
 	public UsuarioServlet() {
 		super();
@@ -52,6 +54,13 @@ public class UsuarioServlet extends HttpServlet {
 		contenidoSvc = new ContenidoServiceImpl();
 		dateUtils = new DateUtils();
 		paisSvc= new PaisServiceImpl();
+				
+		try {
+			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());
+		} catch (DataException e) {
+			logger.warn(e.getMessage(), e);
+		}
+
 	}
 
 
@@ -73,7 +82,7 @@ public class UsuarioServlet extends HttpServlet {
 			String password = request.getParameter(ParameterNames.PASSWORD);
 						
 			email= ValidationUtils.validMail(errors, email, ParameterNames.EMAIL, true);
-			password= ValidationUtils.validMail(errors, password, ParameterNames.PASSWORD, true);			
+			password= ValidationUtils.validPass(errors, password, ParameterNames.PASSWORD, true);			
 			
 			Usuario usuario = null;
 			
@@ -115,7 +124,6 @@ public class UsuarioServlet extends HttpServlet {
 			
 		} else if (Actions.REGISTRO.equalsIgnoreCase(action)) {
 
-			// Recuperacion
 			String nombre = request.getParameter(ParameterNames.NOMBRE);
 			String email = request.getParameter(ParameterNames.EMAIL);
 			String password = request.getParameter(ParameterNames.PASSWORD);
@@ -124,25 +132,42 @@ public class UsuarioServlet extends HttpServlet {
 			String apellidos = request.getParameter(ParameterNames.APELLIDOS);
 			String pais = request.getParameter(ParameterNames.NOMBRE_PAIS);
 			
-			logger.warn("Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, email, password, fNac, nombreReal, apellidos, pais);
+			if (logger.isDebugEnabled()) {
+				logger.info("Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, email, password, fNac, nombreReal, apellidos, pais);
+			}
+			
 			Usuario usuario= new Usuario();
-			usuario.setNombre(nombre);
-			usuario.setEmail(email);
-			usuario.setContrasena(password);
-			usuario.setFechaNac(dateUtils.dateFormat(fNac));
-			usuario.setNombreReal(nombreReal);
-			usuario.setApellidos(apellidos);
-			usuario.setPais("ES");
-			usuario.setTipo(1);
+			usuario.setTipo(1); // TIPO USUARIO
 			
-			usuario.setFechaAlta(dateUtils.dateFormat(fNac));
-			usuario.setFechaMod(dateUtils.dateFormat(fNac));
+			usuario.setFechaAlta(new Date());
+			usuario.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
+			
+			
+			nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
+			email = ValidationUtils.validString(errors, email, ParameterNames.EMAIL, true);
+			password = ValidationUtils.validPass(errors, fNac, ParameterNames.PASSWORD, true);
+			Date fechaNacimiento = ValidationUtils.validDate(errors, nombre, ParameterNames.FECHA_NAC, true, dateUtils);
+			nombreReal = ValidationUtils.validString(errors, nombreReal, ParameterNames.NOMBRE_REAL, true);
+			apellidos = ValidationUtils.validString(errors, apellidos, ParameterNames.APELLIDOS, true);
+			
+			pais = ValidationUtils.validPais(errors, pais, ParameterNames.ID_PAIS, true, idsPais);
+			
+			if (!errors.hasErrors()) {
+				usuario.setNombre(nombre);
+				usuario.setEmail(email);
+				usuario.setContrasena(password);
+				usuario.setFechaNac(fechaNacimiento);
+				usuario.setNombreReal(nombreReal);
+				usuario.setApellidos(apellidos);
+				usuario.setPais("ES");
+			}
 
-			
-			try {
-				usuario = usuarioSvc.crearCuenta(usuario);
-			} catch (DataException e) {
-				e.printStackTrace();
+			if (!errors.hasErrors()) {
+				try {
+					usuario = usuarioSvc.crearCuenta(usuario);
+				} catch (DataException e) {
+					e.printStackTrace();
+				}
 			}
 			
 			if (!errors.hasErrors()) {
@@ -152,53 +177,27 @@ public class UsuarioServlet extends HttpServlet {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION,ErrorCodes.ERROR_DABAIXO);
 				}
+			}
+			
+			if (errors.hasErrors()) {	
+				if (logger.isDebugEnabled()) {
+					logger.debug("Registro 	Fallido: {}", errors);
+				}				
+				request.setAttribute(AttributeNames.ERRORS, errors);				
+				target = ViewPath.REGISTRO;				
 			}
 
 			target = ViewPath.HOME;
-			// Limpieza
-			// ...
 
-			// Validacion 
-			// ...
-			/*
-			if (StringUtils.isEmpty(email)) {
-				errors.add(ParameterNames.EMAIL,ErrorCodes.MANDATORY_PARAMETER);
-			}
-
-			Usuario usuario = null;
-			if (!errors.hasErrors()) {
-				try { 
-					usuario = usuarioSvc.logIn(email, password); 
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					errors.add(ParameterNames.ACTION,ErrorCodes.ERROR_DABAIXO);
-				}
-			}
-
-			if(usuario==null) {
-				errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
-			}
-
-			if (errors.hasErrors()) {
-
-				if (logger.isDebugEnabled()) {
-					logger.debug("Autenticacion fallida: {}", errors);
-				}
-
-				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPath.ENTRAR;
-
-			} else {				
-				SessionManager.set(request, SessionAttributeNames.USUARIO, usuario);	
-				target = ViewPath.HOME;
-			}
-*/
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
 			request.getSession(true).setAttribute(SessionAttributeNames.USUARIO, null);
 			//response.sendRedirect(ViewsPaths.ROOT_CONTEXT);
 			//SessionManager.set(request, SessionAttributeNames.USUARIO, null);
 			target = ViewPath.HOME;
+			
+		} else if (Actions.EDITAR_PERFIL.equalsIgnoreCase(action)) {
+			
 
 		} else if (Actions.BUSCAR.equalsIgnoreCase(action)) {
 
@@ -212,10 +211,12 @@ public class UsuarioServlet extends HttpServlet {
 
 			ContenidoCriteria criteria = new ContenidoCriteria();
 
-			criteria.setNombre(ValidationUtils.validateString(nombre));				
+
+			
+			criteria.setNombre(ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false));				
 			criteria.setFechaAlta(dateUtils.dateFormat(fechaMin));
 			criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));				
-			criteria.setIdContenido(ValidationUtils.validateLong(id));				
+			criteria.setIdContenido(ValidationUtils.validLong(id));
 
 			try {
 				listado = contenidoSvc.buscarCriteria(criteria);
