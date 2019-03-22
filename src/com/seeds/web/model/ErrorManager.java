@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Errors {
+public class ErrorManager {
 	
 	private static final List<String> EMPTY_LIST = new ArrayList<String>();
 	
 	private Map<String, List<String>> errorsMap = null;
 	
-	public Errors() {
+	public ErrorManager() {
 		errorsMap = new HashMap<String, List<String>>();
 	}
 	

@@ -17,7 +17,7 @@
 				<a href="/SeeDsWeb<%=ViewPath.SALIR%>"><button class="userButton">Mi Perfil</button></a>
 				<a href="/SeeDsWeb<%=ViewPath.SALIR%>"><button class="userButton">Subir Video</button></a>
 				<a href="/SeeDsWeb<%=ViewPath.SALIR%>"><button class="userButton">Opciones</button></a>
-				<a href="/SeeDsWeb<%=ViewPath.SALIR%>"><button class="userButton">Salir</button></a>
+				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.SALIR%>"><button class="userButton">Salir</button></a>
 			</div>		
 			<%
 		}

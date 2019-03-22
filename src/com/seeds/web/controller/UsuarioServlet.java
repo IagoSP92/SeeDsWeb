@@ -202,7 +202,10 @@ public class UsuarioServlet extends HttpServlet {
 			}
 */
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
-			SessionManager.set(request, SessionAttributeNames.USUARIO, null);
+			
+			request.getSession(true).setAttribute(SessionAttributeNames.USUARIO, null);
+			//response.sendRedirect(ViewsPaths.ROOT_CONTEXT);
+			//SessionManager.set(request, SessionAttributeNames.USUARIO, null);
 			target = ViewPath.HOME;
 
 		} else if (Actions.BUSCAR.equalsIgnoreCase(action)) {
