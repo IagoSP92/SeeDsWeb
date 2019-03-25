@@ -106,3 +106,8 @@ button:hover{ cursor: pointer; }
 #footer{
 	bottom: 0%;
 }
+
+
+.a_sinsub{
+	text-decoration: none;
+}

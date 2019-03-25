@@ -9,7 +9,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	 <title>See D's</title>
-	<!--  .js .css -->
+	<script src="/SeeDsWeb/js/main.js"></script>
+
 	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/main.css">
 </head>
 <%

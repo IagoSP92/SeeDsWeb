@@ -89,8 +89,9 @@ public class UsuarioServlet extends HttpServlet {
 			if (!errors.hasErrors()) {
 				try {
 					usuario = usuarioSvc.logIn(email, password);
+					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
-					e.printStackTrace();
+					e.printStackTrace();    //CAMBIAR POR LOGGER
 				}
 			}
 
@@ -197,51 +198,9 @@ public class UsuarioServlet extends HttpServlet {
 			target = ViewPath.HOME;
 			
 		} else if (Actions.EDITAR_PERFIL.equalsIgnoreCase(action)) {
+			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			
-
-		} else if (Actions.BUSCAR.equalsIgnoreCase(action)) {
-
-
-			String nombre = request.getParameter(ParameterNames.NOMBRE);
-			String fechaMin = request.getParameter(ParameterNames.FECHA_MIN);
-			String fechaMax = request.getParameter(ParameterNames.FECHA_MAX);
-			String id = request.getParameter(ParameterNames.ID_CONTENIDO);
-
-			List<Contenido> listado = new ArrayList<Contenido>();
-
-			ContenidoCriteria criteria = new ContenidoCriteria();
-
-
-			
-			criteria.setNombre(ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false));				
-			criteria.setFechaAlta(dateUtils.dateFormat(fechaMin));
-			criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));				
-			criteria.setIdContenido(ValidationUtils.validLong(id));
-
-			try {
-				listado = contenidoSvc.buscarCriteria(criteria);
-			} catch (DataException e) {
-				e.printStackTrace();
-			}				
-
-			List<String> resultados = new ArrayList<String>();
-
-			for(Contenido c: listado) {
-				resultados.add(c.toString());					
-			}
-			// Limpiar
-			// ...
-
-			// Validar
-			//..
-
-			// if hasErrors
-
-			// else
-
-			request.setAttribute(AttributeNames.RESULTADOS, resultados);
-
-			target = ViewPath.BUSCADOR;
+			target = ViewPath.PERFIL;
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
