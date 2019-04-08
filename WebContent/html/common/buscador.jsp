@@ -34,6 +34,9 @@
 </div>
 <div id="buscador-results">
 <h1>Resultados de la búsqueda</h1>
+<p><fmt:message key = "resultados" bundle="${messages}"/></p>
+
+
 
 	<%
 		valores.clear();
