@@ -2,9 +2,7 @@ package com.seeds.web.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,16 +16,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Contenido;
-import com.isp.seeds.model.Pais;
-import com.isp.seeds.model.Usuario;
 import com.isp.seeds.service.ContenidoServiceImpl;
-import com.isp.seeds.service.PaisServiceImpl;
-import com.isp.seeds.service.UsuarioServiceImpl;
 import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.ContenidoService;
-import com.isp.seeds.service.spi.PaisService;
-import com.isp.seeds.service.spi.UsuarioService;
-import com.seeds.web.model.ErrorCodes;
+import com.isp.seeds.service.util.Results;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.SessionAttributeNames;
@@ -63,6 +55,10 @@ public class ContenidoServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
+		int startIndex= 1;
+		int count= 4;
+		//String idioma= SessionManager.get(request, attName);
+		String idioma= "ESP" ;
 
 		if (Actions.BUSCAR.equalsIgnoreCase(action)) {
 
@@ -71,24 +67,26 @@ public class ContenidoServlet extends HttpServlet {
 			String fechaMax = request.getParameter(ParameterNames.FECHA_MAX);
 			String id = request.getParameter(ParameterNames.ID_CONTENIDO);
 
-			List<Contenido> listado = new ArrayList<Contenido>();
+			Results<Contenido> listado = null;
 
 			ContenidoCriteria criteria = new ContenidoCriteria();
 			
 			criteria.setNombre(ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false));				
-			criteria.setFechaAlta(dateUtils.dateFormat(fechaMin));
-			criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));				
+			criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMin, ParameterNames.FECHA_MIN, false, dateUtils));
+			criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, dateUtils));
+
+			//criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));				
 			criteria.setIdContenido(ValidationUtils.validLong(id));
 
-			try {
-				listado = contenidoSvc.buscarCriteria(criteria);
+			try { 
+				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				e.printStackTrace();
 			}				
 
 			List<Contenido> resultados = new ArrayList<Contenido>();
 
-			for(Contenido c: listado) {
+			for(Contenido c: listado.getPage()) {// HAY QUE MIRAR AQUI COMO SE FAI COS PARAMETROS OUTROS
 				resultados.add(c);					
 			}
 			// Limpiar
