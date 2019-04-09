@@ -1,8 +1,6 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,18 +18,26 @@ import com.isp.seeds.service.ContenidoServiceImpl;
 import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.util.Results;
+import com.seeds.web.config.ConfigurationManager;
+import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
-import com.seeds.web.utils.SessionAttributeNames;
-import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
+import com.seeds.web.utils.WebUtils;
 
 
 @WebServlet("/contenido")
-public class ContenidoServlet extends HttpServlet {
-	
+public class ContenidoServlet extends HttpServlet {	
 
 	private static Logger logger = LogManager.getLogger(ContenidoServlet.class);
+
+	private static int pageSize = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
+
+	private static int pagingPageCount = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 
 	private DateUtils dateUtils = null;
 	private ContenidoService contenidoSvc = null;
@@ -55,12 +61,16 @@ public class ContenidoServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
-		int startIndex= 1;
-		int count= 4;
+		
 		//String idioma= SessionManager.get(request, attName);
 		String idioma= "ESP" ;
 
 		if (Actions.BUSCAR.equalsIgnoreCase(action)) {
+			
+			int page = WebUtils.
+					getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+			int startIndex= (page-1)*pageSize+1;
+			int count= pageSize;
 
 			String nombre = request.getParameter(ParameterNames.NOMBRE);
 			String fechaMin = request.getParameter(ParameterNames.FECHA_MIN);
@@ -82,13 +92,33 @@ public class ContenidoServlet extends HttpServlet {
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				e.printStackTrace();
-			}				
+			}
+			
+			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
+			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
+			
+			// Datos para paginacion															
+			// (Calculos aqui, datos comodos para renderizar)
+			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+						
+			// Parametros de busqueda actuales
+			request.setAttribute(ParameterNames.NOMBRE, nombre);
+			request.setAttribute(ParameterNames.FECHA_MIN, fechaMin);
+			request.setAttribute(ParameterNames.FECHA_MAX, fechaMax);
+			request.setAttribute(ParameterNames.ID_CONTENIDO, id);
 
+			/*  ANTES DE PAGINACION
 			List<Contenido> resultados = new ArrayList<Contenido>();
 
 			for(Contenido c: listado.getPage()) {// HAY QUE MIRAR AQUI COMO SE FAI COS PARAMETROS OUTROS
 				resultados.add(c);					
-			}
+			}*/
 			// Limpiar
 			// ...
 
@@ -99,7 +129,7 @@ public class ContenidoServlet extends HttpServlet {
 
 			// else
 
-			request.setAttribute(AttributeNames.RESULTADOS, resultados);
+			//request.setAttribute(AttributeNames.RESULTADOS, resultados);  ANTES DE PAGINACION
 
 			target = ViewPath.BUSCADOR;
 

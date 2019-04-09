@@ -69,4 +69,7 @@
 			%></ul><%
 		}
 	%>
+	
+	<a href="<%=ParameterUtils.URLBuilder(ControllerPath.CONTENIDO, valores)%>">Siguientes</a>
+
 </div>	
