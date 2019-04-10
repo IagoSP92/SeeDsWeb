@@ -54,7 +54,7 @@
 			<div id="campoPais">
 			<span class="rotuloCampo">Pais</span>
 			<input name="<%=ParameterNames.ID_PAIS%>" type="select" 
-					value="<%=ParameterUtils.getParameter(request, "ESP") %>"/>		
+					value="<%=ParameterUtils.getParameter(request, ParameterNames.ID_PAIS) %>"/>		
 			</div>
 					
 

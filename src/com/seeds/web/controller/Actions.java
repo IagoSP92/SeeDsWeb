@@ -6,6 +6,7 @@ public class Actions {
 	public static final String REGISTRO = "registro";
 	public static final String PREREGISTRO = "preregistro";
 	
+	public static final String DETALLE = "detalle";	
 	public static final String DETALLE_VIDEO = "detalle_video";
 	public static final String DETALLE_LISTA = "detalle_lista";
 	public static final String DETALLE_PERFIL = "detalle_perfil";

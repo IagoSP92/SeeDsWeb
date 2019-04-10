@@ -56,10 +56,19 @@ public class UsuarioServlet extends HttpServlet {
 		paisSvc= new PaisServiceImpl();
 				
 		try {
+			
 			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());
+			
 		} catch (DataException e) {
 			logger.warn(e.getMessage(), e);
 		}
+		
+		System.out.println(idsPais.size());
+		for(String p: idsPais) {
+			System.out.println(p);
+			
+		}
+		
 
 	}
 
@@ -131,7 +140,7 @@ public class UsuarioServlet extends HttpServlet {
 			String fNac = request.getParameter(ParameterNames.FECHA_NAC);
 			String nombreReal = request.getParameter(ParameterNames.NOMBRE_REAL);
 			String apellidos = request.getParameter(ParameterNames.APELLIDOS);
-			String pais = request.getParameter(ParameterNames.NOMBRE_PAIS);
+			String pais = request.getParameter(ParameterNames.ID_PAIS);
 			
 			if (logger.isDebugEnabled()) {
 				logger.info("Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, email, password, fNac, nombreReal, apellidos, pais);
@@ -142,14 +151,19 @@ public class UsuarioServlet extends HttpServlet {
 			
 			usuario.setFechaAlta(new Date());
 			usuario.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
-			
-			
+						
 			nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 			email = ValidationUtils.validString(errors, email, ParameterNames.EMAIL, true);
-			password = ValidationUtils.validPass(errors, fNac, ParameterNames.PASSWORD, true);
-			Date fechaNacimiento = ValidationUtils.validDate(errors, nombre, ParameterNames.FECHA_NAC, true, dateUtils);
+			password = ValidationUtils.validPass(errors, password, ParameterNames.PASSWORD, true);
+			Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, true, dateUtils);
 			nombreReal = ValidationUtils.validString(errors, nombreReal, ParameterNames.NOMBRE_REAL, true);
 			apellidos = ValidationUtils.validString(errors, apellidos, ParameterNames.APELLIDOS, true);
+			System.out.println(pais);
+			System.out.println(idsPais.size());
+			for(String p: idsPais) {
+				System.out.println(p);
+				
+			}
 			
 			pais = ValidationUtils.validPais(errors, pais, ParameterNames.ID_PAIS, true, idsPais);
 			
@@ -200,7 +214,7 @@ public class UsuarioServlet extends HttpServlet {
 		} else if (Actions.EDITAR_PERFIL.equalsIgnoreCase(action)) {
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			
-			target = ViewPath.PERFIL;
+			target = ViewPath.DETALLE_PERFIL;
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			

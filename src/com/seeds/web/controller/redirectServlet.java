@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,79 +22,77 @@ import com.isp.seeds.model.Contenido;
 import com.isp.seeds.service.ContenidoServiceImpl;
 import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.util.Results;
+import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.ValidationUtils;
+import com.seeds.web.utils.WebUtils;
 
 
-@WebServlet("/buscarContenido")
-public class BuscarContenidoServlet extends HttpServlet {
+@WebServlet("/redirect")
+public class redirectServlet extends HttpServlet {
 	
-	private static Logger logger = LogManager.getLogger(ContenidoDAOImpl.class);
+	private static Logger logger = LogManager.getLogger(redirectServlet.class);
 	
 	private ContenidoService contenidoSvc = null;
 	
 	ValidationUtils validationUtils = null;
-	private DateUtils dateUtils = null;
 
-    public BuscarContenidoServlet() {
+    public redirectServlet() {
   
     	contenidoSvc = new ContenidoServiceImpl();
     	validationUtils = new ValidationUtils();
-    	dateUtils = new DateUtils();
     	
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		logger.debug((request.getParameterMap()).toString());
-			
-		Writer out = response.getWriter();
-		String devolvemos= null;
+		String action = request.getParameter(ParameterNames.ACTION);
 
-		String nombre = request.getParameter("nombre");
-		String fechaMin = request.getParameter("fechaMin");
-		String fechaMax = request.getParameter("fechaMax");
-		String id = request.getParameter("id");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
+		}
+
+		ErrorManager errors = new ErrorManager(); 
+		String target = null;
+		boolean redirect = false;
 		
-		List<Contenido> listado = new ArrayList<Contenido>();
+		//String idioma= SessionManager.get(request, attName);
+		String idioma= "ESP" ;
 
-		/*
+		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
-			ContenidoCriteria criteria = new ContenidoCriteria();
+			String id = request.getParameter(ParameterNames.ID_CONTENIDO);
 			
-
-			criteria.setNombre(validationUtils.validString(errors, cadenaCaracteres, parameter, required)(nombre));
-	
-			
-			criteria.setFechaAlta(dateUtils.dateFormat(fechaMin));
-
-
-			criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));
-	
-			
-			criteria.setIdContenido(validationUtils.validateLong(id));
-
-			
-			
+			Contenido contenido;
 			try {
-				listado = contenidoSvc.buscarCriteria(criteria);
+				contenido = contenidoSvc.buscarId(ValidationUtils.validLong(id), idioma);
 			} catch (DataException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			*/
-//			devolvemos="CONTENIDOS COINCIDENTES: <br>";
-//			for(Contenido c: listado) {
-//				devolvemos+= c.toString();
-//				devolvemos+="\n<br><br>";
-//			}
-//			
-//			out.append(devolvemos);
+			Integer tipo= contenido.getTipo();
 			
+			
+
+			target = ViewPath.BUSCADOR;
+
+		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
+			
+			// Mmm...
+			logger.error("Action desconocida");
+			// target ?
+		}
 		
-		request.setAttribute("resultados", listado);
+		if (redirect) {
+			logger.info("Redirecting to "+target);
+			response.sendRedirect(target);
+		} else {
+			logger.info("Forwarding to "+target);
+			request.getRequestDispatcher(target).forward(request, response);
+		}		
 		
-		out.flush();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -134,6 +134,7 @@ public static Long validLong (String longAntes) {
 	
 	private static boolean paisIsValid (String pais, List<String> paises) {
 		if(paises.contains(pais)) {
+			System.out.println(pais);
 			return true;
 		}
 		else {
