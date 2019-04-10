@@ -5,7 +5,7 @@
 
     <%
     Map<String, String> valores = new HashMap<String, String>();
-    valores.put(ParameterNames.ACTION, Actions.DETALLE_PERFIL);    
+    valores.put(ParameterNames.ACTION, Actions.DETALLE_PERFIL);
     %>
 
 <div id="buscador-form">
@@ -37,47 +37,13 @@
 	</p>
 </div>
 <div id="buscador-results">
-
-	<%
-		valores.clear();
-		valores.put(ParameterNames.ACTION, Actions.DETALLE_PERFIL);
-	
-		List<Contenido> resultados = (List<Contenido>) request.getAttribute(AttributeNames.RESULTADOS);
-		
-		if (resultados!=null && !resultados.isEmpty()) {
-			%>
-			<h1><fmt:message key = "busqueda.titulo" bundle="${messages}"/></h1>
-			
-			<ul><%
-			for (Contenido resultado: resultados) {
-				valores.put(ParameterNames.ID_CONTENIDO, resultado.getIdContenido().toString());
-
-				%>
-				<a class="a_sinsub" href="<%=ParameterUtils.URLBuilder(ControllerPath.CONTENIDO, valores)%>"><div class="thumbDiv">
-					<li><%=resultado.getNombre().toString()%>
-					<br/>
-					<%=resultado.getFechaAlta().toString()%> - <%=resultado.getFechaMod().toString()%>
-					<br/>
-					<%if(resultado.getIdAutor()!=null){%>
-						<%=resultado.getIdAutor().toString()%>
-						<br/>
-					<%}%>
-					</li>
-				</div>
-				</a>
-				<%
-			}
-			%></ul><%
-		}
-	%>
-	<br/><br/><br/><br/>
 	
 	<!-- Total de resultados  -->
 <p>
-	<c:if test="${not empty total}">
-		<fmt:message key="Encontrados" bundle="${messages}">
+	<c:if test="${not empty total}">		
+		<fmt:message key="busqueda.titulo2" bundle="${messages}">
 			<fmt:param value="${total}"></fmt:param>
-		</fmt:message>		
+		</fmt:message>
 	</c:if>
 </p>
 
@@ -87,11 +53,38 @@
 	
 	<ul>
 		<c:forEach items="${resultados}" var="contenido">
-			<c:url var="urlDetalle" scope="page" value="transportista">
-				<c:param name="action" value="<%=Actions.DETALLE_PERFIL%>"/>
-				<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.idContenido}"/>
-			</c:url>			
-			<li><a href="${urlDetalle}">${contenido.nombre}</a></li>			
+		
+			<!--<c:set var="numeroTipo" value="-1"/>
+			<%/*
+				Integer numeroTipo = Integer.parseInt(pageContext.getAttribute("numeroTipo"));
+				String tipoMostrado="undefined";
+				if(numeroTipo==1){
+					tipoMostrado="Usuario";
+				}
+				if(numeroTipo==2){
+					tipoMostrado="Video";
+				}
+				if(numeroTipo==3){
+					tipoMostrado="Lista";
+				}
+				pageContext.setAttribute("tipoMostrado", tipoMostrado);
+			*/%>
+			<c:out value="${numeroTipo}"/>-->
+			
+			<div class="thumbDiv">
+				<c:url var="urlDetalle" scope="page" value="/redirect">
+					<c:param name="action" value="<%=Actions.DETALLE%>"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.idContenido}"/>
+					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
+				</c:url>			
+				<li><a class="a_sinsub" href="${urlDetalle}">
+				${urlDetalle}
+				${contenido.nombre}<br>
+				${contenido.fechaAlta}
+				 - 
+				${contenido.fechaMod}
+				</a></li>
+			</div>
 		</c:forEach>
 	</ul>
 
@@ -101,8 +94,8 @@
 	<c:url var="urlBase" value="contenido" scope="page">
 		<c:param name="action" value="<%=Actions.BUSCAR%>"/>
 		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>
-		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${nombre}"/>
-		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_min}"/>
+		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
+		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
 		<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${idContenido}"/>
 		<!--  y asi todos los parametros de la busqueda anterior ... -->
 	</c:url>

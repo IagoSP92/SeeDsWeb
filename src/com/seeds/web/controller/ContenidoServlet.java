@@ -112,6 +112,7 @@ public class ContenidoServlet extends HttpServlet {
 			request.setAttribute(ParameterNames.FECHA_MIN, fechaMin);
 			request.setAttribute(ParameterNames.FECHA_MAX, fechaMax);
 			request.setAttribute(ParameterNames.ID_CONTENIDO, id);
+			
 
 			/*  ANTES DE PAGINACION
 			List<Contenido> resultados = new ArrayList<Contenido>();
@@ -141,6 +142,7 @@ public class ContenidoServlet extends HttpServlet {
 		}
 		
 		// POR ULTIMO SE ENVIA A DONDE/COMO CORRESPONDA:
+		System.out.println("TARGET: "+target);
 		if (redirect) {
 			logger.info("Redirecting to "+target);
 			response.sendRedirect(target);

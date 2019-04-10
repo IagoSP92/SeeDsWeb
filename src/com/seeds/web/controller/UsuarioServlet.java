@@ -1,7 +1,6 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,16 +16,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
-import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Pais;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
 import com.isp.seeds.service.PaisServiceImpl;
 import com.isp.seeds.service.UsuarioServiceImpl;
-import com.isp.seeds.service.criteria.ContenidoCriteria;
+import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.PaisService;
 import com.isp.seeds.service.spi.UsuarioService;
+import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
@@ -45,6 +46,10 @@ public class UsuarioServlet extends HttpServlet {
 	private UsuarioService usuarioSvc = null;
 	private ContenidoService contenidoSvc = null;
 	private PaisService paisSvc = null;
+	private VideoService videoSvc = null;
+	private ListaService listaSvc = null;
+
+
 
 	private List<String> idsPais;
 
@@ -52,6 +57,10 @@ public class UsuarioServlet extends HttpServlet {
 		super();
 		usuarioSvc = new UsuarioServiceImpl();
 		contenidoSvc = new ContenidoServiceImpl();
+		videoSvc = new VideoServiceImpl();
+		listaSvc = new ListaServiceImpl();
+
+		
 		dateUtils = new DateUtils();
 		paisSvc= new PaisServiceImpl();
 				
@@ -215,6 +224,32 @@ public class UsuarioServlet extends HttpServlet {
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			
 			target = ViewPath.DETALLE_PERFIL;
+
+		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
+			Usuario usuario;
+			try {
+				usuario = usuarioSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
+				Long id= usuario.getIdContenido();
+				request.setAttribute(AttributeNames.USUARIO, usuario);
+				
+				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
+				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, listaSvc.buscarPorAutor(id));
+				
+//				request.setAttribute(AttributeNames.USUARIOS_SEGUIDOS, usuarioSvc.);
+//				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
+//				
+//				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
+//				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
+				
+				target = ViewPath.DETALLE_PERFIL;
+			} catch (DataException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			

@@ -1,10 +1,6 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,18 +12,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.isp.seeds.Exceptions.DataException;
-import com.isp.seeds.dao.impl.ContenidoDAOImpl;
-import com.isp.seeds.model.Contenido;
 import com.isp.seeds.service.ContenidoServiceImpl;
-import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.ContenidoService;
-import com.isp.seeds.service.util.Results;
 import com.seeds.web.model.ErrorManager;
-import com.seeds.web.utils.DateUtils;
+import com.seeds.web.utils.SessionAttributeNames;
+import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
-import com.seeds.web.utils.WebUtils;
-
 
 @WebServlet("/redirect")
 public class redirectServlet extends HttpServlet {
@@ -49,6 +39,7 @@ public class redirectServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		String action = request.getParameter(ParameterNames.ACTION);
+		System.out.println("ENTRA EN REDIRECT");
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
@@ -58,25 +49,43 @@ public class redirectServlet extends HttpServlet {
 		String target = null;
 		boolean redirect = false;
 		
-		//String idioma= SessionManager.get(request, attName);
+		String rawIdioma= (String) SessionManager.get(request, SessionAttributeNames.IDIOMA);
+		System.out.println();
+		System.out.println("IDIOMA SESION: "+rawIdioma);
+		System.out.println();
+		
 		String idioma= "ESP" ;
 
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
-			String id = request.getParameter(ParameterNames.ID_CONTENIDO);
+			Long id = Long.parseLong(request.getParameter(ParameterNames.ID_CONTENIDO));
+			Integer tipo = Integer.parseInt(request.getParameter(ParameterNames.TIPO));
 			
-			Contenido contenido;
-			try {
-				contenido = contenidoSvc.buscarId(ValidationUtils.validLong(id), idioma);
-			} catch (DataException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(tipo!=null && tipo<=3 && tipo>0) { // Se comprueba la validez del TIPO
+				if(id!=null && id>= 0) { // Se comprueba la validez del ID
+					
+					if(tipo==1) {
+						request.getRequestDispatcher("/usuario").forward(request, response);											
+					}
+					if(tipo==2) {
+						request.getRequestDispatcher("/video").forward(request, response);
+					}
+					if(tipo==3) {
+						request.getRequestDispatcher("/lista").forward(request, response);
+					}
+					request.setAttribute(ParameterNames.ID_CONTENIDO, id);
+				}
+				else {//ID INVALIDO					
+					target = ViewPath.ERROR500;
+					logger.info("Forwarding to "+target);
+					request.getRequestDispatcher(target).forward(request, response);
+				}				
 			}
-			Integer tipo= contenido.getTipo();
-			
-			
-
-			target = ViewPath.BUSCADOR;
+			else {//TIPO INVALIDO				
+				target = ViewPath.ERROR500;// molaria mandalo a donde estaba e que aparecese un mensaxe nesa mima paxina
+				logger.info("Forwarding to "+target);
+				request.getRequestDispatcher(target).forward(request, response);
+			}
 
 		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
 			
@@ -84,21 +93,23 @@ public class redirectServlet extends HttpServlet {
 			logger.error("Action desconocida");
 			// target ?
 		}
-		
+
+		/*
 		if (redirect) {
 			logger.info("Redirecting to "+target);
 			response.sendRedirect(target);
 		} else {
 			logger.info("Forwarding to "+target);
-			request.getRequestDispatcher(target).forward(request, response);
+			request.getRequestDispatcher("/usuario").forward(request, response);
+			//request.getRequestDispatcher(target).forward(request, response);
 		}		
-		
+		*/
 	}
+	
+	
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		doGet(request, response);
 	}
-
 }
