@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.sacra.ecommerce.web.util.LocaleManager;
-import com.sacra.ecommerce.web.util.WebConstants;
+import com.seeds.web.controller.ConstantValues;
 import com.seeds.web.utils.CookieManager;
+import com.seeds.web.utils.LocaleManager;
 import com.seeds.web.utils.SessionManager;
 
 /**
@@ -47,23 +47,34 @@ public class LocaleFilter implements Filter {
 		HttpServletRequest httpRequest = ((HttpServletRequest) request);
 		HttpServletResponse httpResponse = ((HttpServletResponse) response);
 		
-		Locale locale = (Locale) SessionManager.get(httpRequest, WebConstants.USER_LOCALE);
+		Locale locale = (Locale) SessionManager.get(httpRequest, ConstantValues.USER_LOCALE);
 		
 		if (locale == null) {
 			// No hay Locale configurado para esta sesion.
 			
 			// Primero intentamos inicializar el locale de cookie.
-			Cookie cookieLocale = CookieManager.getCookie(httpRequest, WebConstants.USER_LOCALE);
+			Cookie cookieLocale = CookieManager.getCookie(httpRequest, ConstantValues.USER_LOCALE);
 			if (cookieLocale!=null) {
-				locale = new Locale(cookieLocale.getValue());
-				if (logger.isDebugEnabled()) {
-					logger.debug("Locale initialized from cookie: "+cookieLocale.getValue());
+				
+				// El valor "es_ES", "en_GB", etc. provoca una inicializacion 
+				// erronea en new Locale(String l). new Locale("es_ES").toString() genera es_es
+				
+				// Por ello, al igual que cuando viene en el header http, o cuando viene de 
+				// un parametro de la request, tambien cuando viene de una cookie hay que
+				// pasarlo por:
+				
+				locale = getLocale(cookieLocale.getValue());
+				if (locale!=null && logger.isDebugEnabled()) {
+					logger.debug("Locale initialized from cookie: "+locale);
 				}				
 			} else {
 				// En ultimo término, a modo de "por defecto", inicializamos a partir 
 				// del header Accept-Language de la request. 
 				// Más info: https://www.w3.org/International/questions/qa-accept-lang-locales
 				locale = getLocale(httpRequest);
+				if (locale!=null && logger.isDebugEnabled()) {
+					logger.debug("Locale initialized from header: "+locale);
+				}
 			}
 			if (locale==null) {
 				// En ultimo caso, el primero de los soportados como opcion por defecto.
@@ -71,8 +82,8 @@ public class LocaleFilter implements Filter {
 				logger.warn("Using default locale: "+locale);			
 			}
 
-			SessionManager.set(httpRequest, WebConstants.USER_LOCALE, locale);			
-			CookieManager.addCookie(httpResponse, WebConstants.USER_LOCALE, locale.toString(), "/", 365*24*60*60);
+			SessionManager.set(httpRequest, ConstantValues.USER_LOCALE, locale);			
+			CookieManager.addCookie(httpResponse, ConstantValues.USER_LOCALE, locale.toString(), "/", 365*24*60*60);
 		}
 		
 		// Continuar la invocacion de la cadena de responsabilidad.
@@ -83,13 +94,15 @@ public class LocaleFilter implements Filter {
 	}
 
 
-	protected Locale getLocale(HttpServletRequest httpRequest) {
-			
+	protected Locale getLocale(HttpServletRequest httpRequest) {			
 		String acceptLanguageHeader = httpRequest.getHeader("Accept-Language");
-		
+		return getLocale(acceptLanguageHeader);		       
+	}
+	
+	protected Locale getLocale(String ranges) {
 		// Miramos cuales de los lenguajes establecidos por el usuario en su navegador
 		// son soportados por nuesetra web
-		List<Locale> matchedLocales = LocaleManager.getMatchedLocales(acceptLanguageHeader);
+		List<Locale> matchedLocales = LocaleManager.getMatchedLocales(ranges);
 		
 		Locale locale = null;
 		if (matchedLocales.size()>0) {
@@ -98,10 +111,10 @@ public class LocaleFilter implements Filter {
 				logger.debug("Matched "+matchedLocales.size()+" locales. Selected: "+locale);
 			}
 		} else {
-			logger.warn("No matched locale: "+acceptLanguageHeader);
+			logger.warn("No matched locale: "+ranges);
 		}
 		return locale;
-		       
+
 	}
 
 	@Override
@@ -109,4 +122,5 @@ public class LocaleFilter implements Filter {
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

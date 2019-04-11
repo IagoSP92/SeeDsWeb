@@ -41,10 +41,6 @@ public class InitSessionFilter implements Filter {
 			}
 			// Inicializa la sesion
 			session = httpRequest.getSession(true);
-			
-			// Estado comun requerido
-			//ShoppingCart c = new ShoppingCart();
-			//SessionManager.set(httpRequest, SessionAttributeNames.SHOPPING_CART, c);
 		} 
 		
 		// Continuar la invocacion de la cadena de responsabilidad.
@@ -54,9 +50,7 @@ public class InitSessionFilter implements Filter {
 	}
 
 	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-		
+	public void destroy() {		
 	}
 
 }

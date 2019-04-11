@@ -8,5 +8,11 @@ public interface ConstantValues {
 	public static final String EQUAL = "=";
 	public static final String HYPHEN = "-";
 	public static final String ENCODING = "UTF-8";
+	
+	public static final String USER_LOCALE = "user-locale";
+	public static final String IDIOMA = "idioma";
+
+
+	
 
 }

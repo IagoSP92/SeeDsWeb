@@ -1,6 +1,7 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +23,8 @@ import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
+import com.seeds.web.utils.LocaleManager;
+import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
 import com.seeds.web.utils.WebUtils;
 
@@ -31,14 +34,6 @@ public class ContenidoServlet extends HttpServlet {
 
 	private static Logger logger = LogManager.getLogger(ContenidoServlet.class);
 
-	private static int pageSize = Integer.valueOf(
-			ConfigurationManager.getInstance().getParameter(
-					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
-
-	private static int pagingPageCount = Integer.valueOf(
-			ConfigurationManager.getInstance().getParameter(
-					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
-
 	private DateUtils dateUtils = null;
 	private ContenidoService contenidoSvc = null;
 
@@ -47,7 +42,14 @@ public class ContenidoServlet extends HttpServlet {
 		contenidoSvc = new ContenidoServiceImpl();
 		dateUtils = new DateUtils();
 	}
+	
+	private static int pageSize = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
 
+	private static int pagingPageCount = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -61,6 +63,9 @@ public class ContenidoServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
+		Locale userLocale = (Locale) SessionManager.get(request, ConstantValues.USER_LOCALE);
+		String rawIdioma = SessionManager.get(request, ConstantValues.USER_LOCALE).toString();
+		System.out.println("\n LOCALE:"+rawIdioma+"\n");		
 		
 		//String idioma= SessionManager.get(request, attName);
 		String idioma= "ESP" ;
@@ -78,14 +83,11 @@ public class ContenidoServlet extends HttpServlet {
 			String id = request.getParameter(ParameterNames.ID_CONTENIDO);
 
 			Results<Contenido> listado = null;
-
 			ContenidoCriteria criteria = new ContenidoCriteria();
 			
 			criteria.setNombre(ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false));				
 			criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMin, ParameterNames.FECHA_MIN, false, dateUtils));
 			criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, dateUtils));
-
-			//criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));				
 			criteria.setId(ValidationUtils.validLong(id));
 
 			try { 
@@ -107,30 +109,11 @@ public class ContenidoServlet extends HttpServlet {
 			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
 			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 						
-			// Parametros de busqueda actuales
+			// PARAMETROS DE BUSQUEDA
 			request.setAttribute(ParameterNames.NOMBRE, nombre);
 			request.setAttribute(ParameterNames.FECHA_MIN, fechaMin);
 			request.setAttribute(ParameterNames.FECHA_MAX, fechaMax);
 			request.setAttribute(ParameterNames.ID_CONTENIDO, id);
-			
-
-			/*  ANTES DE PAGINACION
-			List<Contenido> resultados = new ArrayList<Contenido>();
-
-			for(Contenido c: listado.getPage()) {// HAY QUE MIRAR AQUI COMO SE FAI COS PARAMETROS OUTROS
-				resultados.add(c);					
-			}*/
-			// Limpiar
-			// ...
-
-			// Validar
-			//..
-
-			// if hasErrors
-
-			// else
-
-			//request.setAttribute(AttributeNames.RESULTADOS, resultados);  ANTES DE PAGINACION
 
 			target = ViewPath.BUSCADOR;
 
@@ -142,21 +125,19 @@ public class ContenidoServlet extends HttpServlet {
 		}
 		
 		// POR ULTIMO SE ENVIA A DONDE/COMO CORRESPONDA:
-		System.out.println("TARGET: "+target);
 		if (redirect) {
-			logger.info("Redirecting to "+target);
+			logger.info("Redirecting from ContenidoServlet to "+target);
 			response.sendRedirect(target);
 		} else {
-			logger.info("Forwarding to "+target);
+			logger.info("Forwarding from ContenidoServlet to "+target);
 			request.getRequestDispatcher(target).forward(request, response);
-		}
-		
+		}		
 		
 	}
 
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
-
 }

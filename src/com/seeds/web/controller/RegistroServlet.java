@@ -1,4 +1,4 @@
-package com.seeds.web.controller;
+/*package com.seeds.web.controller;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -88,3 +88,4 @@ public class RegistroServlet extends HttpServlet {
 	}
 
 }
+*/
