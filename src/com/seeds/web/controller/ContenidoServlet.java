@@ -86,7 +86,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, dateUtils));
 
 			//criteria.setFechaAltaHasta(dateUtils.dateFormat(fechaMax));				
-			criteria.setIdContenido(ValidationUtils.validLong(id));
+			criteria.setId(ValidationUtils.validLong(id));
 
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);

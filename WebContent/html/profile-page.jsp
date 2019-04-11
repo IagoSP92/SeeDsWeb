@@ -60,7 +60,7 @@
 			<div class="listaPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
@@ -79,7 +79,7 @@
 			<div class="videoPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${usuario.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${usuario.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${usuario.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
@@ -95,7 +95,7 @@
 			<div class="listaPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
@@ -114,7 +114,7 @@
 			<div class="videoPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${video.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
@@ -132,7 +132,7 @@
 			<div class="listaPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">

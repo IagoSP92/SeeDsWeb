@@ -76,12 +76,13 @@
 			<div class="thumbDiv">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
 				${urlDetalle}
 				${contenido.nombre}<br>
+				${contenido.getTipo()}<br>
 				${contenido.fechaAlta}
 				 - 
 				${contenido.fechaMod}
@@ -98,7 +99,7 @@
 		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>
 		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
 		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
-		<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${idContenido}"/>
+		<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${id}"/>
 		<!--  y asi todos los parametros de la busqueda anterior ... -->
 	</c:url>
 

@@ -229,8 +229,9 @@ public class UsuarioServlet extends HttpServlet {
 			Usuario usuario;
 			try {
 				usuario = usuarioSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
-				Long id = usuario.getIdContenido();
+				Long id = usuario.getId();
 				request.setAttribute(AttributeNames.USUARIO, usuario);
+				System.out.println(usuario.getTipo());
 				
 				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
 				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, listaSvc.buscarPorAutor(id));

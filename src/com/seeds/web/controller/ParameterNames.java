@@ -13,7 +13,7 @@ public class ParameterNames {
 	
 	public static final String VALORACION_MEDIA = "valoracion_media";
 
-	public static final String ID_CONTENIDO = "id_contenido";
+	public static final String ID_CONTENIDO = "id";
 	public static final String NOMBRE = "nombre";
 	public static final String FECHA_ALTA = "f_alta";
 	public static final String FECHA_MOD = "f_mod";
