@@ -3,6 +3,7 @@ package com.seeds.web.controller;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
@@ -30,7 +31,9 @@ import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
+import com.seeds.web.utils.CookieManager;
 import com.seeds.web.utils.DateUtils;
+import com.seeds.web.utils.LocaleManager;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
@@ -49,8 +52,6 @@ public class UsuarioServlet extends HttpServlet {
 	private VideoService videoSvc = null;
 	private ListaService listaSvc = null;
 
-
-
 	private List<String> idsPais;
 
 	public UsuarioServlet() {
@@ -59,28 +60,15 @@ public class UsuarioServlet extends HttpServlet {
 		contenidoSvc = new ContenidoServiceImpl();
 		videoSvc = new VideoServiceImpl();
 		listaSvc = new ListaServiceImpl();
-
-		
-		dateUtils = new DateUtils();
 		paisSvc= new PaisServiceImpl();
+		dateUtils = new DateUtils();		
 				
 		try {
-			
-			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());
-			
+			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());			
 		} catch (DataException e) {
 			logger.warn(e.getMessage(), e);
 		}
-		
-		System.out.println(idsPais.size());
-		for(String p: idsPais) {
-			System.out.println(p);
-			
-		}
-		
-
 	}
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -89,12 +77,22 @@ public class UsuarioServlet extends HttpServlet {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 		}
+		
+		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
+		String idioma=null;		
+		if(locale!=null) {
+			String rawIdioma = locale.toString();
+			idioma=rawIdioma.substring(0, 2);
+		}
+		else {
+			idioma= "ES" ;//CHAPUZA			
+		}	
 
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
 
-		if (Actions.ENTRAR.equalsIgnoreCase(action)) {			
+		if (Actions.ENTRAR.equalsIgnoreCase(action)) {
 
 			String email = request.getParameter(ParameterNames.EMAIL);
 			String password = request.getParameter(ParameterNames.PASSWORD);
@@ -123,7 +121,7 @@ public class UsuarioServlet extends HttpServlet {
 				}				
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.ENTRAR;				
-			} else {			 
+			} else {
 				if (logger.isDebugEnabled()) {
 					logger.info("Usuario "+usuario.getEmail()+" autenticado.");
 				}				
@@ -131,13 +129,16 @@ public class UsuarioServlet extends HttpServlet {
 				target = request.getContextPath()+ViewPath.HOME;					
 				redirect = true;
 			}
-		} else if (Actions.PREREGISTRO.equalsIgnoreCase(action)) { 
+			
+		} else if (Actions.PRERREGISTRO.equalsIgnoreCase(action)) { //CHAPUZA
+			
 			List<Pais> paises = null;
 			try {
-				paises = paisSvc.findAll("ESP");
+				paises = paisSvc.findAll(idioma);
 			} catch (DataException e) {
-				e.printStackTrace();
-			}// ojo, con idioma de usuario en sesion
+				logger.warn(e.getMessage(), e);
+				errors.add(AttributeNames.PAISES, ErrorCodes.PRERREGISTRO_ERROR);
+			}
 			request.setAttribute(AttributeNames.PAISES, paises);
 			target = ViewPath.REGISTRO;
 			
@@ -231,7 +232,6 @@ public class UsuarioServlet extends HttpServlet {
 				usuario = usuarioSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
 				Long id = usuario.getId();
 				request.setAttribute(AttributeNames.USUARIO, usuario);
-				System.out.println(usuario.getTipo());
 				
 				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
 				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, listaSvc.buscarPorAutor(id));
@@ -251,6 +251,42 @@ public class UsuarioServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			
+
+		}	else if (Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {
+			
+			logger.debug("Estamos en usuario/change-locale");
+			
+			
+			
+			String localeName = request.getParameter(ParameterNames.LOCALE);
+			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
+			// Buscamos entre los Locale soportados por la web:
+			List<Locale> results = LocaleManager.getMatchedLocales(localeName);
+			Locale newLocale = null;
+			if (results.size()>0) {
+				newLocale = results.get(0);
+			} else {
+				logger.warn("Request locale not supported: "+localeName);
+				newLocale = LocaleManager.getDefault();
+			}
+
+			idioma = LocaleManager.getDefault().getDisplayName();			
+
+			SessionManager.set(request, ConstantValues.IDIOMA, idioma);
+			
+			SessionManager.set(request, ConstantValues.USER_LOCALE, newLocale);
+			
+			CookieManager.addCookie(response, ConstantValues.IDIOMA, idioma, "/", 365*24*60*60);
+			
+			CookieManager.addCookie(response, ConstantValues.USER_LOCALE, newLocale.toString(), "/", 365*24*60*60);
+			
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("Locale changed to "+newLocale);
+			}
+
+			response.sendRedirect(request.getHeader("referer"));
+
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			

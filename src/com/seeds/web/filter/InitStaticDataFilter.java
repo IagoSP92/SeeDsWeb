@@ -27,31 +27,19 @@ import com.seeds.web.utils.SessionManager;
 public class InitStaticDataFilter implements Filter {
 	
 	private static Logger logger = LogManager.getLogger(InitStaticDataFilter.class.getName());
-	
-	private PaisService paisSvc = null;
- 
+	 
     public InitStaticDataFilter() {
-    	paisSvc = new PaisServiceImpl();
     }
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {		
-		
+			throws IOException, ServletException {
+		/*
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
 		String idioma = (String) SessionManager.get(httpRequest, ConstantValues.IDIOMA);
 		
 		logger.debug("Idioma {}", idioma);
-				
-		try {
-			List<Pais> paises = paisSvc.findAll(idioma);
-			
-			request.setAttribute("paises", paises);	
-			logger.debug("Paises {}", paises);			
-			
-		} catch (DataException e) {
-			e.printStackTrace();
-		}
+				*/
 
 		chain.doFilter(request, response);
 	}

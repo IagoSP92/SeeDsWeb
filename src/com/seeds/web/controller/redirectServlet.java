@@ -28,19 +28,16 @@ public class redirectServlet extends HttpServlet {
 	
 	ValidationUtils validationUtils = null;
 
-    public redirectServlet() {
-  
+    public redirectServlet() {  
     	contenidoSvc = new ContenidoServiceImpl();
-    	validationUtils = new ValidationUtils();
-    	
+    	validationUtils = new ValidationUtils();    	
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		String action = request.getParameter(ParameterNames.ACTION);
-		System.out.println("ENTRA EN REDIRECT");
-
+		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 		}
@@ -49,13 +46,17 @@ public class redirectServlet extends HttpServlet {
 		String target = null;
 		boolean redirect = false;
 		
-		String rawIdioma= (String) SessionManager.get(request, SessionAttributeNames.IDIOMA);
-		System.out.println();
-		System.out.println("IDIOMA SESION: "+rawIdioma);
-		System.out.println();
+		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
+		String idioma=null;
 		
-		String idioma= "ESP" ;
-
+		if(locale!=null) {
+			String rawIdioma = locale.toString();
+			idioma=rawIdioma.substring(0, 2);
+		}
+		else {
+			idioma= "ES" ;//CHAPUZA			
+		}
+		
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
 			Long id = Long.parseLong(request.getParameter(ParameterNames.ID_CONTENIDO));

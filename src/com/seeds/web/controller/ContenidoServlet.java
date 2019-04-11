@@ -1,7 +1,6 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +22,6 @@ import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
-import com.seeds.web.utils.LocaleManager;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
 import com.seeds.web.utils.WebUtils;
@@ -63,12 +61,16 @@ public class ContenidoServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
-		Locale userLocale = (Locale) SessionManager.get(request, ConstantValues.USER_LOCALE);
-		String rawIdioma = SessionManager.get(request, ConstantValues.USER_LOCALE).toString();
-		System.out.println("\n LOCALE:"+rawIdioma+"\n");		
 		
-		//String idioma= SessionManager.get(request, attName);
-		String idioma= "ESP" ;
+		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
+		String idioma=null;		
+		if(locale!=null) {
+			String rawIdioma = locale.toString();
+			idioma=rawIdioma.substring(0, 2);
+		}
+		else {
+			idioma= "ES" ;//CHAPUZA			
+		}	
 
 		if (Actions.BUSCAR.equalsIgnoreCase(action)) {
 			

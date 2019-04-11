@@ -4,7 +4,7 @@ public class Actions {
 	
 	
 	public static final String REGISTRO = "registro";
-	public static final String PREREGISTRO = "preregistro";
+	public static final String PRERREGISTRO = "preregistro";
 	
 	public static final String DETALLE = "detalle";	
 	public static final String DETALLE_VIDEO = "detalle_video";
@@ -16,5 +16,7 @@ public class Actions {
 	public static final String ENTRAR = "entrar";
 	public static final String BUSCAR = "buscar";
 	public static final String SALIR = "salir";
+	
+	public static final String CAMBIAR_LOCALE = "cambiar_locale";
 
 }

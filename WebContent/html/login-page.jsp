@@ -26,7 +26,7 @@
 
 </form>
 
-<a href="<%=ControllerPath.USUARIO%>?action=<%=Actions.PREREGISTRO%>">Registrarse</a>
+<a href="<%=ControllerPath.USUARIO%>?action=<%=Actions.PRERREGISTRO%>">Registrarse</a>
  
 </div>
 <%@include file="/html/common/footer.jsp"%>

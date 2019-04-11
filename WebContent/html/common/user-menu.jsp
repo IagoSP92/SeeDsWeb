@@ -7,7 +7,7 @@
 		if (u == null) {
 		
 			%><a href="/SeeDsWeb<%=ViewPath.ENTRAR%>"><button class="userButton">Entrar</button></a><%	
-			%><a href="/SeeDsWeb<%=ViewPath.REGISTRO%>"><button class="userButton">Registrarse</button></a><%	
+			%><a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>"><button class="userButton">Registrarse</button></a><%	
 		
 		} else {
 			%>	
