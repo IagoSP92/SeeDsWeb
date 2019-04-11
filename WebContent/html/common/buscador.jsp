@@ -41,9 +41,11 @@
 	<!-- Total de resultados  -->
 <p>
 	<c:if test="${not empty total}">		
+		<h3>
 		<fmt:message key="busqueda.titulo2" bundle="${messages}">
 			<fmt:param value="${total}"></fmt:param>
 		</fmt:message>
+		</h3>
 	</c:if>
 </p>
 

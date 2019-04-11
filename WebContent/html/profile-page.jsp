@@ -42,12 +42,12 @@
 			<div class="videoPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.idContenido}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${video.getTipo()}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				${video.idContenido}
-				${video.toString()}
+				<div>${video.id}</div>
+				
 				${urlDetalle}
 				${video.nombre}<br>
 				${video.fechaAlta} - ${video.fechaMod}
