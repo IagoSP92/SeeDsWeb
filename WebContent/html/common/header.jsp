@@ -1,16 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ page import="com.seeds.web.utils.*, com.seeds.web.model.*,com.isp.seeds.model.*, com.seeds.web.controller.*" %>    
     
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
-
-<fmt:setBundle basename = "resources.Messages" var="messages" scope="session"/>
 <fmt:setLocale value = "${sessionScope['user-locale']}" scope="session"/>
-<fmt:setLocale value = "es_ES"/>
-    
-<%@ page import="com.seeds.web.utils.*, com.seeds.web.model.*,com.isp.seeds.model.*, com.seeds.web.controller.*" %>
+<fmt:setBundle basename = "resources.Messages" var="messages" scope="session"/>
+
+<fmt:setLocale value = "es_ES"/>    
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
