@@ -7,7 +7,11 @@
 		if (u == null) {
 		
 			%><a href="/SeeDsWeb<%=ViewPath.ENTRAR%>"><button class="userButton">Entrar</button></a><%	
-			%><a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>"><button class="userButton">Registrarse</button></a><%	
+			%><a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>"><button class="userButton">Registrarse</button></a>	
+			
+			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB"><button class="userButton">English</button></a>
+			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES"><button class="userButton">Español</button></a>
+			<%
 		
 		} else {
 			%>	
@@ -16,7 +20,8 @@
 				<span><%=u.getNombre()%></span>
 				<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="userButton">Mi Perfil</button></a>
 				<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="userButton">Subir Video</button></a>
-				<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="userButton">Opciones</button></a>
+				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB"><button class="userButton">English</button></a>
+				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES"><button class="userButton">Español</button></a>
 				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.SALIR%>"><button class="userButton">Salir</button></a>
 			</div>		
 			<%

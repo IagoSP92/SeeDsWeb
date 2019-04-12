@@ -106,6 +106,7 @@ public class LocaleManager {
 			// modificado por un usuario
 			List<Locale.LanguageRange> languageRanges = null;
 			try {
+				logger.warn("ranges: "+ranges);
 				languageRanges = Locale.LanguageRange.parse(ranges);
 			} catch (IllegalArgumentException iae) {
 				logger.warn("Invalid ranges: "+ranges, iae);

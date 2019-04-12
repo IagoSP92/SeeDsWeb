@@ -111,3 +111,16 @@ button:hover{ cursor: pointer; }
 .a_sinsub{
 	text-decoration: none;
 }
+
+.flagsDiv{
+	position:relative;
+	left:90%;
+	right: 0px;
+	top:5%;
+	width:32px;
+	heigth: 70px;
+}
+.flag{
+	position:relative;
+	right: 0px;
+}

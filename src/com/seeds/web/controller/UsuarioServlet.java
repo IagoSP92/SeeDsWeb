@@ -78,15 +78,7 @@ public class UsuarioServlet extends HttpServlet {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 		}
 		
-		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
-		String idioma=null;		
-		if(locale!=null) {
-			String rawIdioma = locale.toString();
-			idioma=rawIdioma.substring(0, 2);
-		}
-		else {
-			idioma= "ES" ;//CHAPUZA			
-		}	
+		String idioma=SessionManager.get(request, ConstantValues.USER_LOCALE).toString().substring(0, 2).toUpperCase();		
 
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
@@ -254,9 +246,7 @@ public class UsuarioServlet extends HttpServlet {
 
 		}	else if (Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {
 			
-			logger.debug("Estamos en usuario/change-locale");
-			
-			
+			logger.debug("Estamos en usuario/change-locale");			
 			
 			String localeName = request.getParameter(ParameterNames.LOCALE);
 			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
@@ -270,13 +260,9 @@ public class UsuarioServlet extends HttpServlet {
 				newLocale = LocaleManager.getDefault();
 			}
 
-			idioma = LocaleManager.getDefault().getDisplayName();			
-
-			SessionManager.set(request, ConstantValues.IDIOMA, idioma);
+			//idioma = LocaleManager.getDefault().getDisplayName();
 			
 			SessionManager.set(request, ConstantValues.USER_LOCALE, newLocale);
-			
-			CookieManager.addCookie(response, ConstantValues.IDIOMA, idioma, "/", 365*24*60*60);
 			
 			CookieManager.addCookie(response, ConstantValues.USER_LOCALE, newLocale.toString(), "/", 365*24*60*60);
 			
@@ -284,8 +270,11 @@ public class UsuarioServlet extends HttpServlet {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Locale changed to "+newLocale);
 			}
-
-			response.sendRedirect(request.getHeader("referer"));
+			logger.debug("header::::: "+request.getHeader("referer"));
+			//response.sendRedirect(request.getHeader("referer"));
+			
+			target = request.getHeader("referer");
+			redirect = true;
 
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
@@ -293,7 +282,6 @@ public class UsuarioServlet extends HttpServlet {
 			SessionManager.set(request, SessionAttributeNames.USUARIO, null);
 			
 			target = ViewPath.HOME;
-			redirect = true;
 			
 		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
 			

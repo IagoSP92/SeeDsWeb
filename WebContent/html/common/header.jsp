@@ -34,6 +34,18 @@
 				<img id="mainLogo" src="/SeeDsWeb/img/seedsLogo.JPG" alt="SeeDs Logo"/>
 			</a>
 		</div>
+		<div class="flagsDiv">
+			<div class="flag">
+			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES">
+				<img src="/SeeDsWeb/img/flags/ES.png">
+			</a>
+			</div>
+			<div class="flag">
+			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB">
+				<img src="/SeeDsWeb/img/flags/EN.png">
+			</a>
+			</div>
+		</div>
 		
 		<%@include file="/html/common/user-menu.jsp"%>
 		<%@include file="/html/common/nav-menu.jsp"%>
