@@ -245,9 +245,7 @@ public class UsuarioServlet extends HttpServlet {
 			
 
 		}	else if (Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {
-			
-			logger.debug("Estamos en usuario/change-locale");			
-			
+						
 			String localeName = request.getParameter(ParameterNames.LOCALE);
 			// Recordar que hay que validar... lo que nos envian, incluso en algo como esto.
 			// Buscamos entre los Locale soportados por la web:
@@ -259,23 +257,22 @@ public class UsuarioServlet extends HttpServlet {
 				logger.warn("Request locale not supported: "+localeName);
 				newLocale = LocaleManager.getDefault();
 			}
-
-			//idioma = LocaleManager.getDefault().getDisplayName();
 			
-			SessionManager.set(request, ConstantValues.USER_LOCALE, newLocale);
-			
-			CookieManager.addCookie(response, ConstantValues.USER_LOCALE, newLocale.toString(), "/", 365*24*60*60);
-			
+			SessionManager.set(request, ConstantValues.USER_LOCALE, newLocale);			
+			CookieManager.addCookie(response, ConstantValues.USER_LOCALE, newLocale.toString(), "/", 365*24*60*60);			
 
 			if (logger.isDebugEnabled()) {
 				logger.debug("Locale changed to "+newLocale);
 			}
-			logger.debug("header::::: "+request.getHeader("referer"));
-			//response.sendRedirect(request.getHeader("referer"));
 			
-			target = request.getHeader("referer");
+			response.sendRedirect(request.getHeader("referer"));
+			
+//			target = request.getHeader("referer");
+//			redirect = true;
+			/*
+			target = request.getHeader("referer"); // Ejercicio: como hacer que siga en la misma URL		
 			redirect = true;
-
+*/
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
@@ -291,12 +288,14 @@ public class UsuarioServlet extends HttpServlet {
 		}
 		
 		// POR ULTIMO SE ENVIA A DONDE/COMO CORRESPONDA:
-		if (redirect) {
-			logger.info("Redirecting to "+target);
-			response.sendRedirect(target);
-		} else {
-			logger.info("Forwarding to "+target);
-			request.getRequestDispatcher(target).forward(request, response);
+		if(!Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {
+			if (redirect) {
+				logger.info("Redirecting to "+target);
+				response.sendRedirect(target);
+			} else {
+				logger.info("Forwarding to "+target);
+				request.getRequestDispatcher(target).forward(request, response);
+			}
 		}
 	}
 
