@@ -6,8 +6,17 @@ public class ParameterNames {
 	
 	public static final String ACTION = "action";
 
+	public static final String CHECK_TODOS = "check_todos";
+	public static final String CHECK_VIDEO = "check_video";
+	public static final String CHECK_LISTA = "check_lista";
+	public static final String CHECK_USUARIO = "check_usuario";
+	public static final String VALORACION_MIN = "valoracion_min";
+	public static final String VALORACION_MAX = "valoracion_max";
+	public static final String REPRODUCCIONES_MIN = "reproducciones_min";
+	public static final String REPRODUCCIONES_MAX = "reproduccione_max";
 	public static final String FECHA_MIN = "fecha_min";
 	public static final String FECHA_MAX = "fecha_max";
+	
 	public static final String PAGE = "page"; 
 	public static final String TOTAL_PAGES = "total-pages";
 	
@@ -52,6 +61,13 @@ public class ParameterNames {
 	public static final String COMENTARIO = "comentario";
 	
 	public static final String LOCALE = "locale";
+	
+	public static final String RUTA_VIDEO = "ruta_video";
+	
+
+	
+
+
 
 
 	

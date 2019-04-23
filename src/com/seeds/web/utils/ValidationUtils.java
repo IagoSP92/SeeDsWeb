@@ -13,31 +13,81 @@ import com.seeds.web.model.ErrorManager;
 
 public class ValidationUtils {
 	
-public static Long validLong (String longAntes) {
+	public static Boolean validCheck (ErrorManager errors, String check, String parameter, Boolean required) {
 		
-		Long longDespues = null;
+		Boolean booleanDespues = null;
+		if(check==null) {check="False";}
+		if(check=="on") {check="True";}
 		
-		if(!StringUtils.isEmptyOrWhitespaceOnly(longAntes)) {
-			longDespues= Long.parseLong(longAntes);
+		if(!StringUtils.isEmptyOrWhitespaceOnly(check)) {
+			booleanDespues= Boolean.parseBoolean(check);
 		} else {
+			if(required) {
+				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+			}
 			// AÑADIR ERROR
-		}
-		
-		return longDespues;
+		}		
+		return booleanDespues;
 	}
 	
-
+	public static Boolean validBoolean (ErrorManager errors, String booleanAntes, String parameter, Boolean required) {
+		
+		Boolean booleanDespues = null;
+		
+		if(!StringUtils.isEmptyOrWhitespaceOnly(booleanAntes)) {
+			booleanDespues= Boolean.parseBoolean(booleanAntes);
+		} else {
+			if(required) {
+				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+			}
+			// AÑADIR ERROR
+		}		
+		return booleanDespues;
+	}
 	
-	public static Integer validInt (String intAntes) {
+	public static Long validLong (ErrorManager errors, String longAntes, String parameter, Boolean required) {
+			
+			Long longDespues = null;
+			
+			if(!StringUtils.isEmptyOrWhitespaceOnly(longAntes)) {
+				longDespues= Long.parseLong(longAntes);
+			} else {
+				if(required) {
+					errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+				}
+				// AÑADIR ERROR
+			}
+			
+			return longDespues;
+		}
+	
+	public static Double validDouble (ErrorManager errors, String doubleAntes, String parameter, Boolean required) {
+		
+		Double doubleDespues = null;
+		
+		if(!StringUtils.isEmptyOrWhitespaceOnly(doubleAntes)) {
+			doubleDespues= Double.parseDouble(doubleAntes);
+		} else {
+			if(required) {
+				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+			}
+			// AÑADIR ERROR
+		}	
+		return doubleDespues;
+	}
+	
+	public static Integer validInt (ErrorManager errors, String intAntes, String parameter, Boolean required) {
 		
 		Integer intDespues = null;
 		
 		if(!StringUtils.isEmptyOrWhitespaceOnly(intAntes)) {
 			intDespues= Integer.parseInt(intAntes);
 		} else {
+			if(required) {
+				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+			}
 			// AÑADIR ERROR
-		}
-		
+		}	
 		return intDespues;
 	}
 

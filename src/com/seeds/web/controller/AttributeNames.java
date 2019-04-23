@@ -25,7 +25,6 @@ public interface AttributeNames {
 	public static final String VIDEOS_GUARDADOS = "videosGuardados";
 	public static final String LISTAS_GUARDADAS = "listasGuardadas";
 
-
-
+	public static final String NOMBRE_AUTOR = "nombre_autor";
 
 }

@@ -225,8 +225,16 @@ public class UsuarioServlet extends HttpServlet {
 			//SessionManager.set(request, SessionAttributeNames.USUARIO, null);
 			target = ViewPath.HOME;
 			
+		} else if (Actions.MI_PERFIL.equalsIgnoreCase(action)) {
+			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
+			
+			System.out.println("MI PERFIL");
+			
+			target = ViewPath.DETALLE_PERFIL;
+
 		} else if (Actions.EDITAR_PERFIL.equalsIgnoreCase(action)) {
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
+			System.out.println("EDITAR PERFIL");
 			
 			target = ViewPath.DETALLE_PERFIL;
 

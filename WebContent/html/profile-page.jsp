@@ -13,7 +13,7 @@
 	<br/>
 	<span> fechaMod: </span> ${usuario.fechaMod}
 	<br/>
-	<span> autor: </span> ${usuario.getIdAutor()}
+	<span> autor: </span> ${usuario.getAutor()}
 	<br/>
 	<span> tipo: </span> ${usuario.tipo}
 	<br/>
@@ -34,9 +34,20 @@
 	<br/>
 	<span> fechaNac: </span> ${usuario.fechaNac}
 	<br/>
+	
+	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.DENUNCIAR%>">
+		<button class="userButton">
+			<fmt:message key="detalle.denunciar" bundle="${messages}"/>
+		</button>
+	</a>
+	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>">
+		<button class="userButton">
+			<fmt:message key="detalle.comentar" bundle="${messages}"/>
+		</button>
+	</a>
 	<br/>
 	
-	<fmt:message key="perfil.subidos" bundle="${messages}"></fmt:message>
+	<fmt:message key="detalle.subidos" bundle="${messages}"></fmt:message>
 	<ul>
 		<c:forEach items="${usuario.videosSubidos}" var="video">
 			<div class="videoPerfil">
@@ -56,12 +67,12 @@
 		</c:forEach>
 	</ul>
 	<ul>
-		<c:forEach items="${listasSubidas}" var="lista">
+		<c:forEach items="${usuario.listasSubidas}" var="lista">
 			<div class="listaPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
 					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
+					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.getTipo()}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
 				${urlDetalle}
@@ -73,7 +84,7 @@
 	</ul>
 	<br/>
 	<br/>	
-	<fmt:message key="perfil.seguidos" bundle="${messages}"></fmt:message>
+	<fmt:message key="detalle.seguidos" bundle="${messages}"></fmt:message>
 	<ul>
 		<c:forEach items="${usuariosSeguidos}" var="usuario">
 			<div class="videoPerfil">
@@ -108,7 +119,7 @@
 	</ul>
 	<br/>
 	<br/>
-	<fmt:message key="perfil.guardados" bundle="${messages}"></fmt:message>
+	<fmt:message key="detalle.guardados" bundle="${messages}"></fmt:message>
 	<ul>
 		<c:forEach items="${videosGuardados}" var="video">
 			<div class="videoPerfil">

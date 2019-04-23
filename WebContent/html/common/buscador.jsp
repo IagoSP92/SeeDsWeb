@@ -9,84 +9,91 @@
     %>
 
 <div id="buscador-form">
+	<form action="<%=ControllerPath.CONTENIDO%>" method="post">
+		<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.BUSCAR%>"/>
 	
-		<form action="<%=ControllerPath.CONTENIDO%>" method="post">	
-			<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.BUSCAR%>"/>
+		<input type="checkbox" checked name="<%=ParameterNames.CHECK_TODOS%>">
+			<fmt:message key="buscador.todo" bundle="${messages}"/>
 			
-			<input type="text"
-					name="<%=ParameterNames.NOMBRE%>" 
-					value="${requestScope.nombre}" 
-					placeholder='<fmt:message key="buscador.nombre" bundle="${messages}"/>'/>
-					<!-- placeholder="Nombre" />-->
+		<input type="checkbox" name="<%=ParameterNames.CHECK_VIDEO%>">
+			<fmt:message key="buscador.videos" bundle="${messages}"/>
+			
+		<input type="checkbox" name="<%=ParameterNames.CHECK_LISTA%>">
+			<fmt:message key="buscador.listas" bundle="${messages}"/>
+			
+		<input type="checkbox" name="<%=ParameterNames.CHECK_USUARIO%>">
+			<fmt:message key="buscador.usuarios" bundle="${messages}"/>
+		
+		<br/>			
+		<input type="text" size=80
+				name="<%=ParameterNames.NOMBRE%>" 
+				value="${requestScope.nombre}" 
+				placeholder='<fmt:message key="buscador.nombre" bundle="${messages}"/>'/>
+		<input id="buscarButton" type="submit" value='<fmt:message key="buscador.buscar" bundle="${messages}"/>'>
+		<br id="br-buscador"/>			
+					
+		<span class="buscador-label"><fmt:message key="buscador.valoracion" bundle="${messages}"/></span>
+		<input name="<%=ParameterNames.VALORACION_MIN%>" type="text" size=2
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.VALORACION_MIN) %>"
+				placeholder="<fmt:message key="buscador.desde" bundle="${messages}"/>"/>
+				
+		<input name="<%=ParameterNames.VALORACION_MAX%>" type="text" size=2
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.VALORACION_MAX) %>"
+				placeholder="<fmt:message key="buscador.hasta" bundle="${messages}"/>"/>
+				
+		<span class="buscador-label"><fmt:message key="buscador.reproducciones" bundle="${messages}"/></span>
+		<input name="<%=ParameterNames.REPRODUCCIONES_MIN%>" type="text" size=3
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.REPRODUCCIONES_MIN) %>"
+				placeholder="<fmt:message key="buscador.desde" bundle="${messages}"/>"/>
+				
+		<input name="<%=ParameterNames.REPRODUCCIONES_MAX%>" type="text" size=3
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.REPRODUCCIONES_MAX) %>"
+				placeholder="<fmt:message key="buscador.hasta" bundle="${messages}"/>"/>
 
-			<input name="<%=ParameterNames.FECHA_MIN%>" type="text" 
-					value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_MIN) %>"
-					placeholder="fechaDesde"/>
-					
-			<input name="<%=ParameterNames.FECHA_MAX%>" type="text" 
-					value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_MAX) %>"
-					placeholder="fechaHASTA"/>
-					
-			<input name="<%=ParameterNames.ID_CONTENIDO%>" type="text"
-					value="<%=ParameterUtils.getParameter(request, ParameterNames.ID_CONTENIDO) %>"
-					placeholder="id"/>
-			
-			<input id="buscarButton" type="submit" value='<fmt:message key="buscar" bundle="${messages}"/>'>
-			
-		</form>
-	</p>
+		<span class="buscador-label"><fmt:message key="buscador.fecha" bundle="${messages}"/></span>
+		<input name="<%=ParameterNames.FECHA_MIN%>" type="text" size=6
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_MIN) %>"
+				placeholder="<fmt:message key="buscador.desde" bundle="${messages}"/>"/>
+				
+		<input name="<%=ParameterNames.FECHA_MAX%>" type="text" size=6
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_MAX) %>"
+				placeholder="<fmt:message key="buscador.hasta" bundle="${messages}"/>"/>			
+	</form>
 </div>
 <div id="buscador-results">
-	
-	<!-- Total de resultados  -->
+
+<!-- Total de resultados  -->
 <p>
-	<c:if test="${not empty total}">		
+	<c:if test="${not empty total}">
 		<h3>
-		<fmt:message key="busqueda.titulo2" bundle="${messages}">
-			<fmt:param value="${total}"></fmt:param>
-		</fmt:message>
+			<fmt:message key="busqueda.titulo2" bundle="${messages}">
+				<fmt:param value="${total}"></fmt:param>
+			</fmt:message>
 		</h3>
 	</c:if>
 </p>
 
 <!-- Resultados -->
 <c:if test="${not empty resultados}">
-	<!-- Listado -->
-	
+	<!-- Listado -->	
 	<ul>
-		<c:forEach items="${resultados}" var="contenido">
-		
-			<!--<c:set var="numeroTipo" value="-1"/>
-			<%/*
-				Integer numeroTipo = Integer.parseInt(pageContext.getAttribute("numeroTipo"));
-				String tipoMostrado="undefined";
-				if(numeroTipo==1){
-					tipoMostrado="Usuario";
-				}
-				if(numeroTipo==2){
-					tipoMostrado="Video";
-				}
-				if(numeroTipo==3){
-					tipoMostrado="Lista";
-				}
-				pageContext.setAttribute("tipoMostrado", tipoMostrado);
-			*/%>
-			<c:out value="${numeroTipo}"/>-->
-			
+		<c:forEach items="${resultados}" var="contenido">					
 			<div class="thumbDiv">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
 					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
-				${contenido.nombre}<br>
-				${contenido.getTipo()}<br>
-				${contenido.fechaAlta}
-				 - 
-				${contenido.fechaMod}
-				</a></li>
+				</c:url>		
+				<li>
+					<a class="a_sinsub" href="${urlDetalle}">
+						${urlDetalle}
+						${contenido.nombre}<br>
+						${contenido.getTipo()}<br>
+						${contenido.fechaAlta}
+						 - 
+						${contenido.fechaMod}
+					</a>
+				</li>
 			</div>
 		</c:forEach>
 	</ul>
@@ -96,31 +103,34 @@
 		
 	<c:url var="urlBase" value="contenido" scope="page">
 		<c:param name="action" value="<%=Actions.BUSCAR%>"/>
-		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>
+		<c:param name="<%=ParameterNames.CHECK_TODOS%>" value="${check_todos}"/>
+		<c:param name="<%=ParameterNames.CHECK_VIDEO%>" value="${check_video}"/>
+		<c:param name="<%=ParameterNames.CHECK_LISTA%>" value="${check_lista}"/>
+		<c:param name="<%=ParameterNames.CHECK_USUARIO%>" value="${check_usuario}"/>		
+		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>		
+		<c:param name="<%=ParameterNames.VALORACION_MIN%>" value="${valoracion_min}"/>
+		<c:param name="<%=ParameterNames.VALORACION_MAX%>" value="${valoracion_max}"/>
+		<c:param name="<%=ParameterNames.REPRODUCCIONES_MIN%>" value="${reproducciones_min}"/>
+		<c:param name="<%=ParameterNames.REPRODUCCIONES_MAX%>" value="${reproduccione_max}"/>
 		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
 		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
-		<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${id}"/>
-		<!--  y asi todos los parametros de la busqueda anterior ... -->
 	</c:url>
-
-	<!-- A la primera pagina -->
-	<c:if test="${page > 1}">
-		<a href="${urlBase}&page=1">
-			<fmt:message key="primera" bundle="${messages}"/>
-		</a>
-		&nbsp;&nbsp;
-	</c:if>
-
-	<!-- A la anterior pagina -->
-	<c:if test="${page > 1}">
-		<a href="${urlBase}&page=${page - 1}">
-			<fmt:message key="anterior" bundle="${messages}"/>
-		</a>
-		&nbsp;&nbsp;
-	</c:if>
-
-	<c:if test="${totalPages > 1}">	
 	
+	<c:if test="${page > 1}"><!-- Primera Página -->
+		<a href="${urlBase}&page=1">
+			<fmt:message key="pag.primera" bundle="${messages}"/>
+		</a>
+		&nbsp;&nbsp;
+	</c:if>
+	
+	<c:if test="${page > 1}"><!-- Página Anterior -->
+		<a href="${urlBase}&page=${page - 1}">
+			<fmt:message key="pag.anterior" bundle="${messages}"/>
+		</a>
+		&nbsp;&nbsp;
+	</c:if>
+
+	<c:if test="${totalPages > 1}">		
 		<c:forEach begin="${firstPagedPage}" end="${lastPagedPage}" var="i">
 			<c:choose>
 			  <c:when test="${page != i}">
@@ -131,19 +141,19 @@
 			  </c:otherwise>
 			</c:choose>
 		</c:forEach>
-
 	</c:if>
-
-	<!-- A la siguiente pÃ¡gina -->	
-	<c:if test="${page < totalPages}">
+	
+	<c:if test="${page < totalPages}"><!-- Siguiente Página -->	
 		&nbsp;&nbsp;		
 		<a href="${urlBase}&page=${page + 1}">
-			<fmt:message key="siguiente" bundle="${messages}"/>
+			<fmt:message key="pag.siguiente" bundle="${messages}"/>
 		</a>			
 	</c:if>	
-	<!-- A la ultima pÃ¡gina -->
-	<c:if test="${page != totalPages}">
-		&nbsp;&nbsp;<a href="${urlBase}&page=${totalPages}"><fmt:message key="ultima" bundle="${messages}"/></a>
+	<c:if test="${page != totalPages}"><!-- Ultima Página -->
+		&nbsp;&nbsp;
+		<a href="${urlBase}&page=${totalPages}">
+			<fmt:message key="pag.ultima" bundle="${messages}"/>
+		</a>
 	</c:if>		
 
 	</center></p>

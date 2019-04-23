@@ -1,8 +1,17 @@
 <%@ page import="com.isp.seeds.service.*, com.seeds.web.utils.*, com.seeds.web.model.*, com.isp.seeds.model.*, com.seeds.web.controller.*" %>
 <div id="nav-menu">
 
-	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">General</button></a>
-	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Videoclips</button></a>
+	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.GENERAL%>">
+		<button class="navButton">
+			<fmt:message key="nav.general" bundle="${messages}"/>
+		</button>
+	</a>
+	
+	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.MUSICA%>">
+		<button class="navButton">
+			<fmt:message key="nav.musica" bundle="${messages}"/>
+		</button>
+	</a>
 	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Series</button></a>
 	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Cortos</button></a>
 	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Documental</button></a>

@@ -1,30 +1,50 @@
 <%@ page import="com.isp.seeds.service.*, com.seeds.web.utils.*, com.seeds.web.model.*, com.isp.seeds.model.*, com.seeds.web.controller.*" %>
-<div id="user-menu">
 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<div id="user-menu">
 
 	<%
 		Usuario u = (Usuario) request.getSession().getAttribute(SessionAttributeNames.USUARIO);
-		if (u == null) {
-		
-			%><a href="/SeeDsWeb<%=ViewPath.ENTRAR%>"><button class="userButton">Entrar</button></a><%	
-			%><a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>"><button class="userButton">Registrarse</button></a>	
+		if (u == null) {	
+	%>
+	
+	<a href="/SeeDsWeb<%=ViewPath.ENTRAR%>">
+		<button class="userButton">
+			<fmt:message key="usermenu.entrar" bundle="${messages}"/>
+		</button>
+	</a>
 			
-			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB"><button class="userButton">English</button></a>
-			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES"><button class="userButton">Español</button></a>
-			<%
-		
+	<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>">
+		<button class="userButton">
+			<fmt:message key="usermenu.registro" bundle="${messages}"/>
+		</button>
+	</a>
+			
+	<%		
 		} else {
-			%>	
-			<!-- usuario autenticado -->
+		%>	<!-- usuario autenticado -->			
 			<div id="usuario">
 				<span><%=u.getNombre()%></span>
-				<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="userButton">Mi Perfil</button></a>
-				<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="userButton">Subir Video</button></a>
-				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB"><button class="userButton">English</button></a>
-				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES"><button class="userButton">Español</button></a>
-				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.SALIR%>"><button class="userButton">Salir</button></a>
+				
+				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.MI_PERFIL%>">
+					<button class="userButton">
+						<fmt:message key="usermenu.perfil" bundle="${messages}"/>
+					</button>
+				</a>
+				<a href="/SeeDsWeb<%=ViewPath.SUBIR_VIDEO%>">
+					<button class="userButton">
+						<fmt:message key="usermenu.subir" bundle="${messages}"/>
+					</button>
+				</a>
+				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.SALIR%>">
+					<button class="userButton">
+						<fmt:message key="usermenu.salir" bundle="${messages}"/>
+					</button>
+				</a>
 			</div>		
-			<%
+		<%
 		}
 	%>	
 </div>

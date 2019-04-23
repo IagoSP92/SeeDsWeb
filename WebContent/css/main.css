@@ -124,3 +124,15 @@ button:hover{ cursor: pointer; }
 	position:relative;
 	right: 0px;
 }
+
+
+.detalle-titulo{
+	margin-left: 2%;
+	font-weight: bold;
+	
+}
+
+.detalle-autor{
+	margin-left: 25%;
+	font-weight: bold;
+}
