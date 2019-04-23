@@ -24,11 +24,14 @@ import com.isp.seeds.service.ListaServiceImpl;
 import com.isp.seeds.service.PaisServiceImpl;
 import com.isp.seeds.service.UsuarioServiceImpl;
 import com.isp.seeds.service.VideoServiceImpl;
+import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.PaisService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
+import com.seeds.web.config.ConfigurationManager;
+import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.CookieManager;
@@ -37,12 +40,21 @@ import com.seeds.web.utils.LocaleManager;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
+import com.seeds.web.utils.WebUtils;
 
 
 @WebServlet("/usuario")
 public class UsuarioServlet extends HttpServlet {
 
 	private static Logger logger = LogManager.getLogger(UsuarioServlet.class);
+	
+	private static int pageSize = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
+
+	private static int pagingPageCount = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 
 	private DateUtils dateUtils = null;
 
@@ -221,13 +233,25 @@ public class UsuarioServlet extends HttpServlet {
 		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			Usuario usuario;
 			try {
-				usuario = usuarioSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
+				usuario = usuarioSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)), Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
 				Long id = usuario.getId();
 				request.setAttribute(AttributeNames.USUARIO, usuario);
 				
+				
+				int page = WebUtils.
+						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+				int startIndex= (page-1)*pageSize+1;
+				int count= pageSize;
+				ContenidoCriteria criteria = new ContenidoCriteria();
+				criteria.setAutor(id);
+				criteria.setTipo(2);
+				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma));
+				criteria.setTipo(3);
+				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma));
+				/*
 				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
 				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, listaSvc.buscarPorAutor(id));
-				
+				*/
 //				request.setAttribute(AttributeNames.USUARIOS_SEGUIDOS, usuarioSvc.);
 //				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
 //				

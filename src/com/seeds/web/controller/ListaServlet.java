@@ -23,6 +23,8 @@ import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
+import com.seeds.web.config.ConfigurationManager;
+import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
 
@@ -31,6 +33,14 @@ import com.seeds.web.utils.DateUtils;
 public class ListaServlet extends HttpServlet {
 
 	private static Logger logger = LogManager.getLogger(ListaServlet.class);
+	
+	private static int pageSize = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
+
+	private static int pagingPageCount = Integer.valueOf(
+			ConfigurationManager.getInstance().getParameter(
+					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 
 	private DateUtils dateUtils = null;
 
@@ -70,7 +80,7 @@ public class ListaServlet extends HttpServlet {
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			Lista lista;
 			try {
-				lista = listaSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
+				lista = listaSvc.buscarId(null, Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
 				request.setAttribute(AttributeNames.LISTA, lista);
 				target = ViewPath.DETALLE_LISTA;
 			} catch (DataException e) {

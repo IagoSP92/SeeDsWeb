@@ -64,7 +64,7 @@ public class VideoServlet extends HttpServlet {
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			Video video;
 			try {
-				video = videoSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
+				video = videoSvc.buscarId(null, Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
 				request.setAttribute(AttributeNames.VIDEO, video);
 				target = ViewPath.DETALLE_VIDEO;
 			} catch (DataException e) {
