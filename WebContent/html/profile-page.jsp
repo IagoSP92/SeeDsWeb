@@ -61,7 +61,7 @@
 				
 				${urlDetalle}
 				${video.nombre}<br>
-				${video.fechaAlta} - ${video.fechaMod}
+				${video.fechaAlta} - ${video.fechaMod} 
 				</a></li>
 			</div>		
 		</c:forEach>
