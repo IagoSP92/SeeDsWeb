@@ -114,8 +114,10 @@ public class UsuarioServlet extends HttpServlet {
 					e.printStackTrace();    //CAMBIAR POR LOGGER
 				}
 			}
+			System.out.println(usuario);
+			System.out.println(usuario.getId());
 
-			if (usuario == null) {
+			if (usuario.getId() == null) {
 				errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
 			}
 			

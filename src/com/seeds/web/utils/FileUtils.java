@@ -17,13 +17,13 @@ public class FileUtils {
 
 	private static Logger logger = LogManager.getLogger(FileUtils.class);
 	
+	private static final String UPLOAD_ROOT = ConfigurationManager.getInstance().getParameter("upload.root");
 	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
 	
-	public static void readDocument(HttpServletResponse response, String email) {
-		if(ValidationUtils.emailValidator(email) != null) {
-			String urlBase = UPLOAD_DIRECTORY.concat(ParameterUtils.getFileName(email));
+	public static void readDocument(HttpServletResponse response, String urlBase) {
+		
 			File file = new File(urlBase);
-			
+			response.setContentType("video/mp4");
 			try {
 				FileInputStream fis = new FileInputStream(file);
 				byte[] buffer = new byte[1024];
@@ -36,14 +36,12 @@ public class FileUtils {
 			} catch (IOException e) {
 				logger.warn(e.getMessage(), e);
 			}
-		}		
 	}
 	
-	public static void loadDocument (Long idUsuario, FileItem fileItem) {
+	public static String loadDocument (Long idUsuario, Long idVideo,  FileItem fileItem) {
 		// constructs the directory path to store upload file
         // this path is relative to application's directory
-        String uploadPath = "C:"
-                + File.separator + UPLOAD_DIRECTORY;
+        String uploadPath = UPLOAD_ROOT + File.separator + UPLOAD_DIRECTORY + File.separator + idUsuario;
          
         // creates the directory if it does not exist
         File uploadDir = new File(uploadPath);
@@ -51,7 +49,7 @@ public class FileUtils {
             uploadDir.mkdir();
         }
 		
-		String fileName = new File(idUsuario.toString().concat(ConfigurationManager.getInstance().getParameter("files.extension"))).getName();
+		String fileName = new File(idVideo.toString().concat(ConfigurationManager.getInstance().getParameter("files.extension"))).getName();
         String filePath = uploadPath + File.separator + fileName;
         File storeFile = new File(filePath);
 
@@ -61,6 +59,7 @@ public class FileUtils {
 			logger.warn(e.getMessage(), e);
 		}
         logger.debug("Upload has been done successfully!");
+        return filePath;
 	}
 	
 }

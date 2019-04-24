@@ -2,6 +2,7 @@ package com.seeds.web.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -61,9 +64,7 @@ public class VideoServlet extends HttpServlet {
 		contenidoSvc = new ContenidoServiceImpl();
 		dateUtils = new DateUtils();
 		videoSvc= new VideoServiceImpl();		
-
 	}
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -94,9 +95,11 @@ public class VideoServlet extends HttpServlet {
 
 		} else if (Actions.SUBIR_VIDEO.equalsIgnoreCase(action)){
 			
-			String nombre = request.getParameter(ParameterNames.NOMBRE);
-			String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
-			String ruta = request.getParameter(ParameterNames.RUTA_VIDEO);
+			Long idAutor= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+			String nombre = null;
+			String descripcion =  null;
+			String ruta = null;
+			
 			// configures upload settings
 	        DiskFileItemFactory factory = new DiskFileItemFactory();
 	        // sets memory threshold - beyond which files are stored in disk
@@ -110,43 +113,64 @@ public class VideoServlet extends HttpServlet {
 	        upload.setFileSizeMax(MAX_FILE_SIZE);
 	         
 	        // sets maximum size of request (include file + form data)
-	        upload.setSizeMax(MAX_REQUEST_SIZE);
-			
-			if (logger.isDebugEnabled()) {
-				logger.info("Nombre:{} descripcion:{} pass:{} ruta:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, descripcion, ruta);
+	        upload.setSizeMax(MAX_REQUEST_SIZE);			
+			   
+	        List<FileItem> formItems = new ArrayList<FileItem>();
+	     // parses the request's content to extract file data
+	        try {
+				formItems = upload.parseRequest(request);
+				nombre = formItems.get(1).getString();
+				descripcion = formItems.get(2).getString();
+			} catch (FileUploadException e) {
+				logger.warn(e.getMessage(), e);
+				//errors
 			}
-			
-			FileUtils.loadDocument(((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId() , ruta);
-			
-			Video video= new Video();
-			video.setTipo(2); // TIPO VIDEO
-			video.setFechaAlta(new Date());
-			video.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
-						
-			nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
-			descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.EMAIL, true);			
-			
+	        	        
+	        nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
+	        descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.NOMBRE, true);
+	        
+	        Video video = new Video();
+
 			if (!errors.hasErrors()) {
+				
+				video.setTipo(2); // TIPO VIDEO
+				video.setFechaAlta(new Date());
+				video.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
+				video.setAutor(idAutor);
+				
 				video.setNombre(nombre);
 				video.setDescripcion(descripcion);
+				
+				if (!errors.hasErrors()) {
+					try {
+						video = videoSvc.crearVideo(video);
+					} catch (DataException e) {
+						logger.warn(e.getMessage(), e);
+						//errors
+					}
+				}
+				
+				if (!formItems.get(3).isFormField()) {
+                    ruta= FileUtils.loadDocument(idAutor, video.getId(), formItems.get(3));
+                }
+				video.setUrl(ruta);
+				try {
+					videoSvc.editarVideo(video);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					// errors
+				}
 			}
 
 			if (!errors.hasErrors()) {
-				try {
-					video = videoSvc.crearVideo(video);
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-				}
-			}
-			
-			
-			
-			if (errors.hasErrors()) {	
+				
+				// Podriamos enviar a video detalle
+				
+			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Subir Video Fallido: {}", errors);
 				}				
-				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPath.HOME;				
+				request.setAttribute(AttributeNames.ERRORS, errors);								
 			}
 
 			target = ViewPath.HOME;

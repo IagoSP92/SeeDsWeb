@@ -14,7 +14,7 @@
 
 	<div id="subir-video-form">
 		
-			<form action="<%=ControllerPath.VIDEO%>" method="post">	
+			<form action="<%=ControllerPath.VIDEO%>" method="post" enctype="multipart/form-data" >	
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.SUBIR_VIDEO%>"/>
 				
 				<input name="ParameterNames.TIPO"   type="hidden" value="2">
