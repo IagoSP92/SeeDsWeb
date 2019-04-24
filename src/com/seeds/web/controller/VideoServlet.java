@@ -68,7 +68,34 @@ public class VideoServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		String action = request.getParameter(ParameterNames.ACTION);
+		String action = null;
+        
+        if(ServletFileUpload.isMultipartContent(request)) {
+        	 List<FileItem> formItems = new ArrayList<FileItem>();
+        	 
+        	 // configures upload settings
+		        DiskFileItemFactory factory = new DiskFileItemFactory();
+		        // sets memory threshold - beyond which files are stored in disk
+		        factory.setSizeThreshold(MEMORY_THRESHOLD);
+		        // sets temporary location to store files
+		        factory.setRepository(new File(System.getProperty("java.io.tmpdir")));	 
+		        ServletFileUpload upload = new ServletFileUpload(factory);	         
+		        // sets maximum size of upload file
+		        upload.setFileSizeMax(MAX_FILE_SIZE);	         
+		        // sets maximum size of request (include file + form data)
+		        upload.setSizeMax(MAX_REQUEST_SIZE);
+        	 
+    	        try {
+    	        	
+    				formItems = upload.parseRequest(request);
+    				action = formItems.get(0).getString();
+    	        }catch (FileUploadException e) {
+    				logger.warn(e.getMessage(), e);
+    			}
+        	
+        }else {
+        	action = request.getParameter(ParameterNames.ACTION);
+        }
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
@@ -98,33 +125,13 @@ public class VideoServlet extends HttpServlet {
 			Long idAutor= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			String nombre = null;
 			String descripcion =  null;
-			String ruta = null;
-			
-			// configures upload settings
-	        DiskFileItemFactory factory = new DiskFileItemFactory();
-	        // sets memory threshold - beyond which files are stored in disk
-	        factory.setSizeThreshold(MEMORY_THRESHOLD);
-	        // sets temporary location to store files
-	        factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
-	 
-	        ServletFileUpload upload = new ServletFileUpload(factory);
-	         
-	        // sets maximum size of upload file
-	        upload.setFileSizeMax(MAX_FILE_SIZE);
-	         
-	        // sets maximum size of request (include file + form data)
-	        upload.setSizeMax(MAX_REQUEST_SIZE);			
+			String ruta = null;	        
 			   
 	        List<FileItem> formItems = new ArrayList<FileItem>();
-	     // parses the request's content to extract file data
-	        try {
-				formItems = upload.parseRequest(request);
-				nombre = formItems.get(1).getString();
-				descripcion = formItems.get(2).getString();
-			} catch (FileUploadException e) {
-				logger.warn(e.getMessage(), e);
-				//errors
-			}
+	        // parses the request's content to extract file data
+			nombre = formItems.get(1).getString();
+			descripcion = formItems.get(2).getString();
+
 	        	        
 	        nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 	        descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.NOMBRE, true);
