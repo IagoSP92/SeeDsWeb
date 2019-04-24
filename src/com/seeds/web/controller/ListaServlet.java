@@ -85,6 +85,8 @@ public class ListaServlet extends HttpServlet {
 				lista = listaSvc.buscarId(null, Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
 				request.setAttribute(AttributeNames.LISTA, lista);
 				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(lista.getAutor()).getNombre());
+				request.setAttribute(ParameterNames.ID_CONTENIDO, lista.getId());
+				request.setAttribute(ParameterNames.TIPO, lista.getId());
 				
 				int page = WebUtils.
 						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);

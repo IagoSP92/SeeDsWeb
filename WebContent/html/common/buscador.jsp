@@ -12,18 +12,22 @@
 	<form action="<%=ControllerPath.CONTENIDO%>" method="post">
 		<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.BUSCAR%>"/>
 	
-		<input type="checkbox" checked name="<%=ParameterNames.CHECK_TODOS%>">
+		<span id="checkTodosDiv">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_TODOS%>" id="checkTodos" onchange="checkCompatible()">
 			<fmt:message key="buscador.todo" bundle="${messages}"/>
-			
-		<input type="checkbox" name="<%=ParameterNames.CHECK_VIDEO%>">
+		</span>
+		<span id="checkVideosDiv">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_VIDEO%>" id="checkVideos" onchange="checkCompatible()">
 			<fmt:message key="buscador.videos" bundle="${messages}"/>
-			
-		<input type="checkbox" name="<%=ParameterNames.CHECK_LISTA%>">
+		</span>
+		<span id="checkListassDiv">	
+		<input type="checkbox" name="<%=ParameterNames.CHECK_LISTA%>" id="checkListas" onchange="checkCompatible()">
 			<fmt:message key="buscador.listas" bundle="${messages}"/>
-			
-		<input type="checkbox" name="<%=ParameterNames.CHECK_USUARIO%>">
+		</span>
+		<span id="checkUsuariosDiv">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_USUARIO%>" id="checkUsuarios" onchange="checkCompatible()">
 			<fmt:message key="buscador.usuarios" bundle="${messages}"/>
-		
+		</span>
 		<br/>			
 		<input type="text" size=80
 				name="<%=ParameterNames.NOMBRE%>" 
@@ -86,7 +90,6 @@
 				</c:url>		
 				<li>
 					<a class="a_sinsub" href="${urlDetalle}">
-						${urlDetalle}
 						${contenido.nombre}<br>
 						${contenido.getTipo()}<br>
 						${contenido.fechaAlta}
@@ -98,15 +101,15 @@
 		</c:forEach>
 	</ul>
 
+<p>todos <%=ParameterUtils.getParameter(request, ParameterNames.CHECK_TODOS) %> video ${check_video} ${check_lista}${check_usuario}</p>
 	<!-- Paginacion  -->
 	<p><center>
 		
 	<c:url var="urlBase" value="contenido" scope="page">
 		<c:param name="action" value="<%=Actions.BUSCAR%>"/>
-		<c:param name="<%=ParameterNames.CHECK_TODOS%>" value="${check_todos}"/>
-		<c:param name="<%=ParameterNames.CHECK_VIDEO%>" value="${check_video}"/>
-		<c:param name="<%=ParameterNames.CHECK_LISTA%>" value="${check_lista}"/>
-		<c:param name="<%=ParameterNames.CHECK_USUARIO%>" value="${check_usuario}"/>		
+
+
+				
 		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>		
 		<c:param name="<%=ParameterNames.VALORACION_MIN%>" value="${valoracion_min}"/>
 		<c:param name="<%=ParameterNames.VALORACION_MAX%>" value="${valoracion_max}"/>
@@ -114,6 +117,11 @@
 		<c:param name="<%=ParameterNames.REPRODUCCIONES_MAX%>" value="${reproduccione_max}"/>
 		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
 		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
+		
+				<c:param name="<%=ParameterNames.CHECK_TODOS%>" value="<%=ParameterUtils.getParameter(request, ParameterNames.CHECK_TODOS) %>"/>
+		<c:param name="<%=ParameterNames.CHECK_VIDEO%>" value="<%=ParameterUtils.getParameter(request, ParameterNames.CHECK_VIDEO) %>"/>
+		<c:param name="<%=ParameterNames.CHECK_LISTA%>" value="${check_lista}"/>
+		<c:param name="<%=ParameterNames.CHECK_USUARIO%>" value="${check_usuario}"/>
 	</c:url>
 	
 	<c:if test="${page > 1}"><!-- Primera Página -->

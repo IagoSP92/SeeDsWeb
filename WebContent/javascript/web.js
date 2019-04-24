@@ -1,3 +1,89 @@
+
+
+
+
+
+
+$(document).ready(function () {
+	
+	$("#seguirButton").click(function(){
+		var idUsuario = ${usuario.getId()};
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id_contenido':idUsuario,
+				'siguiendo': siguiendo,
+				'action':"seguir"},
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
+				dataType:"json",
+				success:
+					function(){
+						if(siguiendo==true){
+							siguiendo=false;
+						} else{
+							siguiendo = true;
+						}					
+					}
+					
+					function (provinciasArray) {
+						
+					
+					if(!$("#provincias").html().isEmpty){
+						$("#provincias").html("");
+					}
+					
+					for(var i = 0; i < provinciasArray.length; i++){
+						$("#provincias").html($("#provincias").html()+"<option value="+provinciasArray[i].id+">"+provinciasArray[i].nome+"</option>")
+
+					}
+
+				}
+		});
+
+	})
+	
+	
+	checkCompatible();
+	divCheck();
+
+	$("#checkTodos").change(function(){
+
+	})
+});
+
+function checkCompatible (){
+	if(  $("#checkTodos").prop('checked')==true  ){
+		$("#checkVideos").prop('checked', true);
+		$("#checkListas").prop('checked', true);
+		$("#checkUsuarios").prop('checked', true);
+	}
+}
+/*
+function divCheck (){
+	$("#checkTodosDiv").click(toggleCheck("#checkTodos"));
+
+}*/
+
+function toggleCheck(check){
+	if( $(check).prop('checked')==true ){
+		$(check).prop('checked', false)
+	} else{
+		$(check).prop('checked', true);
+	}
+}
+
+
+
+
+
+
+// PABLO  -   PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  - 
+//	 	PABLO  -   PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  - 
+// PABLO  -   PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  - 
+// 		PABLO  -   PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  -  PABLO  - 
+
+/*
 //Menu desplegable
 $(document).ready(function () { 
 
@@ -48,4 +134,4 @@ window.onclick = function (event) {
 		}
 	}
 }
-
+*/

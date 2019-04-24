@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Pais;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.service.ContenidoServiceImpl;
@@ -114,9 +115,6 @@ public class UsuarioServlet extends HttpServlet {
 					e.printStackTrace();    //CAMBIAR POR LOGGER
 				}
 			}
-			System.out.println(usuario);
-			System.out.println(usuario.getId());
-
 			if (usuario.getId() == null) {
 				errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
 			}
@@ -196,6 +194,7 @@ public class UsuarioServlet extends HttpServlet {
 			if (!errors.hasErrors()) {
 				try {
 					usuario = usuarioSvc.crearCuenta(usuario);
+					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
 					e.printStackTrace();
 				}
@@ -232,7 +231,7 @@ public class UsuarioServlet extends HttpServlet {
 			
 			System.out.println("MI PERFIL");
 			
-			target = ViewPath.DETALLE_PERFIL;
+			target = ViewPath.MI_PERFIL;
 
 		} else if (Actions.EDITAR_PERFIL.equalsIgnoreCase(action)) {
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
@@ -241,42 +240,61 @@ public class UsuarioServlet extends HttpServlet {
 			target = ViewPath.DETALLE_PERFIL;
 
 		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
-			Usuario usuario;
-			try {
-				usuario = usuarioSvc.buscarId(Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)), Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
-				Long id = usuario.getId();
-				request.setAttribute(AttributeNames.USUARIO, usuario);
-				
-				
-				int page = WebUtils.
-						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
-				int startIndex= (page-1)*pageSize+1;
-				int count= pageSize;
-				ContenidoCriteria criteria = new ContenidoCriteria();
-				criteria.setAutor(id);
-				criteria.setTipo(2);
-				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma));
-				criteria.setTipo(3);
-				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma));
-				/*
-				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
-				request.setAttribute(AttributeNames.LISTAS_SUBIDAS, listaSvc.buscarPorAutor(id));
-				*/
-//				request.setAttribute(AttributeNames.USUARIOS_SEGUIDOS, usuarioSvc.);
-//				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
-//				
-//				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
-//				request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, videoSvc.buscarPorAutor(id));
-				
-				target = ViewPath.DETALLE_PERFIL;
-			} catch (DataException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Usuario usuario=null;
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
 			
+			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+				try {
+					usuario = usuarioSvc.buscarId(idSesion, idContenido );
+					request.setAttribute(ParameterNames.DENUNCIADO, usuario.getDenunciado());
+					request.setAttribute(ParameterNames.SIGUIENDO, usuario.getSiguiendo());
+					request.setAttribute(ParameterNames.AUTENTICADO, true);
+					request.setAttribute(ParameterNames.ID_SESION, idSesion);
+					
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					//errors
+				}
+			} else {
+				try {
+					usuario = usuarioSvc.buscarId(null, idContenido );
+					request.setAttribute(ParameterNames.AUTENTICADO, false);
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					//errors
+				}
+			}
+			request.setAttribute(AttributeNames.USUARIO, usuario);				
+				
+			int page = WebUtils.
+					getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+			int startIndex= (page-1)*pageSize+1;
+			int count= pageSize;
+			ContenidoCriteria criteria = new ContenidoCriteria();
+				
+			criteria.setAutor(idContenido);
+			criteria.setTipo(2);	
+			
+			List<Contenido> listaVideos = null;
+			try {
+				listaVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma).getPage();
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+				//errors
+			}
+			request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, listaVideos);
+			criteria.setTipo(3);			
+			List<Contenido> listaListas = null;
+			try {
+				listaListas = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma).getPage();
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+				//errors
+			}
+			request.setAttribute(AttributeNames.LISTAS_SUBIDAS,listaListas);
+									
+			target = ViewPath.DETALLE_PERFIL;
 
 		}	else if (Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {
 						

@@ -18,6 +18,10 @@ public class ParameterNames {
 	public static final String FECHA_MAX = "fecha_max";
 	
 	public static final String PAGE = "page"; 
+	public static final String PAGE_V = "page_v"; 
+	public static final String PAGE_L = "page_l"; 
+	public static final String PAGE_U = "page_u"; 
+
 	public static final String TOTAL_PAGES = "total-pages";
 	
 	public static final String VALORACION_MEDIA = "valoracion_media";
@@ -64,6 +68,13 @@ public class ParameterNames {
 	
 	public static final String RUTA_VIDEO = "ruta_video";
 	
+	public static final String CHECKS_PARSED = "checks_parsed";
+	
+	public static final String AUTENTICADO = "autenticado";
+	public static final String ID_SESION = "id_sesion";
+
+
+
 
 	
 

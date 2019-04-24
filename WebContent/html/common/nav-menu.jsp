@@ -37,6 +37,11 @@
 	<%
 		if (request.getSession().getAttribute(SessionAttributeNames.USUARIO) != null) { /* Cargar opciones de usuario */
 			%>
+			<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.GUARDADOS%>">
+				<button class="navButton">
+					<fmt:message key="nav.guardados" bundle="${messages}"/>
+				</button>
+			</a>
 			<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Biblioteca</button></a>
 			<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Subidos</button></a>
 			<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Seguidos</button></a>

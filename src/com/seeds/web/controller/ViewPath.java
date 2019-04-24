@@ -17,8 +17,13 @@ public class ViewPath {
 	public static final String ERROR404 = "/SeeDsWeb/html/error-pages/error404.jsp";
 	public static final String ERROR500 = "/SeeDsWeb/html/error-pages/error500.jsp";
 	
-	
+	public static final String MI_PERFIL = "/html/my-profile-page.jsp";
+		
 	public static final String MUSICA = "/html/musica-page.jsp";
+
+	public static final String GUARDADOS = "/html/guardados-page.jsp";
+	public static final String SUBIDOS = "/html/subidos-page.jsp";
+	public static final String SEGUIDOS = "/html/seguidos-page.jsp";
 
 	
 

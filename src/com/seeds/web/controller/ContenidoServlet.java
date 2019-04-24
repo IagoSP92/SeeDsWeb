@@ -14,15 +14,23 @@ import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Contenido;
+import com.isp.seeds.model.Usuario;
 import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
+import com.isp.seeds.service.UsuarioServiceImpl;
+import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
+import com.isp.seeds.service.spi.UsuarioService;
+import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
 import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
+import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
 import com.seeds.web.utils.WebUtils;
@@ -35,10 +43,17 @@ public class ContenidoServlet extends HttpServlet {
 
 	private DateUtils dateUtils = null;
 	private ContenidoService contenidoSvc = null;
+	private VideoService videoSvc = null;
+	private ListaService listaSvc = null;
+	private UsuarioService usuarioSvc = null;
+
 
 	public ContenidoServlet() {
 		super();
 		contenidoSvc = new ContenidoServiceImpl();
+		videoSvc = new VideoServiceImpl();
+		listaSvc = new ListaServiceImpl();
+		usuarioSvc = new UsuarioServiceImpl();
 		dateUtils = new DateUtils();
 	}
 	
@@ -84,6 +99,9 @@ public class ContenidoServlet extends HttpServlet {
 			String checkVideos = request.getParameter(ParameterNames.CHECK_VIDEO);
 			String checkListas = request.getParameter(ParameterNames.CHECK_LISTA);
 			String checkUsuarios = request.getParameter(ParameterNames.CHECK_USUARIO);
+			
+			System.out.println(checkTodos+"-"+checkVideos+"-"+checkListas+"-"+checkUsuarios);
+			
 			String nombre = request.getParameter(ParameterNames.NOMBRE);			
 			String valoracionMin = request.getParameter(ParameterNames.VALORACION_MIN);
 			String valoracionMax = request.getParameter(ParameterNames.VALORACION_MAX);
@@ -92,18 +110,31 @@ public class ContenidoServlet extends HttpServlet {
 			String fechaMin = request.getParameter(ParameterNames.FECHA_MIN);
 			String fechaMax = request.getParameter(ParameterNames.FECHA_MAX);
 			
-			Boolean aceptarTodo= (ValidationUtils.validCheck(errors, checkTodos, ParameterNames.CHECK_TODOS, false));
-			Boolean aceptarVideo= (ValidationUtils.validCheck(errors, checkVideos, ParameterNames.CHECK_VIDEO, false));
-			Boolean aceptarLista= (ValidationUtils.validCheck(errors, checkListas, ParameterNames.CHECK_LISTA, false));
-			Boolean aceptarUsuario= (ValidationUtils.validCheck(errors, checkUsuarios, ParameterNames.CHECK_USUARIO, false));			
+			Boolean aceptarTodo= null;
+			Boolean aceptarVideo= null;
+			Boolean aceptarLista= null;
+			Boolean aceptarUsuario= null;
+			
+			aceptarTodo= (ValidationUtils.validCheck(errors, checkTodos, ParameterNames.CHECK_TODOS, false));
+			aceptarVideo= (ValidationUtils.validCheck(errors, checkVideos, ParameterNames.CHECK_VIDEO, false));
+			aceptarLista= (ValidationUtils.validCheck(errors, checkListas, ParameterNames.CHECK_LISTA, false));
+			aceptarUsuario= (ValidationUtils.validCheck(errors, checkUsuarios, ParameterNames.CHECK_USUARIO, false));
+			
+			request.setAttribute(ParameterNames.CHECK_TODOS, aceptarTodo);
+			request.setAttribute(ParameterNames.CHECK_VIDEO, aceptarVideo);
+			request.setAttribute(ParameterNames.CHECK_LISTA, aceptarLista);
+			request.setAttribute(ParameterNames.CHECK_USUARIO, aceptarUsuario);	
 			
 			if(aceptarTodo && !(aceptarVideo&&aceptarLista&&aceptarUsuario)) {
 				errors.add(ParameterNames.CHECK_TODOS, ErrorCodes.INVALID_CHECK);
 			} else {
 				
+				System.out.println(aceptarVideo+"-"+aceptarLista+"-"+aceptarUsuario);
 				criteria.setAceptarVideo(aceptarVideo);
 				criteria.setAceptarLista(aceptarLista);
-				criteria.setAceptarUsuario(aceptarUsuario);				
+				criteria.setAceptarUsuario(aceptarUsuario);
+				System.out.println(criteria.getAceptarUsuario()+"-"+criteria.getAceptarLista()+"-"+criteria.getAceptarVideo());
+				
 				criteria.setNombre(ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false));
 				criteria.setValoracionMin(ValidationUtils.validDouble(errors, valoracionMin, ParameterNames.VALORACION_MIN, false));
 				criteria.setValoracionMax(ValidationUtils.validDouble(errors, valoracionMax, ParameterNames.VALORACION_MAX, false));
@@ -131,10 +162,8 @@ public class ContenidoServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 							
 				// PARAMETROS DE BUSQUEDA
-				request.setAttribute(ParameterNames.CHECK_TODOS, checkTodos);
-				request.setAttribute(ParameterNames.CHECK_VIDEO, checkVideos);
-				request.setAttribute(ParameterNames.CHECK_LISTA, checkListas);
-				request.setAttribute(ParameterNames.CHECK_USUARIO, checkUsuarios);				
+				
+
 				request.setAttribute(ParameterNames.NOMBRE, nombre);				
 				request.setAttribute(ParameterNames.VALORACION_MIN, valoracionMin);
 				request.setAttribute(ParameterNames.VALORACION_MAX, valoracionMax);
@@ -200,7 +229,7 @@ public class ContenidoServlet extends HttpServlet {
 			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
 			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 			
-			target = ViewPath.HOME;
+			target = ViewPath.MUSICA;
 			
 		}  else if (Actions.SERIES.equalsIgnoreCase(action)){	
 
@@ -305,6 +334,136 @@ public class ContenidoServlet extends HttpServlet {
 			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 			
 			target = ViewPath.HOME;
+			
+		}  else if (Actions.GUARDADOS.equalsIgnoreCase(action)){
+			
+			Results<Contenido> listadoVideos = null;
+			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+			try { 
+				listadoVideos = videoSvc.cargarGuardados(idSesion, startIndex, count);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}			
+			request.setAttribute(AttributeNames.RESULTADOS_V, listadoVideos.getPage());
+			request.setAttribute(AttributeNames.TOTAL_V, listadoVideos.getTotal());			
+			int totalPages = (int) Math.ceil((double)listadoVideos.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE_V, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES_V, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES_V, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES_V, lastPagedPage);
+			
+			criteria.setAceptarVideo(false);
+			criteria.setAceptarLista(true);
+			criteria.setAceptarUsuario(false);
+			
+			Results<Contenido> listadoListas = null;
+			try { 
+				listadoVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}			
+			request.setAttribute(AttributeNames.RESULTADOS_L, listadoVideos.getPage());
+			request.setAttribute(AttributeNames.TOTAL_L, listadoVideos.getTotal());			
+			 totalPages = (int) Math.ceil((double)listadoVideos.getTotal()/(double)pageSize);
+			 firstPagedPage = Math.max(1, page-pagingPageCount);
+			 lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE_L, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES_L, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES_L, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES_L, lastPagedPage);			
+			
+			target = ViewPath.GUARDADOS;
+			
+		}  else if (Actions.SEGUIDOS.equalsIgnoreCase(action)){	
+
+
+			criteria.setAceptarVideo(true);
+			criteria.setAceptarLista(false);
+			criteria.setAceptarUsuario(false);
+			
+			Results<Contenido> listadoVideos = null;
+			try { 
+				listadoVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}			
+			request.setAttribute(AttributeNames.RESULTADOS_V, listadoVideos.getPage());
+			request.setAttribute(AttributeNames.TOTAL_V, listadoVideos.getTotal());			
+			int totalPages = (int) Math.ceil((double)listadoVideos.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE_V, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES_V, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES_V, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES_V, lastPagedPage);
+			
+			criteria.setAceptarVideo(false);
+			criteria.setAceptarLista(true);
+			criteria.setAceptarUsuario(false);
+			
+			Results<Contenido> listadoListas = null;
+			try { 
+				listadoVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}			
+			request.setAttribute(AttributeNames.RESULTADOS_L, listadoVideos.getPage());
+			request.setAttribute(AttributeNames.TOTAL_L, listadoVideos.getTotal());			
+			 totalPages = (int) Math.ceil((double)listadoVideos.getTotal()/(double)pageSize);
+			 firstPagedPage = Math.max(1, page-pagingPageCount);
+			 lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE_L, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES_L, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES_L, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES_L, lastPagedPage);			
+			
+			target = ViewPath.SEGUIDOS;
+			
+		}  else if (Actions.SUBIDOS.equalsIgnoreCase(action)){	
+
+			criteria.setAceptarVideo(true);
+			criteria.setAceptarLista(false);
+			criteria.setAceptarUsuario(false);
+			
+			Results<Contenido> listadoVideos = null;
+			try { 
+				listadoVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}			
+			request.setAttribute(AttributeNames.RESULTADOS_V, listadoVideos.getPage());
+			request.setAttribute(AttributeNames.TOTAL_V, listadoVideos.getTotal());			
+			int totalPages = (int) Math.ceil((double)listadoVideos.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE_V, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES_V, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES_V, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES_V, lastPagedPage);
+			
+			criteria.setAceptarVideo(false);
+			criteria.setAceptarLista(true);
+			criteria.setAceptarUsuario(false);
+			
+			Results<Contenido> listadoListas = null;
+			try { 
+				listadoVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}			
+			request.setAttribute(AttributeNames.RESULTADOS_L, listadoVideos.getPage());
+			request.setAttribute(AttributeNames.TOTAL_L, listadoVideos.getTotal());			
+			 totalPages = (int) Math.ceil((double)listadoVideos.getTotal()/(double)pageSize);
+			 firstPagedPage = Math.max(1, page-pagingPageCount);
+			 lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE_L, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES_L, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES_L, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES_L, lastPagedPage);			
+			
+			target = ViewPath.SUBIDOS;
 			
 		}  else {// LA ACTION RECIBIDA NO ESTA DEFINIDA			
 			// Mmm...

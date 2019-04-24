@@ -19,7 +19,11 @@
 	
 	<br/>
 
-	
+	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>">
+		<button class="userButton">
+			<fmt:message key="detalle.seguir" bundle="${messages}"/>
+		</button>
+	</a>
 	
 	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.DENUNCIAR%>">
 		<button class="userButton">
@@ -32,30 +36,31 @@
 			<fmt:message key="detalle.guardar" bundle="${messages}"/>
 		</button>
 	</a>
-	
+
 	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.COMENTAR%>">
 		<button class="userButton">
 			<fmt:message key="detalle.comentar" bundle="${messages}"/>
 		</button>
 	</a>
-	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>">
-		<button class="userButton">
-			<fmt:message key="detalle.comentar" bundle="${messages}"/>
-		</button>
-	</a>
-	<br/>
 	
+
+
+	<br/>
+<c:if test="${not empty resultados}">
+
+	
+	<div id="videosEnListaDiv">
 	
 		<fmt:message key="detalle.videos-lista" bundle="${messages}"></fmt:message>
-		<c:forEach items="${videosLista}" var="video">
-			<div class="videoDetalle">
+		<c:forEach items="${resultados}" var="video">
+			<div class="thumbDiv">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${video.getTipo()}"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.getId()}"/>
+					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.getTipo()}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				<div>${video.id}</div>
+			<div>${video.id}</div>
 				
 				${urlDetalle}
 				${video.nombre}<br>
@@ -63,6 +68,22 @@
 				</a></li>
 			</div>		
 		</c:forEach>
+		
+	<!-- Paginacion  -->
+	<p><center>
+		
+	<c:url var="urlBase" value="lista" scope="page">
+		<c:param name="action" value="<%=Actions.DETALLE%>"/>
+		<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${id}"/>
+		<c:param name="<%=ParameterNames.TIPO%>" value="${tipo}"/>
+
+	</c:url>
+		
+		<%@include file="/html/common/paginacion.jsp"%>
+	
+	</div>
+	</center></p>
+</c:if>
 	
 	<br/>
 	<fmt:message key="detalle.comentarios" bundle="${messages}"/>	

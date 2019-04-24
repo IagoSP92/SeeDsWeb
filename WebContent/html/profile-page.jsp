@@ -35,21 +35,52 @@
 	<span> fechaNac: </span> ${usuario.fechaNac}
 	<br/>
 	
+	
+	
+	<c:if test = "${autenticado==true}">
+		
+		
+		<c:choose>
+			<c:when test="${seguido == true}">
+			<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>&<%=ParameterNames.SIGUIENDO%>=true
+					&<%=ParameterNames.ID_SESION%>=id_sesion&<%=ParameterNames.ID_CONTENIDO%>=usuario.getId()">
+			<button class="userButton">
+				<fmt:message key="detalle.seguir" bundle="${messages}"/>
+			</button>
+		</a>		
+			
+			</c:when>
+			<c:otherwise>
+			
+  			</c:otherwise>		
+		</c:choose>
+		
+		
+		<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>">
+			<button class="userButton">
+				<fmt:message key="detalle.seguir" bundle="${messages}"/>
+			</button>
+		</a>
+	
+     </c:if>
+	
+	
 	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.DENUNCIAR%>">
 		<button class="userButton">
 			<fmt:message key="detalle.denunciar" bundle="${messages}"/>
+			<c:url var="urlDetalle" scope="page" value="/redirect">
+					<c:param name="action" value="<%=Actions.DETALLE%>"/>
+					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.id}"/>
+					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
+			</c:url>
 		</button>
 	</a>
-	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>">
-		<button class="userButton">
-			<fmt:message key="detalle.comentar" bundle="${messages}"/>
-		</button>
-	</a>
+	
 	<br/>
 	
 	<fmt:message key="detalle.subidos" bundle="${messages}"></fmt:message>
 	<ul>
-		<c:forEach items="${usuario.videosSubidos}" var="video">
+		<c:forEach items="${listaVideos}" var="video">
 			<div class="videoPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
@@ -67,7 +98,7 @@
 		</c:forEach>
 	</ul>
 	<ul>
-		<c:forEach items="${usuario.listasSubidas}" var="lista">
+		<c:forEach items="${listasSubidas}" var="lista">
 			<div class="listaPerfil">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>

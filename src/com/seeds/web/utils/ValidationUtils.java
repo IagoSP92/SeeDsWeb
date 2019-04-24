@@ -13,19 +13,10 @@ import com.seeds.web.model.ErrorManager;
 public class ValidationUtils {
 	
 	public static Boolean validCheck (ErrorManager errors, String check, String parameter, Boolean required) {
-		
 		Boolean booleanDespues = null;
-		if(check==null) {check="False";}
-		if(check=="on") {check="True";}
-		
-		if(!StringUtils.isEmptyOrWhitespaceOnly(check)) {
-			booleanDespues= Boolean.parseBoolean(check);
-		} else {
-			if(required) {
-				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
-			}
-			// AÑADIR ERROR
-		}		
+		if(check==null) {booleanDespues=false;}
+		else {booleanDespues=true;}
+	
 		return booleanDespues;
 	}
 	

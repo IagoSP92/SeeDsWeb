@@ -38,6 +38,10 @@ public class Actions {
 	public static final String CORTOS = "cortos";
 	public static final String DOCUMENTAL = "documental";
 	public static final String GUIAS = "guias";
+	
+	public static final String GUARDADOS = "guardados";
+	public static final String SEGUIDOS = "seguidos";
+	public static final String SUBIDOS = "subidos";
 
 
 }

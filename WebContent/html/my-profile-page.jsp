@@ -3,6 +3,7 @@
 <%@include file="/html/common/header.jsp"%>
 
 <div class="mainWindow">
+
 	<h1>Perfil de Usuario</h1>
 	<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.EDITAR_PERFIL%>">
 		<button class="userButton">
@@ -40,117 +41,6 @@
 	<span> fechaNac: </span> ${usuario.fechaNac}
 	<br/>
 	<br/>
-	
-	<fmt:message key="perfil.subidos" bundle="${messages}"></fmt:message>
-	<ul>
-		<c:forEach items="${usuario.videosSubidos}" var="video">
-			<div class="videoPerfil">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${video.getTipo()}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				<div>${video.id}</div>
-				
-				${urlDetalle}
-				${video.nombre}<br>
-				${video.fechaAlta} - ${video.fechaMod}
-				</a></li>
-			</div>		
-		</c:forEach>
-	</ul>
-	<ul>
-		<c:forEach items="${listasSubidas}" var="lista">
-			<div class="listaPerfil">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
-				${lista.nombre}<br>
-				${lista.fechaAlta} - ${lista.fechaMod}
-				</a></li>
-			</div>		
-		</c:forEach>
-	</ul>
-	<br/>
-	<br/>	
-	<fmt:message key="perfil.seguidos" bundle="${messages}"></fmt:message>
-	<ul>
-		<c:forEach items="${usuariosSeguidos}" var="usuario">
-			<div class="videoPerfil">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${usuario.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${usuario.tipo}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
-				${usuario.nombre}<br>
-				${usuario.fechaAlta} - ${video.fechaMod}
-				</a></li>
-			</div>		
-		</c:forEach>
-	</ul>
-	<ul>
-		<c:forEach items="${listasSeguidas}" var="lista">
-			<div class="listaPerfil">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
-				${lista.nombre}<br>
-				${lista.fechaAlta} - ${lista.fechaMod}
-				</a></li>
-			</div>		
-		</c:forEach>
-	</ul>
-	<br/>
-	<br/>
-	<fmt:message key="perfil.guardados" bundle="${messages}"></fmt:message>
-	<ul>
-		<c:forEach items="${videosGuardados}" var="video">
-			<div class="videoPerfil">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${video.tipo}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
-				${video.nombre}<br>
-				${video.fechaAlta} - ${video.fechaMod}
-				</a></li>
-			</div>		
-		</c:forEach>
-	</ul>
-	<br/>
-	<br/>
-	<ul>
-		<c:forEach items="${listasGuardadas}" var="lista">
-			<div class="listaPerfil">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
-				</c:url>			
-				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
-				${lista.nombre}<br>
-				${lista.fechaAlta} - ${lista.fechaMod}
-				</a></li>
-			</div>		
-		</c:forEach>
-	</ul>
-
-	</div>	
-	
 	
 </div>
 <%@include file="/html/common/footer.jsp"%>
