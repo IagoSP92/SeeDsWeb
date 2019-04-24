@@ -181,8 +181,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
-			criteria.setCategoria(2l);
-			//criteria.setCategoria(1l);
+			criteria.setCategoria(1l);
 			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
@@ -205,16 +204,107 @@ public class ContenidoServlet extends HttpServlet {
 			
 		}  else if (Actions.SERIES.equalsIgnoreCase(action)){	
 
+			criteria.setAceptarVideo(true);
+			criteria.setAceptarLista(false);
+			criteria.setAceptarUsuario(false);
+			criteria.setCategoria(2l);
+			
+			try { 
+				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}
+			
+			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
+			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
+			
+			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			
+			target = ViewPath.HOME;
 
 		}  else if (Actions.CORTOS.equalsIgnoreCase(action)){
 
+			criteria.setAceptarVideo(true);
+			criteria.setAceptarLista(false);
+			criteria.setAceptarUsuario(false);
+			criteria.setCategoria(3l);
+			
+			try { 
+				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}
+			
+			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
+			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
+			
+			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			
+			target = ViewPath.HOME;
 
 		}  else if (Actions.DOCUMENTAL.equalsIgnoreCase(action)){
 
+			criteria.setAceptarVideo(true);
+			criteria.setAceptarLista(false);
+			criteria.setAceptarUsuario(false);
+			criteria.setCategoria(4l);
+			
+			try { 
+				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}
+			
+			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
+			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
+			
+			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			
+			target = ViewPath.HOME;
 
 		}  else if (Actions.GUIAS.equalsIgnoreCase(action)){	
 
-
+			criteria.setAceptarVideo(true);
+			criteria.setAceptarLista(false);
+			criteria.setAceptarUsuario(false);
+			criteria.setCategoria(5l);
+			
+			try { 
+				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+			}
+			
+			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
+			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
+			
+			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			
+			target = ViewPath.HOME;
 			
 		}  else {// LA ACTION RECIBIDA NO ESTA DEFINIDA			
 			// Mmm...

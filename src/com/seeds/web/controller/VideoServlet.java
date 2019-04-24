@@ -1,5 +1,6 @@
 package com.seeds.web.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,14 +26,23 @@ import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
-import com.seeds.web.model.ErrorCodes;
+import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
+import com.seeds.web.utils.FileUtils;
+import com.seeds.web.utils.SessionAttributeNames;
+import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
 
 
 @WebServlet("/video")
 public class VideoServlet extends HttpServlet {
+	
+	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
+	// upload settings
+	private static final int MEMORY_THRESHOLD   = 1024 * 1024 * 3;  // 3MB
+	private static final int MAX_FILE_SIZE      = 1024 * 1024 * 4; // 4MB
+	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 5; // 5MB
 
 	private static Logger logger = LogManager.getLogger(VideoServlet.class);
 
@@ -85,10 +97,26 @@ public class VideoServlet extends HttpServlet {
 			String nombre = request.getParameter(ParameterNames.NOMBRE);
 			String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
 			String ruta = request.getParameter(ParameterNames.RUTA_VIDEO);
+			// configures upload settings
+	        DiskFileItemFactory factory = new DiskFileItemFactory();
+	        // sets memory threshold - beyond which files are stored in disk
+	        factory.setSizeThreshold(MEMORY_THRESHOLD);
+	        // sets temporary location to store files
+	        factory.setRepository(new File(System.getProperty("java.io.tmpdir")));
+	 
+	        ServletFileUpload upload = new ServletFileUpload(factory);
+	         
+	        // sets maximum size of upload file
+	        upload.setFileSizeMax(MAX_FILE_SIZE);
+	         
+	        // sets maximum size of request (include file + form data)
+	        upload.setSizeMax(MAX_REQUEST_SIZE);
 			
 			if (logger.isDebugEnabled()) {
 				logger.info("Nombre:{} descripcion:{} pass:{} ruta:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, descripcion, ruta);
 			}
+			
+			FileUtils.loadDocument(((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId() , ruta);
 			
 			Video video= new Video();
 			video.setTipo(2); // TIPO VIDEO
