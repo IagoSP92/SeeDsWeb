@@ -360,7 +360,7 @@ public class ContenidoServlet extends HttpServlet {
 			
 			Results<Contenido> listadoListas = null;
 			try { 
-				listadoVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listadoListas = listaSvc.cargarGuardados(idSesion, startIndex, count);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}			
