@@ -5,17 +5,32 @@
 		<button class="navButton">
 			<fmt:message key="nav.general" bundle="${messages}"/>
 		</button>
-	</a>
-	
+	</a>	
 	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.MUSICA%>">
 		<button class="navButton">
 			<fmt:message key="nav.musica" bundle="${messages}"/>
 		</button>
 	</a>
-	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Series</button></a>
-	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Cortos</button></a>
-	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Documental</button></a>
-	<a href="/SeeDsWeb<%=ViewPath.HOME%>"><button class="navButton">Guias</button></a>
+	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SERIES%>">
+		<button class="navButton">
+			<fmt:message key="nav.series" bundle="${messages}"/>
+		</button>
+	</a>
+	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.CORTOS%>">
+		<button class="navButton">
+			<fmt:message key="nav.cortos" bundle="${messages}"/>
+		</button>
+	</a>
+	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.DOCUMENTAL%>">
+		<button class="navButton">
+			<fmt:message key="nav.documental" bundle="${messages}"/>
+		</button>
+	</a>
+	<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.GUIAS%>">
+		<button class="navButton">
+			<fmt:message key="nav.guias" bundle="${messages}"/>
+		</button>
+	</a>
 	<br/>
 	<br/>
 

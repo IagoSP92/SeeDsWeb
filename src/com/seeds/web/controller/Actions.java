@@ -33,11 +33,11 @@ public class Actions {
 	public static final String DEHACER_SEGUIR = "deshacer_seguir";
 	
 	public static final String GENERAL = "general";
-	public static final String MUSICA = "general";
-	public static final String SERIES = "general";
-	public static final String CORTOS = "general";
+	public static final String MUSICA = "musica";
+	public static final String SERIES = "series";
+	public static final String CORTOS = "cortos";
 	public static final String DOCUMENTAL = "documental";
-	public static final String GUIAS = "general";
+	public static final String GUIAS = "guias";
 
 
 }

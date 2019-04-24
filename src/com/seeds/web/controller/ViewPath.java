@@ -17,5 +17,9 @@ public class ViewPath {
 	public static final String ERROR404 = "/SeeDsWeb/html/error-pages/error404.jsp";
 	public static final String ERROR500 = "/SeeDsWeb/html/error-pages/error500.jsp";
 	
+	
+	public static final String MUSICA = "/html/musica-page.jsp";
+
+	
 
 }

@@ -78,7 +78,7 @@ public class ContenidoServlet extends HttpServlet {
 		Results<Contenido> listado = null;
 		ContenidoCriteria criteria = new ContenidoCriteria();
 
-		if (Actions.BUSCAR.equalsIgnoreCase(action)) {			
+		if (Actions.BUSCAR.equalsIgnoreCase(action)) {
 			
 			String checkTodos = request.getParameter(ParameterNames.CHECK_TODOS);
 			String checkVideos = request.getParameter(ParameterNames.CHECK_VIDEO);
@@ -153,7 +153,6 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.BUSCADOR;
 
 		} else if (Actions.GENERAL.equalsIgnoreCase(action)) {
-			
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
@@ -167,7 +166,6 @@ public class ContenidoServlet extends HttpServlet {
 			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
 			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
 			
-			// Datos para paginacion (Calculos aqui, datos comodos para renderizar)
 			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
 			int firstPagedPage = Math.max(1, page-pagingPageCount);
 			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
@@ -183,7 +181,8 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
-			criteria.setCategoria(1l);
+			criteria.setCategoria(2l);
+			//criteria.setCategoria(1l);
 			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
@@ -194,7 +193,6 @@ public class ContenidoServlet extends HttpServlet {
 			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
 			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
 			
-			// Datos para paginacion (Calculos aqui, datos comodos para renderizar)
 			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
 			int firstPagedPage = Math.max(1, page-pagingPageCount);
 			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
@@ -205,22 +203,19 @@ public class ContenidoServlet extends HttpServlet {
 			
 			target = ViewPath.HOME;
 			
-		}  else if (Actions.SERIES.equalsIgnoreCase(action)){// LA ACTION RECIBIDA NO ESTA DEFINIDA			
-			// Mmm...
-			logger.error("Action desconocida");
-			// target ?
-		}  else if (Actions.CORTOS.equalsIgnoreCase(action)){// LA ACTION RECIBIDA NO ESTA DEFINIDA			
-			// Mmm...
-			logger.error("Action desconocida");
-			// target ?
-		}  else if (Actions.DOCUMENTAL.equalsIgnoreCase(action)){// LA ACTION RECIBIDA NO ESTA DEFINIDA			
-			// Mmm...
-			logger.error("Action desconocida");
-			// target ?
-		}  else if (Actions.GUIAS.equalsIgnoreCase(action)){// LA ACTION RECIBIDA NO ESTA DEFINIDA			
-			// Mmm...
-			logger.error("Action desconocida");
-			// target ?
+		}  else if (Actions.SERIES.equalsIgnoreCase(action)){	
+
+
+		}  else if (Actions.CORTOS.equalsIgnoreCase(action)){
+
+
+		}  else if (Actions.DOCUMENTAL.equalsIgnoreCase(action)){
+
+
+		}  else if (Actions.GUIAS.equalsIgnoreCase(action)){	
+
+
+			
 		}  else {// LA ACTION RECIBIDA NO ESTA DEFINIDA			
 			// Mmm...
 			logger.error("Action desconocida");
