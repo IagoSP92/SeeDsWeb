@@ -47,7 +47,6 @@ public class RelationServlet extends HttpServlet {
 		
 		Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 		String id= request.getParameter(ParameterNames.ID_CONTENIDO);
-		System.out.println(id);
 		Long idContenido =ValidationUtils.validLong(errors, id, ParameterNames.ID_CONTENIDO, false);
 		
 		if (Actions.SEGUIR.equalsIgnoreCase(action)) {
@@ -55,7 +54,9 @@ public class RelationServlet extends HttpServlet {
 			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)) {
 				nuevoValor=false;
 			} else {nuevoValor=true;}
-			
+			if (logger.isDebugEnabled()) {
+				logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
+			}
 			try {
 				contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);
 				
@@ -67,12 +68,15 @@ public class RelationServlet extends HttpServlet {
 			
 		} else if (Actions.GUARDAR.equalsIgnoreCase(action)) {			
 			Boolean nuevoValor=null;
-			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.GUARDADO), ParameterNames.GUARDADO, true)==true) {
+			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.GUARDADO), ParameterNames.GUARDADO, true)) {
 				nuevoValor=false;
 			} else {nuevoValor=true;}
-			
+			if (logger.isDebugEnabled()) {
+				logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
+			}
 			try {
 				contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);
+				
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				//erros
@@ -80,22 +84,42 @@ public class RelationServlet extends HttpServlet {
 			
 		} else if (Actions.DENUNCIAR.equalsIgnoreCase(action)) {
 			
-			String nuevoValor= ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);			
-			try {
-				contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				//erros
-			}			
+			String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
+			if(valorRecibido!=null) {
+				String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
+				try {
+					contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					//erros
+				}
+			} else {
+				try {
+					contenidoSvc.cancelarDenuncia(idSesion, idContenido);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					//erros
+				}
+			}	
 			
 		} else if (Actions.COMENTAR.equalsIgnoreCase(action)) {
 			
-			String nuevoValor= ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTARIO), ParameterNames.COMENTARIO, true);			
-			try {
-				contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				//erros
+			String valorRecibido = request.getParameter(ParameterNames.COMENTADO);
+			if(valorRecibido!=null) {
+				String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
+				try {
+					contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					//erros
+				}
+			} else {
+				try {
+					contenidoSvc.borrarComentario(idSesion, idContenido);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					//erros
+				}
 			}
 			
 		} else if (Actions.VALORAR.equalsIgnoreCase(action)) {

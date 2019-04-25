@@ -106,7 +106,6 @@ public class ValidationUtils {
 	public static String validString (ErrorManager errors, String cadenaCaracteres, String parameter, Boolean required) {
 		
 		cadenaCaracteres = cadenaCaracteres.trim();
-		
 		if(StringUtils.isEmptyOrWhitespaceOnly(cadenaCaracteres)) {
 			if(required) {
 				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);

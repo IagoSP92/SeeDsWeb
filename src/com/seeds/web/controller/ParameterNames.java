@@ -62,7 +62,7 @@ public class ParameterNames {
 	public static final String DENUNCIADO = "denunciado";
 	public static final String VALORACION = "valoracion";
 	public static final String GUARDADO = "guardado";
-	public static final String COMENTARIO = "comentario";
+	public static final String COMENTADO = "comentado";
 	
 	public static final String LOCALE = "locale";
 	

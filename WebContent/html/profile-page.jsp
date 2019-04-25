@@ -36,49 +36,34 @@
 	<br/>
 	
 	
-	
+	<p>${siguiendo}</p>
 	<c:if test = "${autenticado==true}">
-		
-		
 		<c:choose>
-			<c:when test="${seguido == true}">
-			<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>&<%=ParameterNames.SIGUIENDO%>=true
-					&<%=ParameterNames.ID_SESION%>=id_sesion&<%=ParameterNames.ID_CONTENIDO%>=usuario.getId()">
-			<button class="userButton" data-idContenido="${usuario.id}" data-siguiendo="${seguido}">
-				<fmt:message key="detalle.seguir" bundle="${messages}"/>
-			</button>
-		</a>			
+			<c:when test="${siguiendo == true}">
+				<button class="userButton seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="true">
+					<fmt:message key="detalle.noseguir" bundle="${messages}"/>
+				</button>
 			</c:when>
 			<c:otherwise>
-				<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>&<%=ParameterNames.SIGUIENDO%>=true
-						&<%=ParameterNames.ID_SESION%>=id_sesion&<%=ParameterNames.ID_CONTENIDO%>=usuario.getId()">
-				<button class="userButton" data-idContenido="${usuario.id}" data-siguiendo="false">
+				<button class="userButton seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="false">
 					<fmt:message key="detalle.seguir" bundle="${messages}"/>
 				</button>
-				</a>
   			</c:otherwise>		
 		</c:choose>
 		
-		
-		<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>">
-			<button class="userButton">
-				<fmt:message key="detalle.seguir" bundle="${messages}"/>
-			</button>
-		</a>
-	
+		<c:choose>
+			<c:when test="${denunciado != null}">
+				<button class="userButton denunciarButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciando="Null">
+					<fmt:message key="detalle.nodenunciar" bundle="${messages}"/>
+				</button>
+			</c:when>
+			<c:otherwise>
+				<button class="userButton denunciarButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciado="denuncia">
+					<fmt:message key="detalle.denunciar" bundle="${messages}"/>
+				</button>
+  			</c:otherwise>		
+		</c:choose>		
      </c:if>
-	
-	
-	<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.DENUNCIAR%>">
-		<button class="userButton">
-			<fmt:message key="detalle.denunciar" bundle="${messages}"/>
-			<c:url var="urlDetalle" scope="page" value="/redirect">
-					<c:param name="action" value="<%=Actions.DETALLE%>"/>
-					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.id}"/>
-					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
-			</c:url>
-		</button>
-	</a>
 	
 	<br/>
 	

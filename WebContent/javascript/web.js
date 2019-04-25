@@ -2,25 +2,39 @@
 
 $(document).ready(function () {
 	
-	$("#seguirButton").click(function(){
-		alert($(this).attr("data-idContenido"));
+	$(".seguirButton").click(function(){
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
 			data: { 
-				'id_contenido':$(this).attr("data-idContenido"),
+				'id':$(this).attr("data-idContenido"),
+				'tipo':$(this).attr("data-tipo"),
 				'siguiendo': $(this).attr("data-siguiendo"),
 				'action':"seguir"},				
-				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
-				dataType:"json",
+				//contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
+				//dataType:"json",
 				success:
 				function(){
-					
+					// CARGAR USUARIO CON JSON
 					location.reload(true);
-				}				
-
+				}	
 		});
-
+	})
+	$(".denunciarButton").click(function(){
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id':$(this).attr("data-idContenido"),
+				'tipo':$(this).attr("data-tipo"),
+				'denunciado': $(this).attr("data-denunciado"),
+				'action':"denunciar"},				
+				success:
+				function(){
+					// CARGAR USUARIO CON JSON
+					location.reload(true);
+				}
+		});
 	})
 	
 	
