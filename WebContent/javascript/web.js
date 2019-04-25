@@ -17,6 +17,7 @@ $(document).ready(function () {
 				function(){
 					// CARGAR USUARIO CON JSON
 					location.reload(true);
+					location.reload(true);
 				}	
 		});
 	})
@@ -33,9 +34,66 @@ $(document).ready(function () {
 				function(){
 					// CARGAR USUARIO CON JSON
 					location.reload(true);
+					location.reload(true);
 				}
 		});
 	})
+	
+	$(".guardarButton").click(function(){
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id':$(this).attr("data-idContenido"),
+				'tipo':$(this).attr("data-tipo"),
+				'guardado': $(this).attr("data-guardado"),
+				'action':"guardar"},				
+				success:
+				function(){
+					// CARGAR USUARIO CON JSON
+					location.reload(true);
+					location.reload(true);
+				}
+		});
+	})
+	
+	$(".comentarButton").click(function(){
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id':$(this).attr("data-idContenido"),
+				'tipo':$(this).attr("data-tipo"),
+				'comentado': $(this).attr("data-comentado"),
+				'action':"comentar"},				
+				success:
+				function(){
+					// CARGAR USUARIO CON JSON
+					location.reload(true);
+					location.reload(true);
+				}
+		});
+	})
+	
+	$(".valorarButton").click(function(){
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id':$(this).attr("data-idContenido"),
+				'tipo':$(this).attr("data-tipo"),
+				'valoracion': $(this).attr("data-valoracion"),
+				'action':"valorar"},				
+				success:
+				function(){
+					// CARGAR USUARIO CON JSON
+					location.reload(true);
+					location.reload(true);
+				}
+		});
+	})
+	
+	
 	
 	
 	checkCompatible();

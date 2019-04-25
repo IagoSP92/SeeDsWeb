@@ -30,6 +30,7 @@ import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.config.ConfigurationManager;
+import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.FileUtils;
@@ -107,18 +108,42 @@ public class VideoServlet extends HttpServlet {
 		boolean redirect = false;
 
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
-			Video video;
+			
+			Video video=null;
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));			
+			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+				try {
+					video = videoSvc.buscarId(idSesion, idContenido );
+					request.setAttribute(ParameterNames.COMENTARIOS, video.getComentarios());
+					request.setAttribute(ParameterNames.DENUNCIADO, video.getDenunciado());
+					request.setAttribute(ParameterNames.GUARDADO, video.getGuardado());
+					request.setAttribute(ParameterNames.COMENTADO, video.getComentado());
+					request.setAttribute(ParameterNames.VALORACION, video.getValorado());
+					request.setAttribute(ParameterNames.AUTENTICADO, true);
+					request.setAttribute(ParameterNames.ID_SESION, idSesion);					
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+				}
+			} else {
+				try {
+					video = videoSvc.buscarId(null, idContenido );
+					request.setAttribute(ParameterNames.AUTENTICADO, false);
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+				}
+			}			
 			try {
-				video = videoSvc.buscarId(null, Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO)) );
 				request.setAttribute(AttributeNames.VIDEO, video);
-				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(video.getAutor()).getNombre());		
-				
+				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(video.getAutor()).getNombre());					
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			} catch (NumberFormatException e) {
 				logger.warn(e.getMessage(), e);
-			}		
-			
+				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+			}			
 			target = ViewPath.DETALLE_VIDEO;
 
 		} else if (Actions.SUBIR_VIDEO.equalsIgnoreCase(action)){

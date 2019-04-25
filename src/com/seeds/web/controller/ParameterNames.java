@@ -74,6 +74,9 @@ public class ParameterNames {
 	public static final String ID_SESION = "id_sesion";
 
 	public static final String ID_VIDEO = "id_video";
+	
+	public static final String COMENTARIOS = "comentarios";
+
 
 
 	

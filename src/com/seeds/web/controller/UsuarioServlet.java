@@ -66,7 +66,6 @@ public class UsuarioServlet extends HttpServlet {
 	private ListaService listaSvc = null;
 
 	private List<String> idsPais;
-
 	public UsuarioServlet() {
 		super();
 		usuarioSvc = new UsuarioServiceImpl();
@@ -74,8 +73,7 @@ public class UsuarioServlet extends HttpServlet {
 		videoSvc = new VideoServiceImpl();
 		listaSvc = new ListaServiceImpl();
 		paisSvc= new PaisServiceImpl();
-		dateUtils = new DateUtils();		
-				
+		dateUtils = new DateUtils();				
 		try {
 			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());			
 		} catch (DataException e) {
@@ -100,13 +98,10 @@ public class UsuarioServlet extends HttpServlet {
 		if (Actions.ENTRAR.equalsIgnoreCase(action)) {
 
 			String email = request.getParameter(ParameterNames.EMAIL);
-			String password = request.getParameter(ParameterNames.PASSWORD);
-						
+			String password = request.getParameter(ParameterNames.PASSWORD);						
 			email= ValidationUtils.validMail(errors, email, ParameterNames.EMAIL, true);
-			password= ValidationUtils.validPass(errors, password, ParameterNames.PASSWORD, true);			
-			
-			Usuario usuario = null;
-			
+			password= ValidationUtils.validPass(errors, password, ParameterNames.PASSWORD, true);
+			Usuario usuario = null;			
 			if (!errors.hasErrors()) {
 				try {
 					usuario = usuarioSvc.logIn(email, password);
@@ -115,8 +110,7 @@ public class UsuarioServlet extends HttpServlet {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
 				}
-			}
-			
+			}			
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
 					logger.debug("Autenticacion fallida: {}", errors);
@@ -128,7 +122,7 @@ public class UsuarioServlet extends HttpServlet {
 					logger.info("Usuario "+email+" autenticado.");
 				}				
 				SessionManager.set(request, SessionAttributeNames.USUARIO, usuario);						
-				target = request.getContextPath()+ViewPath.HOME;					
+				target = request.getContextPath()+ViewPath.HOME;				
 				redirect = true;
 			}
 			
@@ -152,33 +146,23 @@ public class UsuarioServlet extends HttpServlet {
 			String fNac = request.getParameter(ParameterNames.FECHA_NAC);
 			String nombreReal = request.getParameter(ParameterNames.NOMBRE_REAL);
 			String apellidos = request.getParameter(ParameterNames.APELLIDOS);
-			String pais = request.getParameter(ParameterNames.ID_PAIS);
-			
+			String pais = request.getParameter(ParameterNames.ID_PAIS);			
 			if (logger.isDebugEnabled()) {
-				logger.info("Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, email, password, fNac, nombreReal, apellidos, pais);
+				logger.info("REGISTRO -> Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, email, password, fNac, nombreReal, apellidos, pais);
 			}
 			
 			Usuario usuario= new Usuario();
-			usuario.setTipo(1); // TIPO USUARIO
-			
+			usuario.setTipo(1); // USUARIO
+			// FECHAS DE ALTA Y MODIFICACION SIEMPRE SERAN LA ACTUAL
 			usuario.setFechaAlta(new Date());
-			usuario.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
-						
+			usuario.setFechaMod(new Date()); 						
 			nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 			email = ValidationUtils.validString(errors, email, ParameterNames.EMAIL, true);
 			password = ValidationUtils.validPass(errors, password, ParameterNames.PASSWORD, true);
 			Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, true, dateUtils);
 			nombreReal = ValidationUtils.validString(errors, nombreReal, ParameterNames.NOMBRE_REAL, true);
 			apellidos = ValidationUtils.validString(errors, apellidos, ParameterNames.APELLIDOS, true);
-			System.out.println(pais);
-			System.out.println(idsPais.size());
-			for(String p: idsPais) {
-				System.out.println(p);
-				
-			}
-			
 			pais = ValidationUtils.validPais(errors, pais, ParameterNames.ID_PAIS, true, idsPais);
-			
 			if (!errors.hasErrors()) {
 				usuario.setNombre(nombre);
 				usuario.setEmail(email);
@@ -186,45 +170,38 @@ public class UsuarioServlet extends HttpServlet {
 				usuario.setFechaNac(fechaNacimiento);
 				usuario.setNombreReal(nombreReal);
 				usuario.setApellidos(apellidos);
-				usuario.setPais("ES");
-			}
-
-			if (!errors.hasErrors()) {
+				usuario.setPais(pais);
 				try {
 					usuario = usuarioSvc.crearCuenta(usuario);
 					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
-					e.printStackTrace();
+					logger.warn(e.getMessage(), e);
 				}
 			}
-			
 			if (!errors.hasErrors()) {
 				try { 
 					usuario = usuarioSvc.logIn(email, password); 
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
-					errors.add(ParameterNames.ACTION,ErrorCodes.ERROR_DABAIXO);
+					errors.add(ParameterNames.ACTION,ErrorCodes.LOGIN_SERVICE_ERROR);
 				}
-			}
-			
+			}			
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
-					logger.debug("Registro 	Fallido: {}", errors);
+					logger.debug("El registro no ha podido realizarse: {}", errors);
 				}				
 				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPath.REGISTRO;				
+				target = ViewPath.REGISTRO;			
 			}
-
 			target = ViewPath.HOME;
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
 			request.getSession(true).setAttribute(SessionAttributeNames.USUARIO, null);
-			//response.sendRedirect(ViewsPaths.ROOT_CONTEXT);
-			//SessionManager.set(request, SessionAttributeNames.USUARIO, null);
 			target = ViewPath.HOME;
 			
 		} else if (Actions.MI_PERFIL.equalsIgnoreCase(action)) {
+			
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			
 			System.out.println("MI PERFIL");
@@ -235,12 +212,12 @@ public class UsuarioServlet extends HttpServlet {
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			System.out.println("EDITAR PERFIL");
 			
-			target = ViewPath.DETALLE_PERFIL;
+			target = ViewPath.MI_PERFIL;
 
 		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
-			Usuario usuario=null;
-			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
 			
+			Usuario usuario=null;
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));			
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
@@ -248,11 +225,10 @@ public class UsuarioServlet extends HttpServlet {
 					request.setAttribute(ParameterNames.DENUNCIADO, usuario.getDenunciado());
 					request.setAttribute(ParameterNames.SIGUIENDO, usuario.getSiguiendo());
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
-					request.setAttribute(ParameterNames.ID_SESION, idSesion);
-					
+					request.setAttribute(ParameterNames.ID_SESION, idSesion);					
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
-					//errors
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 				}
 			} else {
 				try {
@@ -260,35 +236,38 @@ public class UsuarioServlet extends HttpServlet {
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
-					//errors
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 				}
 			}
-			request.setAttribute(AttributeNames.USUARIO, usuario);				
-				
+			request.setAttribute(AttributeNames.USUARIO, usuario);
+			
+			ContenidoCriteria criteria = new ContenidoCriteria();
 			int page = WebUtils.
-					getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+					getPageNumber(request.getParameter(ParameterNames.PAGE_V), 1);
 			int startIndex= (page-1)*pageSize+1;
 			int count= pageSize;
-			ContenidoCriteria criteria = new ContenidoCriteria();
-				
 			criteria.setAutor(idContenido);
-			criteria.setTipo(2);	
-			
+			criteria.setTipo(2);			
 			List<Contenido> listaVideos = null;
 			try {
 				listaVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma).getPage();
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
-				//errors
+				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 			}
 			request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, listaVideos);
-			criteria.setTipo(3);			
+			
+			criteria.setTipo(3);
+			int page_l = WebUtils.
+					getPageNumber(request.getParameter(ParameterNames.PAGE_L), 1);
+			int startIndex_l= (page-1)*pageSize+1;
+			int count_l= pageSize;
 			List<Contenido> listaListas = null;
 			try {
-				listaListas = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma).getPage();
+				listaListas = contenidoSvc.buscarCriteria(criteria, startIndex_l, count_l, idioma).getPage();
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
-				//errors
+				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 			}
 			request.setAttribute(AttributeNames.LISTAS_SUBIDAS,listaListas);
 									
@@ -306,8 +285,7 @@ public class UsuarioServlet extends HttpServlet {
 			} else {
 				logger.warn("Request locale not supported: "+localeName);
 				newLocale = LocaleManager.getDefault();
-			}
-			
+			}			
 			SessionManager.set(request, ConstantValues.USER_LOCALE, newLocale);			
 			CookieManager.addCookie(response, ConstantValues.USER_LOCALE, newLocale.toString(), "/", 365*24*60*60);			
 
@@ -316,18 +294,10 @@ public class UsuarioServlet extends HttpServlet {
 			}
 			
 			response.sendRedirect(request.getHeader("referer"));
-			
-//			target = request.getHeader("referer");
-//			redirect = true;
-			/*
-			target = request.getHeader("referer"); // Ejercicio: como hacer que siga en la misma URL		
-			redirect = true;
-*/
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
-			SessionManager.set(request, SessionAttributeNames.USUARIO, null);
-			
+			SessionManager.set(request, SessionAttributeNames.USUARIO, null);			
 			target = ViewPath.HOME;
 			
 		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
