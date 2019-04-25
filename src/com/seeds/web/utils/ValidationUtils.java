@@ -25,7 +25,7 @@ public class ValidationUtils {
 		Boolean booleanDespues = null;
 		
 		if(!StringUtils.isEmptyOrWhitespaceOnly(booleanAntes)) {
-			booleanDespues= Boolean.parseBoolean(booleanAntes);
+			booleanDespues= Boolean.valueOf(booleanAntes);
 		} else {
 			if(required) {
 				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
@@ -40,7 +40,7 @@ public class ValidationUtils {
 			Long longDespues = null;
 			
 			if(!StringUtils.isEmptyOrWhitespaceOnly(longAntes)) {
-				longDespues= Long.parseLong(longAntes);
+				longDespues= Long.valueOf(longAntes);
 			} else {
 				if(required) {
 					errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);

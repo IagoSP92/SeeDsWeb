@@ -16,10 +16,7 @@
 		
 			<form action="<%=ControllerPath.VIDEO%>" method="post" enctype="multipart/form-data" >	
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.SUBIR_VIDEO%>"/>
-				
-				<input name="ParameterNames.TIPO"   type="hidden" value="2">
-				<input name="ParameterNames.AUTOR"   type="hidden" value="null">
-				
+								
 				<div id="campoNombre">
 				<span class="rotuloCampo"><%=ParameterNames.NOMBRE%>:</span>
 				<input type="text"

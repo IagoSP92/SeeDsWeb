@@ -1,44 +1,24 @@
 
 
-
-
-
-
 $(document).ready(function () {
 	
 	$("#seguirButton").click(function(){
-		var idUsuario = ${usuario.getId()};
+		alert($(this).attr("data-idContenido"));
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
 			data: { 
-				'id_contenido':idUsuario,
-				'siguiendo': siguiendo,
-				'action':"seguir"},
+				'id_contenido':$(this).attr("data-idContenido"),
+				'siguiendo': $(this).attr("data-siguiendo"),
+				'action':"seguir"},				
 				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
 				dataType:"json",
 				success:
-					function(){
-						if(siguiendo==true){
-							siguiendo=false;
-						} else{
-							siguiendo = true;
-						}					
-					}
+				function(){
 					
-					function (provinciasArray) {
-						
-					
-					if(!$("#provincias").html().isEmpty){
-						$("#provincias").html("");
-					}
-					
-					for(var i = 0; i < provinciasArray.length; i++){
-						$("#provincias").html($("#provincias").html()+"<option value="+provinciasArray[i].id+">"+provinciasArray[i].nome+"</option>")
+					location.reload(true);
+				}				
 
-					}
-
-				}
 		});
 
 	})

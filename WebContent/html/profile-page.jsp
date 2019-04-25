@@ -44,14 +44,18 @@
 			<c:when test="${seguido == true}">
 			<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>&<%=ParameterNames.SIGUIENDO%>=true
 					&<%=ParameterNames.ID_SESION%>=id_sesion&<%=ParameterNames.ID_CONTENIDO%>=usuario.getId()">
-			<button class="userButton">
+			<button class="userButton" data-idContenido="${usuario.id}" data-siguiendo="${seguido}">
 				<fmt:message key="detalle.seguir" bundle="${messages}"/>
 			</button>
-		</a>		
-			
+		</a>			
 			</c:when>
 			<c:otherwise>
-			
+				<a href="<%=ControllerPath.RELACIONES%>?<%=ParameterNames.ACTION%>=<%=Actions.SEGUIR%>&<%=ParameterNames.SIGUIENDO%>=true
+						&<%=ParameterNames.ID_SESION%>=id_sesion&<%=ParameterNames.ID_CONTENIDO%>=usuario.getId()">
+				<button class="userButton" data-idContenido="${usuario.id}" data-siguiendo="false">
+					<fmt:message key="detalle.seguir" bundle="${messages}"/>
+				</button>
+				</a>
   			</c:otherwise>		
 		</c:choose>
 		
@@ -90,7 +94,6 @@
 				<li><a class="a_sinsub" href="${urlDetalle}">
 				<div>${video.id}</div>
 				
-				${urlDetalle}
 				${video.nombre}<br>
 				${video.fechaAlta} - ${video.fechaMod} 
 				</a></li>
@@ -106,7 +109,6 @@
 					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.getTipo()}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
 				${lista.nombre}<br>
 				${lista.fechaAlta} - ${lista.fechaMod}
 				</a></li>
@@ -125,7 +127,6 @@
 					<c:param name="<%=ParameterNames.TIPO%>" value="${usuario.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
 				${usuario.nombre}<br>
 				${usuario.fechaAlta} - ${video.fechaMod}
 				</a></li>
@@ -141,7 +142,6 @@
 					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
 				${lista.nombre}<br>
 				${lista.fechaAlta} - ${lista.fechaMod}
 				</a></li>
@@ -160,7 +160,6 @@
 					<c:param name="<%=ParameterNames.TIPO%>" value="${video.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
 				${video.nombre}<br>
 				${video.fechaAlta} - ${video.fechaMod}
 				</a></li>
@@ -178,7 +177,6 @@
 					<c:param name="<%=ParameterNames.TIPO%>" value="${lista.tipo}"/>
 				</c:url>			
 				<li><a class="a_sinsub" href="${urlDetalle}">
-				${urlDetalle}
 				${lista.nombre}<br>
 				${lista.fechaAlta} - ${lista.fechaMod}
 				</a></li>

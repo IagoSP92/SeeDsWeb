@@ -42,6 +42,9 @@ public class Actions {
 	public static final String GUARDADOS = "guardados";
 	public static final String SEGUIDOS = "seguidos";
 	public static final String SUBIDOS = "subidos";
+	
+	public static final String REPRODUCIR_VIDEO = "reproducir_video";
+
 
 
 }

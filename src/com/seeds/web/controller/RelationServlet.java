@@ -47,20 +47,23 @@ public class RelationServlet extends HttpServlet {
 		
 		Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 		String id= request.getParameter(ParameterNames.ID_CONTENIDO);
-		Long idContenido =ValidationUtils.validLong(errors, id, ParameterNames.NOMBRE, false);
+		System.out.println(id);
+		Long idContenido =ValidationUtils.validLong(errors, id, ParameterNames.ID_CONTENIDO, false);
 		
-		if (Actions.SEGUIR.equalsIgnoreCase(action)) {			
+		if (Actions.SEGUIR.equalsIgnoreCase(action)) {
 			Boolean nuevoValor=null;
-			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)==true) {
+			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)) {
 				nuevoValor=false;
 			} else {nuevoValor=true;}
 			
 			try {
 				contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);
+				
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				//erros
 			}
+			//response.getOutputStream().write();
 			
 		} else if (Actions.GUARDAR.equalsIgnoreCase(action)) {			
 			Boolean nuevoValor=null;

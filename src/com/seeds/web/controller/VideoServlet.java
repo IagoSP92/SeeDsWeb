@@ -69,9 +69,10 @@ public class VideoServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String action = null;
+		List<FileItem> formItems=null;
         
         if(ServletFileUpload.isMultipartContent(request)) {
-        	 List<FileItem> formItems = new ArrayList<FileItem>();
+        	 formItems = new ArrayList<FileItem>();
         	 
         	 // configures upload settings
 		        DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -122,16 +123,21 @@ public class VideoServlet extends HttpServlet {
 
 		} else if (Actions.SUBIR_VIDEO.equalsIgnoreCase(action)){
 			
+			
+			
 			Long idAutor= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			String nombre = null;
 			String descripcion =  null;
 			String ruta = null;	        
 			   
-	        List<FileItem> formItems = new ArrayList<FileItem>();
+	         //formItems = new ArrayList<FileItem>();
 	        // parses the request's content to extract file data
+			for(Object o:formItems) {
+				System.out.println(o.toString());;
+			}
 			nombre = formItems.get(1).getString();
 			descripcion = formItems.get(2).getString();
-
+			System.out.println(nombre);
 	        	        
 	        nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 	        descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.NOMBRE, true);
@@ -182,6 +188,13 @@ public class VideoServlet extends HttpServlet {
 
 			target = ViewPath.HOME;
 			
+			
+		} else   if (Actions.REPRODUCIR_VIDEO.equalsIgnoreCase(action)) {// LA ACTION RECIBIDA NO ESTA DEFINIDA
+			
+			Long idVideo= ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_VIDEO), ParameterNames.ID_VIDEO, true);
+			String urlBase= request.getParameter(ParameterNames.RUTA_VIDEO);
+			FileUtils.readDocument(response,urlBase, idVideo);
+			return;			
 			
 		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
 			

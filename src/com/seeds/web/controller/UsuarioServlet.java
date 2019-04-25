@@ -112,11 +112,9 @@ public class UsuarioServlet extends HttpServlet {
 					usuario = usuarioSvc.logIn(email, password);
 					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
-					e.printStackTrace();    //CAMBIAR POR LOGGER
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
 				}
-			}
-			if (usuario.getId() == null) {
-				errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
 			}
 			
 			if (errors.hasErrors()) {	
@@ -124,10 +122,10 @@ public class UsuarioServlet extends HttpServlet {
 					logger.debug("Autenticacion fallida: {}", errors);
 				}				
 				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPath.ENTRAR;				
+				target = ViewPath.ENTRAR;	
 			} else {
 				if (logger.isDebugEnabled()) {
-					logger.info("Usuario "+usuario.getEmail()+" autenticado.");
+					logger.info("Usuario "+email+" autenticado.");
 				}				
 				SessionManager.set(request, SessionAttributeNames.USUARIO, usuario);						
 				target = request.getContextPath()+ViewPath.HOME;					

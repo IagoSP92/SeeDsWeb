@@ -20,10 +20,13 @@ public class FileUtils {
 	private static final String UPLOAD_ROOT = ConfigurationManager.getInstance().getParameter("upload.root");
 	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
 	
-	public static void readDocument(HttpServletResponse response, String urlBase) {
+	public static void readDocument(HttpServletResponse response, String urlBase, Long idVideo) {
 		
 			File file = new File(urlBase);
+			
+			response.setHeader("Content-Disposition", "inline; filename="+ idVideo+".mp4;");
 			response.setContentType("video/mp4");
+			
 			try {
 				FileInputStream fis = new FileInputStream(file);
 				byte[] buffer = new byte[1024];
@@ -44,10 +47,18 @@ public class FileUtils {
         String uploadPath = UPLOAD_ROOT + File.separator + UPLOAD_DIRECTORY + File.separator + idUsuario;
          
         // creates the directory if it does not exist
+
+        
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
-            uploadDir.mkdir();
+            if(!uploadDir.mkdirs()) {
+            	logger.warn("No se ha podido crear el directorio");
+            }
         }
+        
+        if(logger.isDebugEnabled()) {
+			logger.debug("UploadPath= {}",uploadPath);
+		}
 		
 		String fileName = new File(idVideo.toString().concat(ConfigurationManager.getInstance().getParameter("files.extension"))).getName();
         String filePath = uploadPath + File.separator + fileName;
