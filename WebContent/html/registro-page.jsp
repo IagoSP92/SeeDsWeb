@@ -1,7 +1,8 @@
+<%@include file="/html/common/header.jsp"%>
 <%@ page import="com.seeds.web.utils.*, com.seeds.web.controller.*" %>
-<%@ page import="java.util.*" %>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<div class="mainWindow">
+	<h3><fmt:message key="interfaz.registro" bundle="${messages}"/></h3>
 
 <div id="registro-form">
 	
@@ -51,18 +52,23 @@
 			</div>
 			
 			<div id="campoPais">
-			<span class="rotuloCampo">Pais</span>			
-			
-			<div class="rotuloCampo custom-select" style="width:200px;">
-				<select id="select_pais" name="<%=ParameterNames.ID_PAIS%>"  >
-					<option value="0">Select contry:</option>
-						<c:forEach items="${paises}" var="pais">
-							<option value="${pais.idPais}">${pais.nombrePais}</option>		
-						</c:forEach>
-				</select>
-			</div>
+				<span class="rotuloCampo">Pais</span>					
+				
+				<span class="rotuloCampo custom-select" style="width:200px;">
+					<select id="select_pais" name="<%=ParameterNames.ID_PAIS%>"  >
+						<option value="0">Select contry:</option>
+							<c:forEach items="${paises}" var="pais">
+								<option value="${pais.idPais}">${pais.nombrePais}</option>		
+							</c:forEach>
+					</select>
+				</span>
+			</div>	
 
 			<input type="submit" name="registro" value="Registro"/>
 		</form>
 		
 </div>
+
+</div>
+
+<%@include file="/html/common/footer.jsp"%>

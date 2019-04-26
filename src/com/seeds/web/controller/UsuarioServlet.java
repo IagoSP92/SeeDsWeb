@@ -31,6 +31,7 @@ import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.PaisService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
+import com.isp.seeds.service.util.Results;
 import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorCodes;
@@ -201,23 +202,88 @@ public class UsuarioServlet extends HttpServlet {
 			target = ViewPath.HOME;
 			
 		} else if (Actions.MI_PERFIL.equalsIgnoreCase(action)) {
-			
+			if (logger.isDebugEnabled()) {
+				logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
+			}			
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
-			
-			System.out.println("MI PERFIL");
-			
+			request.setAttribute(ParameterNames.ID_CONTENIDO, usuario.getId());
 			target = ViewPath.MI_PERFIL;
 
 		} else if (Actions.EDITAR_PERFIL.equalsIgnoreCase(action)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
+			}
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
-			System.out.println("EDITAR PERFIL");
-			
+			Long id= ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_CONTENIDO), ParameterNames.ID_CONTENIDO, true) ;
+			if (!errors.hasErrors()) {
+				usuario.setId(id);	
+				String nombre = request.getParameter(ParameterNames.NOMBRE);			
+				String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
+				String avatar = request.getParameter(ParameterNames.AVATAR);
+				String nombreReal = request.getParameter(ParameterNames.NOMBRE_REAL);
+				String apellidos = request.getParameter(ParameterNames.APELLIDOS);
+				String fNac = request.getParameter(ParameterNames.FECHA_NAC);
+				if (logger.isDebugEnabled()) {
+					logger.info("EDICION PERFIL -> nombre:{} descripcion:{} avatar:{} nombrereal:{} apeliidos:{} fecha de nacimiento:{} ",
+							nombre, descripcion, avatar, nombreReal, apellidos, fNac);
+				}			
+				usuario.setFechaMod(new Date()); 					
+				if(nombre!=null) {
+					nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false);
+					if (!errors.hasErrors()) {
+						usuario.setNombre(nombre);
+					}
+				}
+				if(descripcion!=null) {
+					descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.DESCRIPCION, false);
+					if (!errors.hasErrors()) {
+						usuario.setDescripcion(descripcion);		
+					}
+				}
+				if(nombreReal!=null) {
+					nombreReal = ValidationUtils.validString(errors, nombreReal, ParameterNames.NOMBRE_REAL, false);
+					if (!errors.hasErrors()) {
+						usuario.setNombreReal(nombreReal);
+					}
+				}
+				if(apellidos!=null) {
+					apellidos = ValidationUtils.validString(errors, apellidos, ParameterNames.APELLIDOS, false);
+					if (!errors.hasErrors()) {
+						usuario.setApellidos(apellidos);
+					}
+				}
+				if(fNac!=null) {
+					Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, false, dateUtils);
+					if (!errors.hasErrors()) {
+						usuario.setFechaNac(fechaNacimiento);
+					}
+				}
+				
+				if (!errors.hasErrors()) {
+					try {					
+						usuarioSvc.editarPerfil(usuario);
+						SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
+					} catch (DataException e) {
+						logger.warn(e.getMessage(), e);
+						errors.add(ParameterNames.ACTION,ErrorCodes.UPDATE_ERROR);
+					}
+				}
+				if (!errors.hasErrors()) {
+					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
+				} else {	
+					if (logger.isDebugEnabled()) {
+						logger.debug(" La edicion no ha podido realizarse: {}", errors);
+					}				
+					request.setAttribute(AttributeNames.ERRORS, errors);				
+				}
+			}
 			target = ViewPath.MI_PERFIL;
 
 		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
 			Usuario usuario=null;
-			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));			
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
@@ -240,37 +306,53 @@ public class UsuarioServlet extends HttpServlet {
 				}
 			}
 			request.setAttribute(AttributeNames.USUARIO, usuario);
-			
+
+			Results<Contenido> resultados = null;
+			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			request.setAttribute(ParameterNames.TIPO, tipo);
 			ContenidoCriteria criteria = new ContenidoCriteria();
-			int page = WebUtils.
-					getPageNumber(request.getParameter(ParameterNames.PAGE_V), 1);
-			int startIndex= (page-1)*pageSize+1;
-			int count= pageSize;
-			criteria.setAutor(idContenido);
-			criteria.setTipo(2);			
-			List<Contenido> listaVideos = null;
-			try {
-				listaVideos = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma).getPage();
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
-			}
-			request.setAttribute(AttributeNames.VIDEOS_SUBIDOS, listaVideos);
+			if(!errors.hasErrors()) {
+				if(tipo==2) {
+					criteria.setAceptarVideo(true);
+					criteria.setAceptarLista(false);
+					criteria.setAceptarUsuario(false);
+
+
+				} else if(tipo==3) {
+					criteria.setAceptarVideo(false);
+					criteria.setAceptarLista(true);
+					criteria.setAceptarUsuario(false);
+				}
+				criteria.setAutor(idContenido);
+				int page = WebUtils.
+						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+				int startIndex= (page-1)*pageSize+1;
+				int count= pageSize;
+				try {					
+					resultados = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+				}
 			
-			criteria.setTipo(3);
-			int page_l = WebUtils.
-					getPageNumber(request.getParameter(ParameterNames.PAGE_L), 1);
-			int startIndex_l= (page-1)*pageSize+1;
-			int count_l= pageSize;
-			List<Contenido> listaListas = null;
-			try {
-				listaListas = contenidoSvc.buscarCriteria(criteria, startIndex_l, count_l, idioma).getPage();
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
-			}
-			request.setAttribute(AttributeNames.LISTAS_SUBIDAS,listaListas);
-									
+			request.setAttribute(AttributeNames.RESULTADOS, resultados.getPage());
+			request.setAttribute(AttributeNames.TOTAL, resultados.getTotal());
+			
+			int totalPages = (int) Math.ceil((double)resultados.getTotal()/(double)pageSize);
+			int firstPagedPage = Math.max(1, page-pagingPageCount);
+			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
+			request.setAttribute(ParameterNames.PAGE, page);
+			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
+			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
+			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Operacion fallida: {}", errors);
+				}
+				request.setAttribute(AttributeNames.ERRORS, errors);
+			}		
+					
 			target = ViewPath.DETALLE_PERFIL;
 
 		}	else if (Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {

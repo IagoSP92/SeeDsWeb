@@ -18,9 +18,6 @@ public class ParameterNames {
 	public static final String FECHA_MAX = "fecha_max";
 	
 	public static final String PAGE = "page"; 
-	public static final String PAGE_V = "page_v"; 
-	public static final String PAGE_L = "page_l"; 
-	public static final String PAGE_U = "page_u"; 
 
 	public static final String TOTAL_PAGES = "total-pages";
 	

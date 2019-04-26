@@ -93,7 +93,35 @@ $(document).ready(function () {
 		});
 	})
 	
-	
+	$("#botonEditarPerfil").click(function(){
+
+		$("#botonEditarPerilSalvar").removeAttr('hidden');
+		$("#botonEditarPerilCancelar").removeAttr('hidden');
+		$(".edicionSpan").removeAttr('hidden');
+
+
+		$("#inputNombre").on('change', function() {
+			$(this).attr('disabled','disabled');
+		});
+		$("#inputDescripcion").on('change', function() {
+			$(this).attr('disabled','disabled');
+		});
+		$("#inputAvatar").on('change', function() {
+			$(this).attr('disabled','disabled');
+		});
+		$("#inputReal").on('change', function() {
+			$(this).attr('disabled','disabled');
+		});
+		$("#inputApellidos").on('change', function() {
+			$(this).attr('disabled','disabled');
+		});
+		$("#inputFecha").on('change', function() {
+			$(this).attr('disabled','disabled');
+		});
+
+
+		}
+	);
 	
 	
 	checkCompatible();

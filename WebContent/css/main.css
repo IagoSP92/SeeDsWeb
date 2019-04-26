@@ -136,3 +136,10 @@ button:hover{ cursor: pointer; }
 	margin-left: 25%;
 	font-weight: bold;
 }
+
+.edicionSpan{
+	margin-left: 20%;
+}
+.editarCampoDiv{
+	width: 30%;
+}
