@@ -24,6 +24,9 @@ public interface ErrorCodes {
 	
 	public static final String RECOVERY_ERROR = "RECOVERY_ERROR";
 	public static final String UPDATE_ERROR = "UPDATE_ERROR";
+	
+	public static final String MISSING_SESSION = "MISSING_SESSION";
+
 
 	
 	

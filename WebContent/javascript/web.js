@@ -10,17 +10,29 @@ $(document).ready(function () {
 				'id':$(this).attr("data-idContenido"),
 				'tipo':$(this).attr("data-tipo"),
 				'siguiendo': $(this).attr("data-siguiendo"),
-				'action':"seguir"},				
-				//contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",
-				//dataType:"json",
-				success:
-				function(){
+				'action':"seguir"},
+				
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",				
+				dataType:"json",
+				
+				success: function( valor ){
+					
+					if(valor.siguiendo==false){
+						$(".seguirButton").html('<fmt:message key="detalle.seguir" bundle="${messages}"/>');
+						$(".seguirButton").attr("data-siguiendo", "true");
+					}
+					if(valor.siguiendo==true){
+						$(".seguirButton").html('<fmt:message key="detalle.noseguir" bundle="${messages}"/>');
+						$(".seguirButton").attr("data-siguiendo", "true");
+					}
+					
 					// CARGAR USUARIO CON JSON
-					location.reload(true);
-					location.reload(true);
+//					location.reload(true);
+//					location.reload(true);
 				}	
 		});
 	})
+	
 	$(".denunciarButton").click(function(){
 		$.ajax({
 			type: "GET",
@@ -99,7 +111,7 @@ $(document).ready(function () {
 		$("#botonEditarPerilCancelar").removeAttr('hidden');
 		$(".edicionSpan").removeAttr('hidden');
 
-
+/*
 		$("#inputNombre").on('change', function() {
 			$(this).attr('disabled','disabled');
 		});
@@ -118,7 +130,7 @@ $(document).ready(function () {
 		$("#inputFecha").on('change', function() {
 			$(this).attr('disabled','disabled');
 		});
-
+*/
 
 		}
 	);

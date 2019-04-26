@@ -1,8 +1,7 @@
 package com.seeds.web.controller;
 
 public class Actions {
-	
-	
+		
 	public static final String REGISTRO = "registro";
 	public static final String PRERREGISTRO = "preregistro";
 	
@@ -10,9 +9,11 @@ public class Actions {
 	public static final String DETALLE_VIDEO = "detalle_video";
 	public static final String DETALLE_LISTA = "detalle_lista";
 	public static final String DETALLE_PERFIL = "detalle_perfil";
+	public static final String ACTUALIZAR = "editar_perfil";
+
 	
 	public static final String MI_PERFIL = "mi_perfil";
-	public static final String EDITAR_PERFIL = "editar_perfil";
+	public static final String EDITAR_PERFIL = "actualizar";
 
 	public static final String ENTRAR = "entrar";
 	public static final String BUSCAR = "buscar";
@@ -21,6 +22,7 @@ public class Actions {
 	public static final String CAMBIAR_LOCALE = "cambiar_locale";
 	
 	public static final String SUBIR_VIDEO = "subir_video";
+	public static final String CREAR_LISTA = "crear_lista";
 	
 	public static final String VALORAR = "valorar";
 	public static final String DENUNCIAR = "denunciar";

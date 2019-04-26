@@ -12,10 +12,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.JsonObject;
 import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.UsuarioServiceImpl;
 import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.UsuarioService;
+import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
@@ -29,10 +33,12 @@ public class RelationServlet extends HttpServlet {
 	
 	private static Logger logger = LogManager.getLogger(RelationServlet.class);
 	private ContenidoService contenidoSvc = null;
+	private UsuarioService usuarioSvc = null;
 
     public RelationServlet() {
         super();
 		contenidoSvc = new ContenidoServiceImpl();
+		usuarioSvc = new UsuarioServiceImpl();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,6 +71,28 @@ public class RelationServlet extends HttpServlet {
 				logger.warn(e.getMessage(), e);
 				//erros
 			}
+			
+			Usuario usuario=null;
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				try {
+					usuario = usuarioSvc.buscarId(idSesion, idContenido );
+					JsonObject usuarioJson = new JsonObject();
+					usuarioJson.addProperty("denunciado", usuario.getDenunciado());
+					usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
+
+					response.setContentType("application/json;charset=ISO-8859-1");
+					response.getOutputStream().write(usuarioJson.toString().getBytes());
+					
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+				}
+			} else {
+					logger.warn("No se ha detectado un usuario en sesion");
+					errors.add(ParameterNames.ACTION, ErrorCodes.MISSING_SESSION);
+			}
+			
 			//response.getOutputStream().write();
 			
 		} else if (Actions.GUARDAR.equalsIgnoreCase(action)) {			

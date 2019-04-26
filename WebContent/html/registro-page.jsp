@@ -34,7 +34,7 @@
 			</div>
 			<div id="campoFechaNac">
 			<span class="rotuloCampo"><%=ParameterNames.FECHA_NAC%>:</span>
-			<input type="text"
+			<input type="date"
 					name="<%=ParameterNames.FECHA_NAC%>" 
 					value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_NAC) %>"/>
 			</div>

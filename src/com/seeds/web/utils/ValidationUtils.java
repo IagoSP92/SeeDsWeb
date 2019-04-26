@@ -1,16 +1,45 @@
 package com.seeds.web.utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.mchange.lang.LongUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mysql.cj.util.StringUtils;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 
 public class ValidationUtils {
+	
+	private static Logger logger = LogManager.getLogger(ValidationUtils.class);
+	
+	
+	public static final DateFormat SHORT_FORMAT_DATE = new SimpleDateFormat("yyyy-MM-dd");
+	
+	
+	public static Date dateValidator (ErrorManager errors, String dateAntes, String parameter, Boolean required) {
+			if(!StringUtils.isEmptyOrWhitespaceOnly(dateAntes)) {
+				try {
+					return SHORT_FORMAT_DATE.parse(dateAntes);
+				} catch (ParseException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+				}
+			} else {
+				if(required) {
+					logger.warn("No se ha podido validar la fecha");
+					errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+				}
+			}
+			return null;
+
+	}
 	
 	public static Boolean validCheck (ErrorManager errors, String check, String parameter, Boolean required) {
 		Boolean booleanDespues = null;

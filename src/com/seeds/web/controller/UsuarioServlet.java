@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.gson.JsonObject;
 import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Pais;
@@ -160,7 +161,8 @@ public class UsuarioServlet extends HttpServlet {
 			nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 			email = ValidationUtils.validString(errors, email, ParameterNames.EMAIL, true);
 			password = ValidationUtils.validPass(errors, password, ParameterNames.PASSWORD, true);
-			Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, true, dateUtils);
+			//Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, false, dateUtils);
+			Date fechaNacimiento = ValidationUtils.dateValidator(errors, fNac, ParameterNames.FECHA_NAC, true);
 			nombreReal = ValidationUtils.validString(errors, nombreReal, ParameterNames.NOMBRE_REAL, true);
 			apellidos = ValidationUtils.validString(errors, apellidos, ParameterNames.APELLIDOS, true);
 			pais = ValidationUtils.validPais(errors, pais, ParameterNames.ID_PAIS, true, idsPais);
@@ -213,11 +215,16 @@ public class UsuarioServlet extends HttpServlet {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 			}
+			if (logger.isDebugEnabled()) {
+				logger.info("EDICION PERFIL -> nombre:{} descripcion:{} avatar:{} nombrereal:{} apeliidos:{} fecha de nacimiento:{} ",
+						request.getParameter(ParameterNames.NOMBRE), request.getParameter(ParameterNames.DESCRIPCION), request.getParameter(ParameterNames.AVATAR),
+						request.getParameter(ParameterNames.NOMBRE_REAL), request.getParameter(ParameterNames.APELLIDOS), request.getParameter(ParameterNames.FECHA_NAC));
+			}
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			Long id= ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_CONTENIDO), ParameterNames.ID_CONTENIDO, true) ;
 			if (!errors.hasErrors()) {
 				usuario.setId(id);	
-				String nombre = request.getParameter(ParameterNames.NOMBRE);			
+				String nombre = request.getParameter(ParameterNames.NOMBRE);
 				String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
 				String avatar = request.getParameter(ParameterNames.AVATAR);
 				String nombreReal = request.getParameter(ParameterNames.NOMBRE_REAL);
@@ -253,7 +260,8 @@ public class UsuarioServlet extends HttpServlet {
 					}
 				}
 				if(fNac!=null) {
-					Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, false, dateUtils);
+					Date fechaNacimiento = ValidationUtils.dateValidator(errors, fNac, ParameterNames.FECHA_NAC, true);
+					//Date fechaNacimiento = ValidationUtils.validDate(errors, fNac, ParameterNames.FECHA_NAC, false, dateUtils);
 					if (!errors.hasErrors()) {
 						usuario.setFechaNac(fechaNacimiento);
 					}
@@ -276,6 +284,11 @@ public class UsuarioServlet extends HttpServlet {
 					}				
 					request.setAttribute(AttributeNames.ERRORS, errors);				
 				}
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Edicion 	Fallida: {}", errors);
+				}				
+				request.setAttribute(AttributeNames.ERRORS, errors);
 			}
 			target = ViewPath.MI_PERFIL;
 
@@ -292,6 +305,7 @@ public class UsuarioServlet extends HttpServlet {
 					request.setAttribute(ParameterNames.SIGUIENDO, usuario.getSiguiendo());
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
 					request.setAttribute(ParameterNames.ID_SESION, idSesion);					
+					
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
@@ -305,6 +319,7 @@ public class UsuarioServlet extends HttpServlet {
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 				}
 			}
+						
 			request.setAttribute(AttributeNames.USUARIO, usuario);
 
 			Results<Contenido> resultados = null;
@@ -354,6 +369,31 @@ public class UsuarioServlet extends HttpServlet {
 			}		
 					
 			target = ViewPath.DETALLE_PERFIL;
+
+		}	else if (Actions.ACTUALIZAR.equalsIgnoreCase(action)) {
+			
+			Usuario usuario=null;
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+				try {
+					usuario = usuarioSvc.buscarId(idSesion, idContenido );
+					JsonObject usuarioJson = new JsonObject();
+					usuarioJson.addProperty("denunciado", usuario.getDenunciado());
+					usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
+
+					response.setContentType("application/json;charset=ISO-8859-1");
+					response.getOutputStream().write(usuarioJson.toString().getBytes());
+					
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+				}
+			} else {
+					logger.warn("No se ha detectado un usuario en sesion");
+					errors.add(ParameterNames.ACTION, ErrorCodes.MISSING_SESSION);
+			}
 
 		}	else if (Actions.CAMBIAR_LOCALE.equalsIgnoreCase(action)) {
 						
