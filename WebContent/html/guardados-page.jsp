@@ -47,7 +47,7 @@
 			<!-- Paginacion  -->
 			<p><center>			
 				<c:url var="urlBase" value="contenido" scope="page">
-					<c:param name="action" value="<%=Actions.GUARDADOS%>"/>
+					<c:param name="action" value="${action}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${tipo}"/>
 				</c:url>		
 				<%@include file="/html/common/paginacion.jsp"%>	

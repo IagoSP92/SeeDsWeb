@@ -94,13 +94,36 @@ public class ContenidoServlet extends HttpServlet {
 		ContenidoCriteria criteria = new ContenidoCriteria();
 
 		if (Actions.BUSCAR.equalsIgnoreCase(action)) {
+			request.setAttribute(ParameterNames.ACTION, Actions.BUSCAR);
 			
-			String checkTodos = request.getParameter(ParameterNames.CHECK_TODOS);
-			String checkVideos = request.getParameter(ParameterNames.CHECK_VIDEO);
-			String checkListas = request.getParameter(ParameterNames.CHECK_LISTA);
-			String checkUsuarios = request.getParameter(ParameterNames.CHECK_USUARIO);
+			Boolean aceptarTodo= null;
+			Boolean aceptarVideo= null;
+			Boolean aceptarLista= null;
+			Boolean aceptarUsuario= null;
 			
-			System.out.println(checkTodos+"-"+checkVideos+"-"+checkListas+"-"+checkUsuarios);
+			if(  request.getParameter(ParameterNames.ACEPTAR_TODOS)==null ) {			
+				String checkTodos = request.getParameter(ParameterNames.CHECK_TODOS);
+				String checkVideos = request.getParameter(ParameterNames.CHECK_VIDEO);
+				String checkListas = request.getParameter(ParameterNames.CHECK_LISTA);
+				String checkUsuarios = request.getParameter(ParameterNames.CHECK_USUARIO);
+				
+				System.out.println(checkTodos+"-"+checkVideos+"-"+checkListas+"-"+checkUsuarios);
+				
+				aceptarTodo= (ValidationUtils.validCheck(errors, checkTodos, ParameterNames.CHECK_TODOS, false));
+				aceptarVideo= (ValidationUtils.validCheck(errors, checkVideos, ParameterNames.CHECK_VIDEO, false));
+				aceptarLista= (ValidationUtils.validCheck(errors, checkListas, ParameterNames.CHECK_LISTA, false));
+				aceptarUsuario= (ValidationUtils.validCheck(errors, checkUsuarios, ParameterNames.CHECK_USUARIO, false));
+			} else {				
+				aceptarTodo= ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.ACEPTAR_TODOS), ParameterNames.ACEPTAR_TODOS, true);
+				aceptarVideo= ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.ACEPTAR_VIDEO), ParameterNames.ACEPTAR_VIDEO, true);
+				aceptarLista= ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.ACEPTAR_LISTA), ParameterNames.ACEPTAR_LISTA, true);
+				aceptarUsuario= ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.ACEPTAR_USUARIO), ParameterNames.ACEPTAR_USUARIO, true);				
+			}
+			System.out.println(request.getParameter(ParameterNames.NOMBRE));
+			request.setAttribute(ParameterNames.ACEPTAR_TODOS, aceptarTodo);
+			request.setAttribute(ParameterNames.ACEPTAR_VIDEO, aceptarVideo);
+			request.setAttribute(ParameterNames.ACEPTAR_LISTA, aceptarLista);
+			request.setAttribute(ParameterNames.ACEPTAR_USUARIO, aceptarUsuario);
 			
 			String nombre = request.getParameter(ParameterNames.NOMBRE);			
 			String valoracionMin = request.getParameter(ParameterNames.VALORACION_MIN);
@@ -108,28 +131,17 @@ public class ContenidoServlet extends HttpServlet {
 			String reproduccionesMin = request.getParameter(ParameterNames.REPRODUCCIONES_MIN);
 			String reproduccionesMax = request.getParameter(ParameterNames.REPRODUCCIONES_MAX);
 			String fechaMin = request.getParameter(ParameterNames.FECHA_MIN);
-			String fechaMax = request.getParameter(ParameterNames.FECHA_MAX);
-			
-			Boolean aceptarTodo= null;
-			Boolean aceptarVideo= null;
-			Boolean aceptarLista= null;
-			Boolean aceptarUsuario= null;
-			
-			aceptarTodo= (ValidationUtils.validCheck(errors, checkTodos, ParameterNames.CHECK_TODOS, false));
-			aceptarVideo= (ValidationUtils.validCheck(errors, checkVideos, ParameterNames.CHECK_VIDEO, false));
-			aceptarLista= (ValidationUtils.validCheck(errors, checkListas, ParameterNames.CHECK_LISTA, false));
-			aceptarUsuario= (ValidationUtils.validCheck(errors, checkUsuarios, ParameterNames.CHECK_USUARIO, false));
-			
-			request.setAttribute(ParameterNames.CHECK_TODOS, aceptarTodo);
-			request.setAttribute(ParameterNames.CHECK_VIDEO, aceptarVideo);
-			request.setAttribute(ParameterNames.CHECK_LISTA, aceptarLista);
-			request.setAttribute(ParameterNames.CHECK_USUARIO, aceptarUsuario);	
-			
+			String fechaMax = request.getParameter(ParameterNames.FECHA_MAX);				
+
 			if(aceptarTodo && !(aceptarVideo&&aceptarLista&&aceptarUsuario)) {
 				errors.add(ParameterNames.CHECK_TODOS, ErrorCodes.INVALID_CHECK);
 			} else {
+				if(aceptarTodo) {
+					aceptarVideo= false;
+					aceptarLista= false;
+					aceptarUsuario= false;
+				}
 				
-				System.out.println(aceptarVideo+"-"+aceptarLista+"-"+aceptarUsuario);
 				criteria.setAceptarVideo(aceptarVideo);
 				criteria.setAceptarLista(aceptarLista);
 				criteria.setAceptarUsuario(aceptarUsuario);
@@ -182,6 +194,7 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.BUSCADOR;
 
 		} else if (Actions.GENERAL.equalsIgnoreCase(action)) {
+			request.setAttribute(ParameterNames.ACTION, Actions.BUSCAR);
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
@@ -206,6 +219,7 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.HOME;
 			
 		}  else if (Actions.MUSICA.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.MUSICA);
 	
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
@@ -231,12 +245,19 @@ public class ContenidoServlet extends HttpServlet {
 			
 			target = ViewPath.MUSICA;
 			
-		}  else if (Actions.SERIES.equalsIgnoreCase(action)){	
+		}  else if (Actions.SERIES.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.SERIES);
 
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(2l);
+			request.setAttribute(ParameterNames.CATEGORIA, criteria.getCategoria());
+			
+			request.setAttribute(ParameterNames.ACEPTAR_TODOS, true);
+			request.setAttribute(ParameterNames.ACEPTAR_VIDEO, true);
+			request.setAttribute(ParameterNames.ACEPTAR_LISTA, true);
+			request.setAttribute(ParameterNames.ACEPTAR_USUARIO, true);
 			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
@@ -258,7 +279,7 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.HOME;
 
 		}  else if (Actions.CORTOS.equalsIgnoreCase(action)){
-
+			request.setAttribute(ParameterNames.ACTION, Actions.CORTOS);
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
@@ -284,6 +305,7 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.HOME;
 
 		}  else if (Actions.DOCUMENTAL.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.DOCUMENTAL);
 
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
@@ -309,7 +331,8 @@ public class ContenidoServlet extends HttpServlet {
 			
 			target = ViewPath.HOME;
 
-		}  else if (Actions.GUIAS.equalsIgnoreCase(action)){	
+		}  else if (Actions.GUIAS.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.GUIAS);
 
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
@@ -336,6 +359,7 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.HOME;
 			
 		}  else if (Actions.GUARDADOS.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.GUARDADOS);
 			
 			Results<Contenido> resultados = null;
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
@@ -370,7 +394,8 @@ public class ContenidoServlet extends HttpServlet {
 			
 			target = ViewPath.GUARDADOS;
 			
-		}  else if (Actions.SEGUIDOS.equalsIgnoreCase(action)){	
+		}  else if (Actions.SEGUIDOS.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.SEGUIDOS);
 
 			Results<Contenido> resultados = null;
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
@@ -406,6 +431,7 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.SEGUIDOS;
 			
 		}  else if (Actions.SUBIDOS.equalsIgnoreCase(action)){
+			request.setAttribute(ParameterNames.ACTION, Actions.SUBIDOS);
 			Results<Contenido> resultados = null;
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);

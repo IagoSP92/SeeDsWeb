@@ -13,19 +13,27 @@
 	</div>	
 	
 	<div id="perfilAutenticadosDiv">
+	
 		<c:if test = "${autenticado==true}">
+		
 			<c:choose>
 				<c:when test="${siguiendo == true}">
-					<button class="userButton seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="true">
-						<fmt:message key="detalle.noseguir" bundle="${messages}"/>
-					</button>
+					<div id="seguirDiv">
+						<button class="userButton seguirButton" id="seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="true">
+							<fmt:message key="detalle.noseguir" bundle="${messages}"/>
+						</button>
+					</div>
 				</c:when>
 				<c:otherwise>
-					<button class="userButton seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="false">
-						<fmt:message key="detalle.seguir" bundle="${messages}"/>
-					</button>
+					<div id="seguirDiv">
+						<button class="userButton seguirButton" id="seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="false">
+							<fmt:message key="detalle.seguir" bundle="${messages}"/>
+						</button>
+					</div>
 	  			</c:otherwise>		
-			</c:choose>			
+			</c:choose>
+			
+			
 			<c:choose>
 				<c:when test="${denunciado != null}">
 					<button class="userButton denunciarButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciando="Null">
@@ -39,6 +47,8 @@
 	  			</c:otherwise>		
 			</c:choose>	
 	     </c:if>
+	     
+	     
 	</div>
 	
 	<span>

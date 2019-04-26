@@ -18,17 +18,18 @@ $(document).ready(function () {
 				success: function( valor ){
 					
 					if(valor.siguiendo==false){
-						$(".seguirButton").html('<fmt:message key="detalle.seguir" bundle="${messages}"/>');
-						$(".seguirButton").attr("data-siguiendo", "true");
-					}
-					if(valor.siguiendo==true){
-						$(".seguirButton").html('<fmt:message key="detalle.noseguir" bundle="${messages}"/>');
-						$(".seguirButton").attr("data-siguiendo", "true");
-					}
+						$(".seguirButton").attr("data-siguiendo", "false");
+						
+						$(".seguirButton").html(valor.mensaje);
+						
+						}
 					
-					// CARGAR USUARIO CON JSON
-//					location.reload(true);
-//					location.reload(true);
+					if(valor.siguiendo==true){
+						$(".seguirButton").attr("data-siguiendo", "true");
+						
+						$(".seguirButton").html(valor.mensaje);
+						
+					}
 				}	
 		});
 	})
@@ -61,10 +62,26 @@ $(document).ready(function () {
 				'guardado': $(this).attr("data-guardado"),
 				'action':"guardar"},				
 				success:
-				function(){
+				function(valor){
+					alert(valor.guardado);
+					alert(valor.mensaje);
+					
+					if(valor.guardado==false){
+						$(".guardarButton").attr("data-guardado", "false");
+						
+						$(".guardarButton").html(valor.mensaje);
+						
+						}
+					
+					if(valor.guardado==true){
+						$(".guardarButton").attr("data-guardado", "true");
+						
+						$(".guardarButton").html(valor.mensaje);
+						
+					}
 					// CARGAR USUARIO CON JSON
-					location.reload(true);
-					location.reload(true);
+//					location.reload(true);
+//					location.reload(true);
 				}
 		});
 	})

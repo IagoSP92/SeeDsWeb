@@ -101,15 +101,12 @@
 		</c:forEach>
 	</ul>
 
-<p>todos <%=ParameterUtils.getParameter(request, ParameterNames.CHECK_TODOS) %> video ${check_video} ${check_lista}${check_usuario}</p>
 	<!-- Paginacion  -->
 	<p><center>
 		
 	<c:url var="urlBase" value="contenido" scope="page">
-		<c:param name="action" value="<%=Actions.BUSCAR%>"/>
+		<c:param name="action" value="${action}"/>
 
-
-				
 		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>		
 		<c:param name="<%=ParameterNames.VALORACION_MIN%>" value="${valoracion_min}"/>
 		<c:param name="<%=ParameterNames.VALORACION_MAX%>" value="${valoracion_max}"/>
@@ -118,10 +115,13 @@
 		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
 		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
 		
-				<c:param name="<%=ParameterNames.CHECK_TODOS%>" value="<%=ParameterUtils.getParameter(request, ParameterNames.CHECK_TODOS) %>"/>
-		<c:param name="<%=ParameterNames.CHECK_VIDEO%>" value="<%=ParameterUtils.getParameter(request, ParameterNames.CHECK_VIDEO) %>"/>
-		<c:param name="<%=ParameterNames.CHECK_LISTA%>" value="${check_lista}"/>
-		<c:param name="<%=ParameterNames.CHECK_USUARIO%>" value="${check_usuario}"/>
+		<c:param name="<%=ParameterNames.ACEPTAR_TODOS%>" value="${aceptar_todos}"/>
+		<c:param name="<%=ParameterNames.ACEPTAR_VIDEO%>" value="${aceptar_video}"/>
+		<c:param name="<%=ParameterNames.ACEPTAR_LISTA%>" value="${aceptar_lista}"/>
+		<c:param name="<%=ParameterNames.ACEPTAR_USUARIO%>" value="${aceptar_usuario}"/>
+		
+		<c:param name="<%=ParameterNames.CATEGORIA%>" value="${categoria}"/>
+		
 	</c:url>
 	
 	<c:if test="${page > 1}"><!-- Primera Página -->

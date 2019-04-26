@@ -2,25 +2,29 @@ package com.seeds.web.controller;
 
 public class ParameterNames {
 	
-	public static final String IDIOMA = "ES";
-	
+	public static final String IDIOMA = "ES";	
 	public static final String ACTION = "action";
 
 	public static final String CHECK_TODOS = "check_todos";
 	public static final String CHECK_VIDEO = "check_video";
 	public static final String CHECK_LISTA = "check_lista";
 	public static final String CHECK_USUARIO = "check_usuario";
+	
+	public static final String ACEPTAR_TODOS = "aceptar_todos";
+	public static final String ACEPTAR_VIDEO = "aceptar_video";
+	public static final String ACEPTAR_LISTA = "aceptar_lista";
+	public static final String ACEPTAR_USUARIO = "aceptar_usuario";	
+	
 	public static final String VALORACION_MIN = "valoracion_min";
 	public static final String VALORACION_MAX = "valoracion_max";
 	public static final String REPRODUCCIONES_MIN = "reproducciones_min";
 	public static final String REPRODUCCIONES_MAX = "reproduccione_max";
 	public static final String FECHA_MIN = "fecha_min";
 	public static final String FECHA_MAX = "fecha_max";
+	public static final String CATEGORIA = "categoria";
 	
 	public static final String PAGE = "page"; 
-
-	public static final String TOTAL_PAGES = "total-pages";
-	
+	public static final String TOTAL_PAGES = "total-pages";	
 	public static final String VALORACION_MEDIA = "valoracion_media";
 
 	public static final String ID_CONTENIDO = "id";

@@ -1,5 +1,6 @@
 package com.seeds.web.controller;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -48,6 +49,14 @@ public class RelationServlet extends HttpServlet {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 		}
 		
+		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
+		String idioma=null;
+		
+		if(locale!=null) {
+			String rawIdioma = locale.toString();
+			idioma=rawIdioma.substring(0, 2);
+		}
+		
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
@@ -78,8 +87,25 @@ public class RelationServlet extends HttpServlet {
 				try {
 					usuario = usuarioSvc.buscarId(idSesion, idContenido );
 					JsonObject usuarioJson = new JsonObject();
-					usuarioJson.addProperty("denunciado", usuario.getDenunciado());
 					usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
+					String mensaje="Default";
+					if(nuevoValor) {
+						if(idioma.equals("en")==true) {
+							mensaje="Unfollow";
+						}
+						if(idioma.equals("es")) {
+							mensaje="Dejar de Seguir";
+						}
+					}
+					if(!nuevoValor) {
+						if(idioma.equals("en")) {
+							mensaje="Follow";
+						}
+						if(idioma.equals("es")) {
+							mensaje="Seguir";
+						}
+					}					
+					usuarioJson.addProperty("mensaje", mensaje);
 
 					response.setContentType("application/json;charset=ISO-8859-1");
 					response.getOutputStream().write(usuarioJson.toString().getBytes());
@@ -111,6 +137,43 @@ public class RelationServlet extends HttpServlet {
 				//erros
 			}
 			
+			Usuario usuario=null;
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				try {
+					usuario = usuarioSvc.buscarId(idSesion, idContenido );
+					JsonObject usuarioJson = new JsonObject();
+					System.out.println(usuario.getGuardado());
+					usuarioJson.addProperty("guardado", usuario.getGuardado());
+					String mensaje="Default";
+					if(nuevoValor) {
+						if(idioma.equals("en")==true) {
+							mensaje="Delete";
+						}
+						if(idioma.equals("es")) {
+							mensaje="Borrarr";
+						}
+					}
+					if(!nuevoValor) {
+						if(idioma.equals("en")) {
+							mensaje="Save";
+						}
+						if(idioma.equals("es")) {
+							mensaje="Guardar";
+						}
+					}					
+					usuarioJson.addProperty("mensaje", mensaje);
+
+					response.setContentType("application/json;charset=ISO-8859-1");
+					response.getOutputStream().write(usuarioJson.toString().getBytes());
+					
+				} catch (DataException | NumberFormatException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+				}
+			}
+			
+			
 		} else if (Actions.DENUNCIAR.equalsIgnoreCase(action)) {
 			
 			String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
@@ -118,6 +181,7 @@ public class RelationServlet extends HttpServlet {
 				String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
 				try {
 					contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
+					
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					//erros
