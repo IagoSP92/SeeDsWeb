@@ -19,14 +19,13 @@ public class FileUtils {
 	
 	private static final String UPLOAD_ROOT = ConfigurationManager.getInstance().getParameter("upload.root");
 	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
+	private static final String AVATAR_DIRECTORY = ConfigurationManager.getInstance().getParameter("avatar.directory");
 	
-	public static void readDocument(HttpServletResponse response, String urlBase, Long idVideo) {
+	public static void readVideo(HttpServletResponse response, String urlBase, Long idVideo) {
 		
-			File file = new File(urlBase);
-			
+			File file = new File(urlBase);						
 			response.setHeader("Content-Disposition", "inline; filename="+ idVideo+".mp4;");
-			response.setContentType("video/mp4");
-			
+			response.setContentType("video/mp4");			
 			try {
 				FileInputStream fis = new FileInputStream(file);
 				byte[] buffer = new byte[1024];
@@ -41,29 +40,68 @@ public class FileUtils {
 			}
 	}
 	
-	public static String loadDocument (Long idUsuario, Long idVideo,  FileItem fileItem) {
+	public static void readFoto(HttpServletResponse response, Long idUsuario) {
+		String urlBase= UPLOAD_ROOT+File.separator+AVATAR_DIRECTORY+ File.separator + idUsuario;  
+		File file = new File(urlBase);
+		response.setHeader("Content-Disposition", "inline; filename="+ idUsuario+".jpeg;");
+		response.setContentType("image/jpeg");			
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			byte[] buffer = new byte[1024];
+			
+			while (fis.read(buffer) > 0) {
+				response.getOutputStream().write(buffer);
+				response.flushBuffer();
+			}
+			fis.close();
+		} catch (IOException e) {
+			logger.warn(e.getMessage(), e);
+		}
+}
+	
+	public static String loadVideo (Long idUsuario, Long idVideo,  FileItem fileItem) {
 		// constructs the directory path to store upload file
         // this path is relative to application's directory
-        String uploadPath = UPLOAD_ROOT + File.separator + UPLOAD_DIRECTORY + File.separator + idUsuario;
-         
-        // creates the directory if it does not exist
-
-        
+        String uploadPath = UPLOAD_ROOT + File.separator + UPLOAD_DIRECTORY + File.separator + idUsuario;         
+        // creates the directory if it does not exist       
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             if(!uploadDir.mkdirs()) {
             	logger.warn("No se ha podido crear el directorio");
             }
-        }
-        
+        }        
         if(logger.isDebugEnabled()) {
 			logger.debug("UploadPath= {}",uploadPath);
-		}
-		
-		String fileName = new File(idVideo.toString().concat(ConfigurationManager.getInstance().getParameter("files.extension"))).getName();
+		}		
+		String fileName = new File(idVideo.toString().concat(ConfigurationManager.getInstance().getParameter("videos.extension"))).getName();
         String filePath = uploadPath + File.separator + fileName;
         File storeFile = new File(filePath);
-
+        try {
+			fileItem.write(storeFile);
+		} catch (Exception e) {
+			logger.warn(e.getMessage(), e);
+		}
+        logger.debug("Upload has been done successfully!");
+        return filePath;
+	}
+	
+	public static String loadFoto (Long idUsuario, FileItem fileItem) {
+		// constructs the directory path to store upload file
+        // this path is relative to application's directory
+        String uploadPath = UPLOAD_ROOT + File.separator + AVATAR_DIRECTORY;         
+        // creates the directory if it does not exist       
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            if(!uploadDir.mkdirs()) {
+            	logger.warn("No se ha podido crear el directorio");
+            }
+        }        
+        if(logger.isDebugEnabled()) {
+			logger.debug("UploadPath= {}",uploadPath);
+		}		
+		String fileName = new File(idUsuario.toString().concat(ConfigurationManager.getInstance().getParameter("avatar.extension"))).getName();
+        String filePath = uploadPath + File.separator + fileName;
+        File storeFile = new File(filePath);
         try {
 			fileItem.write(storeFile);
 		} catch (Exception e) {

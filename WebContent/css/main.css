@@ -1,5 +1,85 @@
 @charset "ISO-8859-1";
 
+:root {
+	--fondo_muy_uscuro: #172B4D;
+	--fondo_oscuro: #026aa7;	
+	--fondo_intermedio: rgba(9,30,66,.08);
+	--fondo_claro: rgb(149, 199, 240);
+	--fondo_muy_claro:#E4F0F6;
+  }
+
+  .mainWindow{
+	margin-top: 70px;
+	margin-left: 160px;
+}
+
+  #registro-form{
+	  background-color: var(--fondo_claro);
+	 box-align: left; 
+	  width: 80%;
+	  margin-block-end: 10%;
+	}
+  #registro-form input,select{
+	  position: relative;
+	  margin-right: 50%;
+	  margin-top: 3%;
+	  background-color: var(--fondo_muy_claro);
+	  margin-inline-end: 5%;
+	  width: 30%;
+	  height: 25px;
+	}
+	#registro-form .rotuloCampo{
+		color: #172B4D;
+		font-size:  140%;;
+		width: 20%;
+	}
+	#registro-form #registroSubmit{
+		color: rgb(255, 255, 255);
+		font-size:  140%;;
+		width: 50%;
+		height: 50px;
+		background-color: #026aa7;
+	}
+
+	#registro-form h1{
+		color:  #172B4D;
+		font-size:  250%;;
+	}
+
+	#login-form{
+		background-color: var(--fondo_claro);
+	   box-align: left; 
+		width: 80%;
+		margin-block-end: 10%;
+	  }
+	#login-form input,select{
+		position: relative;
+		margin-right: 50%;
+		margin-top: 3%;
+		background-color: var(--fondo_muy_claro);
+		margin-inline-end: 5%;
+		width: 30%;
+		height: 25px;
+	  }
+	  #login-form .rotuloCampo{
+		  color: #172B4D;
+		  font-size:  140%;;
+		  width: 20%;
+	  }
+	  #login-form #loginSubmit{
+		  color: rgb(255, 255, 255);
+		  font-size:  140%;;
+		  width: 50%;
+		  height: 50px;
+		  background-color: #026aa7;
+	  }
+  
+	  #login-form h1{
+		  color:  #172B4D;
+		  font-size:  250%;;
+	  }
+
+
 html, body{
 	width: 98%;
 	height: 98%;
@@ -79,10 +159,7 @@ button:hover{ cursor: pointer; }
 }
 #nav-menu a {text-decoration: none;}
 
-.mainWindow{
-	margin-top: 70px;
-	margin-left: 160px;
-}
+
 
 #buscador-form {
 	background-color: rgb(149, 199, 240);
@@ -90,6 +167,8 @@ button:hover{ cursor: pointer; }
 	padding:10px;
 	margin: 10px;
 	display: inline-block;
+	color:  #172B4D;
+
 }
 
 #buscarButton{

@@ -3,9 +3,11 @@
 <%@include file="/html/common/header.jsp"%>
 
 <div class="mainWindow">
-<h3>LOG IN</h3>
+<div id="login-form"
+<h1><fmt:message key="interfaz.entrar" bundle="${messages}"/></h1>
 
 <form action="<%=ControllerPath.USUARIO%>" method="post">
+<h1>iago</h1>
 
 	<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.ENTRAR%>"/>
 	
@@ -22,12 +24,12 @@
 				%>
 	<br/>		
 	<input type="password" name="<%=ParameterNames.PASSWORD%>"/>
-	<input type="submit" value="Entrar" /> 
+	<input id="#loginSubmit" type="submit" value="Entrar" /> 
 
 </form>
 
 <a href="<%=ControllerPath.USUARIO%>?action=<%=Actions.PRERREGISTRO%>">Registrarse</a>
- 
+ ></div>
 </div>
 <%@include file="/html/common/footer.jsp"%>
 

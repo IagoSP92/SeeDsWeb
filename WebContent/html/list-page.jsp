@@ -47,7 +47,7 @@
 	  			</c:otherwise>		
 			</c:choose>
 			<c:choose>
-				<c:when test="${comentado != null}">
+				<c:when test="${comentado != 'Null'}">
 					<button class="userButton comentarButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-comentado="Null">
 						<fmt:message key="detalle.nocomentar" bundle="${messages}"/>
 					</button>

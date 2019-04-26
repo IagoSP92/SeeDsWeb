@@ -63,9 +63,7 @@ $(document).ready(function () {
 				'action':"guardar"},				
 				success:
 				function(valor){
-					alert(valor.guardado);
-					alert(valor.mensaje);
-					
+
 					if(valor.guardado==false){
 						$(".guardarButton").attr("data-guardado", "false");
 						
@@ -97,8 +95,7 @@ $(document).ready(function () {
 				'action':"comentar"},				
 				success:
 				function(){
-					// CARGAR USUARIO CON JSON
-					location.reload(true);
+
 					location.reload(true);
 				}
 		});

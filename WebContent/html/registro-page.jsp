@@ -2,9 +2,10 @@
 <%@ page import="com.seeds.web.utils.*, com.seeds.web.controller.*" %>
 
 <div class="mainWindow">
-	<h3><fmt:message key="interfaz.registro" bundle="${messages}"/></h3>
+	
 
 <div id="registro-form">
+		<h1><fmt:message key="interfaz.registro" bundle="${messages}"/></h1>
 	
 		<form action="<%=ControllerPath.USUARIO%>" method="post">	
 			<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.REGISTRO%>"/>
@@ -13,7 +14,7 @@
 			<input name="ParameterNames.AUTOR"   type="hidden" value="null">
 			
 			<div id="campoNombre">
-			<span class="rotuloCampo"><%=ParameterNames.NOMBRE%>:</span>
+			<span class="rotuloCampo "><%=ParameterNames.NOMBRE%>:</span>
 			<input type="text"
 					name="<%=ParameterNames.NOMBRE%>" 
 					value="<%=ParameterUtils.getParameter(request, ParameterNames.NOMBRE) %>"/>	
@@ -32,13 +33,14 @@
 					name="<%=ParameterNames.PASSWORD%>" 
 					value="<%=ParameterUtils.getParameter(request, ParameterNames.PASSWORD) %>"/>
 			</div>
+			<br/>
 			<div id="campoFechaNac">
 			<span class="rotuloCampo"><%=ParameterNames.FECHA_NAC%>:</span>
 			<input type="date"
 					name="<%=ParameterNames.FECHA_NAC%>" 
 					value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_NAC) %>"/>
 			</div>
-			
+			<br/>
 			<div id="campoNombreReal">
 			<span class="rotuloCampo"><%=ParameterNames.NOMBRE_REAL%>:</span>
 			<input name="<%=ParameterNames.NOMBRE_REAL%>" type="text" 
@@ -62,9 +64,9 @@
 							</c:forEach>
 					</select>
 				</span>
-			</div>	
-
-			<input type="submit" name="registro" value="Registro"/>
+			</div>
+			<br/>
+			<input id="registroSubmit" type="submit" name="registro" value="Registro"/>
 		</form>
 		
 </div>

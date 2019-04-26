@@ -118,6 +118,7 @@ public class VideoServlet extends HttpServlet {
 					request.setAttribute(ParameterNames.COMENTARIOS, video.getComentarios());
 					request.setAttribute(ParameterNames.DENUNCIADO, video.getDenunciado());
 					request.setAttribute(ParameterNames.GUARDADO, video.getGuardado());
+					System.out.println(video.getComentado());
 					request.setAttribute(ParameterNames.COMENTADO, video.getComentado());
 					request.setAttribute(ParameterNames.VALORACION, video.getValorado());
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
@@ -189,7 +190,7 @@ public class VideoServlet extends HttpServlet {
 				}
 				
 				if (!formItems.get(3).isFormField()) {
-                    ruta= FileUtils.loadDocument(idAutor, video.getId(), formItems.get(3));
+                    ruta= FileUtils.loadVideo(idAutor, video.getId(), formItems.get(3));
                 }
 				video.setUrl(ruta);
 				try {
@@ -218,7 +219,7 @@ public class VideoServlet extends HttpServlet {
 			
 			Long idVideo= ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_VIDEO), ParameterNames.ID_VIDEO, true);
 			String urlBase= request.getParameter(ParameterNames.RUTA_VIDEO);
-			FileUtils.readDocument(response,urlBase, idVideo);
+			FileUtils.readVideo(response,urlBase, idVideo);
 			return;			
 			
 		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA

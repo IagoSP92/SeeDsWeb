@@ -1,6 +1,5 @@
 package com.seeds.web.controller;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -15,11 +14,17 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
+import com.isp.seeds.model.Video;
 import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
 import com.isp.seeds.service.UsuarioServiceImpl;
+import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.UsuarioService;
+import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.SessionAttributeNames;
@@ -35,11 +40,15 @@ public class RelationServlet extends HttpServlet {
 	private static Logger logger = LogManager.getLogger(RelationServlet.class);
 	private ContenidoService contenidoSvc = null;
 	private UsuarioService usuarioSvc = null;
+	private ListaService listaSvc = null;
+	private VideoService videoSvc = null;
 
     public RelationServlet() {
         super();
 		contenidoSvc = new ContenidoServiceImpl();
 		usuarioSvc = new UsuarioServiceImpl();
+		listaSvc = new ListaServiceImpl();
+		videoSvc = new VideoServiceImpl();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,153 +74,221 @@ public class RelationServlet extends HttpServlet {
 		String id= request.getParameter(ParameterNames.ID_CONTENIDO);
 		Long idContenido =ValidationUtils.validLong(errors, id, ParameterNames.ID_CONTENIDO, false);
 		
-		if (Actions.SEGUIR.equalsIgnoreCase(action)) {
+		
+		if (Actions.SEGUIR.equalsIgnoreCase(action)) {			
 			Boolean nuevoValor=null;
-			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)) {
-				nuevoValor=false;
-			} else {nuevoValor=true;}
-			if (logger.isDebugEnabled()) {
-				logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
-			}
-			try {
-				contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);
-				
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				//erros
-			}
-			
-			Usuario usuario=null;
-			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
-			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
-				try {
-					usuario = usuarioSvc.buscarId(idSesion, idContenido );
-					JsonObject usuarioJson = new JsonObject();
-					usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
-					String mensaje="Default";
-					if(nuevoValor) {
-						if(idioma.equals("en")==true) {
-							mensaje="Unfollow";
-						}
-						if(idioma.equals("es")) {
-							mensaje="Dejar de Seguir";
-						}
-					}
-					if(!nuevoValor) {
-						if(idioma.equals("en")) {
-							mensaje="Follow";
-						}
-						if(idioma.equals("es")) {
-							mensaje="Seguir";
-						}
-					}					
-					usuarioJson.addProperty("mensaje", mensaje);
-
-					response.setContentType("application/json;charset=ISO-8859-1");
-					response.getOutputStream().write(usuarioJson.toString().getBytes());
-					
-				} catch (DataException | NumberFormatException e) {
-					logger.warn(e.getMessage(), e);
-					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			if((tipo==1 || tipo==3)) {				
+				if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)) {
+					nuevoValor=false;
+				} else {nuevoValor=true;}
+				if (logger.isDebugEnabled()) {
+					logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
 				}
-			} else {
-					logger.warn("No se ha detectado un usuario en sesion");
-					errors.add(ParameterNames.ACTION, ErrorCodes.MISSING_SESSION);
+				try {
+					contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);
+					
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					//erros
+				}				
+				
+				request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+				if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+					try {
+						JsonObject usuarioJson = new JsonObject();
+						if(tipo==1) {
+							Usuario usuario=null;
+							usuario = usuarioSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
+						}
+						if(tipo==3) {
+							Lista lista=null;
+							lista = listaSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("siguiendo", lista.getSiguiendo());
+						}					
+						String mensaje="Default";
+						if(nuevoValor) {
+							if(idioma.equals("en")==true) {
+								mensaje="Unfollow";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Dejar de Seguir";
+							}
+						}
+						if(!nuevoValor) {
+							if(idioma.equals("en")) {
+								mensaje="Follow";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Seguir";
+							}
+						}					
+						usuarioJson.addProperty("mensaje", mensaje);
+	
+						response.setContentType("application/json;charset=ISO-8859-1");
+						response.getOutputStream().write(usuarioJson.toString().getBytes());
+						
+					} catch (DataException | NumberFormatException e) {
+						logger.warn(e.getMessage(), e);
+						errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+					}
+				} else {
+						logger.warn("No se ha detectado un usuario en sesion");
+						errors.add(ParameterNames.ACTION, ErrorCodes.MISSING_SESSION);
+				}
 			}
-			
-			//response.getOutputStream().write();
 			
 		} else if (Actions.GUARDAR.equalsIgnoreCase(action)) {			
 			Boolean nuevoValor=null;
-			if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.GUARDADO), ParameterNames.GUARDADO, true)) {
-				nuevoValor=false;
-			} else {nuevoValor=true;}
-			if (logger.isDebugEnabled()) {
-				logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
-			}
-			try {
-				contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);
-				
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				//erros
-			}
-			
-			Usuario usuario=null;
-			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
-			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			if(tipo==2||tipo==3) {
+				if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.GUARDADO), ParameterNames.GUARDADO, true)) {
+					nuevoValor=false;
+				} else {nuevoValor=true;}
+				if (logger.isDebugEnabled()) {
+					logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
+				}
 				try {
-					usuario = usuarioSvc.buscarId(idSesion, idContenido );
-					JsonObject usuarioJson = new JsonObject();
-					System.out.println(usuario.getGuardado());
-					usuarioJson.addProperty("guardado", usuario.getGuardado());
-					String mensaje="Default";
-					if(nuevoValor) {
-						if(idioma.equals("en")==true) {
-							mensaje="Delete";
-						}
-						if(idioma.equals("es")) {
-							mensaje="Borrarr";
-						}
-					}
-					if(!nuevoValor) {
-						if(idioma.equals("en")) {
-							mensaje="Save";
-						}
-						if(idioma.equals("es")) {
-							mensaje="Guardar";
-						}
-					}					
-					usuarioJson.addProperty("mensaje", mensaje);
-
-					response.setContentType("application/json;charset=ISO-8859-1");
-					response.getOutputStream().write(usuarioJson.toString().getBytes());
+					contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);
 					
-				} catch (DataException | NumberFormatException e) {
+				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
-					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+					//erros
+				}
+				
+				request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+				if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+					try {						
+						JsonObject usuarioJson = new JsonObject();
+						if(tipo==2) {
+							Video video=null;
+							video = videoSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("guardado", video.getGuardado());
+						}
+						if(tipo==3) {
+							Lista lista=null;
+							lista = listaSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("guardado", lista.getGuardado());
+						}
+						String mensaje="Default";
+						if(nuevoValor) {
+							if(idioma.equals("en")==true) {
+								mensaje="Delete";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Borrarr";
+							}
+						}
+						if(!nuevoValor) {
+							if(idioma.equals("en")) {
+								mensaje="Save";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Guardar";
+							}
+						}					
+						usuarioJson.addProperty("mensaje", mensaje);
+	
+						response.setContentType("application/json;charset=ISO-8859-1");
+						response.getOutputStream().write(usuarioJson.toString().getBytes());
+						
+					} catch (DataException | NumberFormatException e) {
+						logger.warn(e.getMessage(), e);
+						errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+					}
 				}
 			}
 			
 			
 		} else if (Actions.DENUNCIAR.equalsIgnoreCase(action)) {
-			
-			String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
-			if(valorRecibido!=null) {
-				String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
-				try {
-					contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
-					
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					//erros
+			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			if(tipo==1||tipo==3||tipo==3 ) {
+				
+				String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
+				if(valorRecibido!=null) {
+					String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
+					try {
+						contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
+						
+					} catch (DataException e) {
+						logger.warn(e.getMessage(), e);
+						//erros
+					}
+				} else {
+					try {
+						contenidoSvc.cancelarDenuncia(idSesion, idContenido);
+					} catch (DataException e) {
+						logger.warn(e.getMessage(), e);
+						//erros
+					}
 				}
-			} else {
-				try {
-					contenidoSvc.cancelarDenuncia(idSesion, idContenido);
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					//erros
-				}
-			}	
+				
+			}
 			
 		} else if (Actions.COMENTAR.equalsIgnoreCase(action)) {
-			
-			String valorRecibido = request.getParameter(ParameterNames.COMENTADO);
-			if(valorRecibido!=null) {
-				String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
-				try {
-					contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					//erros
+			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			if(tipo==2||tipo==3) {
+				
+				String valorRecibido = request.getParameter(ParameterNames.COMENTADO);
+				
+				if(valorRecibido!=null) {
+					String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
+					try {
+						contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
+					} catch (DataException e) {
+						logger.warn(e.getMessage(), e);
+						//erros
+					}
+				} else {
+					try {
+						contenidoSvc.comentarContenido(idSesion, idContenido, null);
+					} catch (DataException e) {
+						logger.warn(e.getMessage(), e);
+						//erros
+					}
 				}
-			} else {
-				try {
-					contenidoSvc.borrarComentario(idSesion, idContenido);
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					//erros
+				
+				request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+				if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+					try {						
+						JsonObject usuarioJson = new JsonObject();
+						if(tipo==2) {
+							Video video=null;
+							video = videoSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("guardado", video.getGuardado());
+						}
+						if(tipo==3) {
+							Lista lista=null;
+							lista = listaSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("guardado", lista.getGuardado());
+						}
+						
+						String mensaje="Default";
+						if(valorRecibido!=null) {
+							if(idioma.equals("en")==true) {
+								mensaje="Comment";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Comentar";
+							}
+						} else {
+							if(idioma.equals("en")) {
+								mensaje="Delete Comment";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Borrar Comentario";
+							}
+						}					
+						usuarioJson.addProperty("mensaje", mensaje);
+	
+						response.setContentType("application/json;charset=ISO-8859-1");
+						response.getOutputStream().write(usuarioJson.toString().getBytes());
+						
+					} catch (DataException | NumberFormatException e) {
+						logger.warn(e.getMessage(), e);
+						errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+					}
 				}
 			}
 			
