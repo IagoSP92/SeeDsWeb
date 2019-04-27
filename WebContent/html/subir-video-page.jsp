@@ -31,6 +31,20 @@
 						value="<%=ParameterUtils.getParameter(request, ParameterNames.DESCRIPCION) %>"/>
 				</div>
 				
+				
+				<div id="campoCategoriaVideo">
+				<span  class="w3-text-blue"><b><fmt:message key="form.categoria" bundle="${messages}"/></b></span>				
+					<select id="select_categoria" name="<%=ParameterNames.ID_CATEGORIA%>" class="w3-select w3-border">
+						<option value="0">Select category:</option>
+							<c:forEach items="${categorias}" var="categoria">
+								<option value="${categoria.idCategoria}">${categoria.nombreCategoria}</option>		
+							</c:forEach>
+					</select>		
+				</div>
+				
+				<br/>
+				<br/>		
+				
 				<div id="campoRuta">
 				<span class="w3-text-blue"><b><fmt:message key="form.rutaVideo" bundle="${messages}"/></b></span>
 				<input type="file" class="w3-input w3-border" name="<%=ParameterNames.RUTA_VIDEO%>"/>

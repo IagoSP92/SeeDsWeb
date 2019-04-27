@@ -17,19 +17,12 @@ import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
-import com.isp.seeds.service.ContenidoServiceImpl;
-import com.isp.seeds.service.ListaServiceImpl;
-import com.isp.seeds.service.UsuarioServiceImpl;
-import com.isp.seeds.service.VideoServiceImpl;
-import com.isp.seeds.service.spi.ContenidoService;
-import com.isp.seeds.service.spi.ListaService;
-import com.isp.seeds.service.spi.UsuarioService;
-import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
+import com.seeds.web.utils.WebUtils;
 
 /**
  * Servlet implementation class RelationService
@@ -38,18 +31,6 @@ import com.seeds.web.utils.ValidationUtils;
 public class RelationServlet extends HttpServlet {
 	
 	private static Logger logger = LogManager.getLogger(RelationServlet.class);
-	private ContenidoService contenidoSvc = null;
-	private UsuarioService usuarioSvc = null;
-	private ListaService listaSvc = null;
-	private VideoService videoSvc = null;
-
-    public RelationServlet() {
-        super();
-		contenidoSvc = new ContenidoServiceImpl();
-		usuarioSvc = new UsuarioServiceImpl();
-		listaSvc = new ListaServiceImpl();
-		videoSvc = new VideoServiceImpl();
-    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter(ParameterNames.ACTION);
@@ -90,7 +71,7 @@ public class RelationServlet extends HttpServlet {
 					}
 					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 					try {
-						contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);					
+						WebUtils.contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);					
 					} catch (DataException e) {
 						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}				
@@ -99,12 +80,12 @@ public class RelationServlet extends HttpServlet {
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==1) {
 							Usuario usuario=null;
-							usuario = usuarioSvc.buscarId(idSesion, idContenido );
+							usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
 						}
 						if(tipo==3) {
 							Lista lista=null;
-							lista = listaSvc.buscarId(idSesion, idContenido );
+							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("siguiendo", lista.getSiguiendo());
 						}
 						String mensaje="Default";
@@ -147,7 +128,7 @@ public class RelationServlet extends HttpServlet {
 					}
 					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 					try {
-						contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);						
+						WebUtils.contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);						
 					} catch (DataException e) {
 						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}
@@ -158,12 +139,12 @@ public class RelationServlet extends HttpServlet {
 							JsonObject usuarioJson = new JsonObject();
 							if(tipo==2) {
 								Video video=null;
-								video = videoSvc.buscarId(idSesion, idContenido );
+								video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
 								usuarioJson.addProperty("guardado", video.getGuardado());
 							}
 							if(tipo==3) {
 								Lista lista=null;
-								lista = listaSvc.buscarId(idSesion, idContenido );
+								lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
 								usuarioJson.addProperty("guardado", lista.getGuardado());
 							}
 							String mensaje="Default";
@@ -205,14 +186,14 @@ public class RelationServlet extends HttpServlet {
 					if(valorRecibido!=null) {
 						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
 						try {
-							contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
+							WebUtils.contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
 							
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
 					} else {
 						try {
-							contenidoSvc.cancelarDenuncia(idSesion, idContenido);
+							WebUtils.contenidoSvc.cancelarDenuncia(idSesion, idContenido);
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
@@ -229,13 +210,13 @@ public class RelationServlet extends HttpServlet {
 					if(valorRecibido!=null) {
 						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
 						try {
-							contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
+							WebUtils.contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
 					} else {
 						try {
-							contenidoSvc.comentarContenido(idSesion, idContenido, null);
+							WebUtils.contenidoSvc.comentarContenido(idSesion, idContenido, null);
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
@@ -245,12 +226,12 @@ public class RelationServlet extends HttpServlet {
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==2) {
 							Video video=null;
-							video = videoSvc.buscarId(idSesion, idContenido );
+							video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("guardado", video.getGuardado());
 						}
 						if(tipo==3) {
 							Lista lista=null;
-							lista = listaSvc.buscarId(idSesion, idContenido );
+							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("guardado", lista.getGuardado());
 						}
 
@@ -287,22 +268,22 @@ public class RelationServlet extends HttpServlet {
 				if(tipo==2||tipo==3) {			
 				Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.VALORACION), ParameterNames.VALORACION, true);			
 					try {
-						contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
+						WebUtils.contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
 					} catch (DataException e) {					
 						 errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}
 					try {						
 						JsonObject usuarioJson = new JsonObject();
-						Integer myValoration =  contenidoSvc.getValoracion(idSesion, idContenido );
+						Integer myValoration =  WebUtils.contenidoSvc.getValoracion(idSesion, idContenido );
 						usuarioJson.addProperty("myValoration", myValoration);
 						if(tipo==2) {
 							Video video=null;
-							video = videoSvc.buscarId(idSesion, idContenido );
+							video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("valoracion", video.getValoracion());
 						}
 						if(tipo==3) {
 							Lista lista=null;
-							lista = listaSvc.buscarId(idSesion, idContenido );
+							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("valoracion", lista.getValoracion());
 						}						
 						response.setContentType("application/json;charset=ISO-8859-1");

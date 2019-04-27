@@ -120,15 +120,33 @@ public class ValidationUtils {
 				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
 			}
 			return null;
-		}
-		
-		if(paisIsValid(pais, paises)) {
-			return pais;
 		} else {
-			errors.add(parameter, ErrorCodes.INVALID_COUNTRY);
-			return null;
-		}
+			if(paises.contains(pais)) {
+				return pais;
+			} else {
+				errors.add(parameter, ErrorCodes.INVALID_COUNTRY);
+				return null;
+			}			
+		}	
+	}
+	
+	public static Long validCategoria (ErrorManager errors, String categoria, String parameter, Boolean required, List<Long> categorias) {
+		categoria= categoria.trim();
 		
+		if(Long.valueOf(categoria) != null) {	
+			Long idCategoria = Long.parseLong(categoria);
+			if(categorias.contains(idCategoria)) {
+				return idCategoria;
+			} else {
+				errors.add(parameter, ErrorCodes.INVALID_CATEGORY);
+				return null;
+			}			
+		} else {
+			if(required) {
+				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
+			}
+			return null;			
+		}		
 	}
 
 	
@@ -199,17 +217,6 @@ public class ValidationUtils {
 			return dateUtils.dateFormat(date);
 	}
 	
-	
-	
-	private static boolean paisIsValid (String pais, List<String> paises) {
-		if(paises.contains(pais)) {
-			System.out.println(pais);
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 	
 	private static boolean passIsValid (String pass) {
 

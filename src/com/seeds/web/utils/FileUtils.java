@@ -73,7 +73,7 @@ public class FileUtils {
         if(logger.isDebugEnabled()) {
 			logger.debug("UploadPath= {}",uploadPath);
 		}		
-		String fileName = new File(idVideo.toString().concat(ConfigurationManager.getInstance().getParameter("videos.extension"))).getName();
+		String fileName = new File(idVideo.toString().concat(ConfigurationManager.getInstance().getParameter("video.extension"))).getName();
         String filePath = uploadPath + File.separator + fileName;
         File storeFile = new File(filePath);
         try {

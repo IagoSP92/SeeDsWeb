@@ -50,23 +50,6 @@ public class ListaServlet extends HttpServlet {
 			ConfigurationManager.getInstance().getParameter(
 					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 
-	private DateUtils dateUtils = null;
-
-	private UsuarioService usuarioSvc = null;
-	private VideoService videoSvc = null;
-	private ListaService listaSvc = null;
-
-
-	private ContenidoService contenidoSvc = null;
-
-	public ListaServlet() {
-		super();
-		usuarioSvc = new UsuarioServiceImpl();
-		contenidoSvc = new ContenidoServiceImpl();
-		dateUtils = new DateUtils();
-		videoSvc= new VideoServiceImpl();
-		listaSvc= new ListaServiceImpl();
-	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -85,7 +68,7 @@ public class ListaServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					lista = listaSvc.buscarId(idSesion, idContenido );
+					lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
 					request.setAttribute(ParameterNames.COMENTARIOS, lista.getComentarios());
 					request.setAttribute(ParameterNames.DENUNCIADO, lista.getDenunciado());
 					request.setAttribute(ParameterNames.SIGUIENDO, lista.getSiguiendo());
@@ -101,7 +84,7 @@ public class ListaServlet extends HttpServlet {
 				}
 			} else {
 				try {
-					lista = listaSvc.buscarId(null, idContenido );
+					lista = WebUtils.listaSvc.buscarId(null, idContenido );
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
@@ -110,7 +93,7 @@ public class ListaServlet extends HttpServlet {
 			}
 			try {
 				request.setAttribute(AttributeNames.LISTA, lista);
-				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(lista.getAutor()).getNombre());	
+				request.setAttribute(AttributeNames.NOMBRE_AUTOR, WebUtils.contenidoSvc.buscarId(lista.getAutor()).getNombre());	
 				request.setAttribute(ParameterNames.ID_CONTENIDO, lista.getId());
 				request.setAttribute(ParameterNames.TIPO, lista.getTipo());
 			} catch (DataException e) {
@@ -127,7 +110,7 @@ public class ListaServlet extends HttpServlet {
 				int count= pageSize;
 				Results<Video> videosLista= null;
 				try { 
-					videosLista = listaSvc.verVideosLista(lista.getId(), startIndex, count);
+					videosLista = WebUtils.listaSvc.verVideosLista(lista.getId(), startIndex, count);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);

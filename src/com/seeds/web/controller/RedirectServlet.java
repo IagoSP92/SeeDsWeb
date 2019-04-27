@@ -19,42 +19,24 @@ import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
+import com.seeds.web.utils.WebUtils;
 
 @WebServlet("/redirect")
 public class RedirectServlet extends HttpServlet {
 	
 	private static Logger logger = LogManager.getLogger(RedirectServlet.class);
-	
-	private ContenidoService contenidoSvc = null;
-	
-	ValidationUtils validationUtils = null;
-
-    public RedirectServlet() { 
-    	contenidoSvc = new ContenidoServiceImpl();
-    	validationUtils = new ValidationUtils();    	
-    }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		String action = request.getParameter(ParameterNames.ACTION);
+		ErrorManager errors = new ErrorManager(); 
+		String target = null;
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 		}
 
-		ErrorManager errors = new ErrorManager(); 
-		String target = null;
-		boolean redirect = false;
-		
-		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
-		String idioma=null;
-		
-		if(locale!=null) {
-			String rawIdioma = locale.toString();
-			idioma=rawIdioma.substring(0, 2);
-		}
-		
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
 			Long id = Long.parseLong(request.getParameter(ParameterNames.ID_CONTENIDO));
@@ -93,16 +75,6 @@ public class RedirectServlet extends HttpServlet {
 			target = ViewPath.HOME;
 		}
 
-		/*
-		if (redirect) {
-			logger.info("Redirecting to "+target);
-			response.sendRedirect(target);
-		} else {
-			logger.info("Forwarding to "+target);
-			request.getRequestDispatcher("/usuario").forward(request, response);
-			//request.getRequestDispatcher(target).forward(request, response);
-		}		
-		*/
 	}
 	
 	

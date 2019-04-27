@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Categoria;
+import com.isp.seeds.model.Pais;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
 import com.isp.seeds.service.ContenidoServiceImpl;
@@ -51,23 +53,17 @@ public class VideoServlet extends HttpServlet {
 	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 5; // 5MB
 
 	private static Logger logger = LogManager.getLogger(VideoServlet.class);
-
-	private DateUtils dateUtils = null;
-
-	private UsuarioService usuarioSvc = null;
-	private VideoService videoSvc = null;
-
-
-	private ContenidoService contenidoSvc = null;
-
-	private List<String> idsPais;
-
+	
+	
+	
+	private List<Long> idsCategoria;
 	public VideoServlet() {
-		super();
-		usuarioSvc = new UsuarioServiceImpl();
-		contenidoSvc = new ContenidoServiceImpl();
-		dateUtils = new DateUtils();
-		videoSvc= new VideoServiceImpl();		
+		super();			
+		try {
+			idsCategoria = WebUtils.categoriaSvc.findAll("ES").stream().map(Categoria::getIdCategoria).collect(Collectors.toList());
+		} catch (DataException e) {
+			logger.warn(e.getMessage(), e);
+		}
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -117,11 +113,10 @@ public class VideoServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					video = videoSvc.buscarId(idSesion, idContenido );
+					video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
 					request.setAttribute(ParameterNames.COMENTARIOS, video.getComentarios());
 					request.setAttribute(ParameterNames.DENUNCIADO, video.getDenunciado());
 					request.setAttribute(ParameterNames.GUARDADO, video.getGuardado());
-					System.out.println(video.getComentado());
 					request.setAttribute(ParameterNames.COMENTADO, video.getComentado());
 					request.setAttribute(ParameterNames.VALORACION, video.getValorado());
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
@@ -141,7 +136,7 @@ public class VideoServlet extends HttpServlet {
 			}			
 			try {
 				request.setAttribute(AttributeNames.VIDEO, video);
-				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(video.getAutor()).getNombre());					
+				request.setAttribute(AttributeNames.NOMBRE_AUTOR, WebUtils.contenidoSvc.buscarId(video.getAutor()).getNombre());					
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			} catch (NumberFormatException e) {
@@ -150,13 +145,11 @@ public class VideoServlet extends HttpServlet {
 			}			
 			target = ViewPath.DETALLE_VIDEO;
 
-		} else if (Actions.PRE_SUBIR_VIDEO.equalsIgnoreCase(action)) { //CHAPUZA
+		} else if (Actions.PRE_SUBIR_VIDEO.equalsIgnoreCase(action)) {
 			
-			List<Categoria> categorias = null;
+			List<Categoria> categorias = null;			
 			try {
-				String idioma= WebUtils.getIdioma(request);
-				System.out.println(idioma);
-				categorias = WebUtils.categoriaSvc.findAll(idioma);
+				categorias =WebUtils.categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				errors.add(AttributeNames.CATEGORIAS, ErrorCodes.PRE_SUBIR_VIDEO);
@@ -169,14 +162,17 @@ public class VideoServlet extends HttpServlet {
 			Long idAutor= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			String nombre = null;
 			String descripcion =  null;
-			String ruta = null;	   
+			String ruta = null;
+			String categoria = null;
 
 	        // parses the request's content to extract file data
 			nombre = formItems.get(1).getString();
 			descripcion = formItems.get(2).getString();
+			categoria = formItems.get(3).getString();
 	        	        
 	        nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
-	        descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.NOMBRE, true);
+	        descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.DESCRIPCION, true);
+	        Long idCategoria = ValidationUtils.validCategoria(errors, categoria, ParameterNames.CATEGORIA, true, idsCategoria);
 	        
 	        Video video = new Video();
 
@@ -186,25 +182,30 @@ public class VideoServlet extends HttpServlet {
 				video.setFechaAlta(new Date());
 				video.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
 				video.setAutor(idAutor);
-				
+				try {
+					video.setCategoria(WebUtils.categoriaSvc.findById(idCategoria, "ES"));
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(Actions.SUBIR_VIDEO, ErrorCodes.RECOVERY_ERROR);
+				}
 				video.setNombre(nombre);
 				video.setDescripcion(descripcion);
 				
 				if (!errors.hasErrors()) {
 					try {
-						video = videoSvc.crearVideo(video);
+						video = WebUtils.videoSvc.crearVideo(video);
 					} catch (DataException e) {
 						logger.warn(e.getMessage(), e);
 						//errors
 					}
 				}
 				
-				if (!formItems.get(3).isFormField()) {
-                    ruta= FileUtils.loadVideo(idAutor, video.getId(), formItems.get(3));
+				if (!formItems.get(4).isFormField()) {
+                    ruta= FileUtils.loadVideo(idAutor, video.getId(), formItems.get(4));
                 }
 				video.setUrl(ruta);
 				try {
-					videoSvc.editarVideo(video);
+					WebUtils.videoSvc.editarVideo(video);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					// errors

@@ -58,26 +58,12 @@ public class UsuarioServlet extends HttpServlet {
 	private static int pagingPageCount = Integer.valueOf(
 			ConfigurationManager.getInstance().getParameter(
 					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
-
-	private DateUtils dateUtils = null;
-
-	private UsuarioService usuarioSvc = null;
-	private ContenidoService contenidoSvc = null;
-	private PaisService paisSvc = null;
-	private VideoService videoSvc = null;
-	private ListaService listaSvc = null;
-
+	
 	private List<String> idsPais;
 	public UsuarioServlet() {
-		super();
-		usuarioSvc = new UsuarioServiceImpl();
-		contenidoSvc = new ContenidoServiceImpl();
-		videoSvc = new VideoServiceImpl();
-		listaSvc = new ListaServiceImpl();
-		paisSvc= new PaisServiceImpl();
-		dateUtils = new DateUtils();				
+		super();			
 		try {
-			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());			
+			idsPais = WebUtils.paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());
 		} catch (DataException e) {
 			logger.warn(e.getMessage(), e);
 		}
@@ -106,7 +92,7 @@ public class UsuarioServlet extends HttpServlet {
 			Usuario usuario = null;			
 			if (!errors.hasErrors()) {
 				try {
-					usuario = usuarioSvc.logIn(email, password);
+					usuario = WebUtils.usuarioSvc.logIn(email, password);
 					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
@@ -132,7 +118,7 @@ public class UsuarioServlet extends HttpServlet {
 			
 			List<Pais> paises = null;
 			try {
-				paises = paisSvc.findAll(idioma);
+				paises = WebUtils.paisSvc.findAll(WebUtils.getIdioma(request)).stream().map(Pais::getPais).collect(Collectors.toList());
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				errors.add(AttributeNames.PAISES, ErrorCodes.PRERREGISTRO_ERROR);
@@ -175,7 +161,7 @@ public class UsuarioServlet extends HttpServlet {
 				usuario.setApellidos(apellidos);
 				usuario.setPais(pais);
 				try {
-					usuario = usuarioSvc.crearCuenta(usuario);
+					usuario = WebUtils.usuarioSvc.crearCuenta(usuario);
 					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
@@ -183,7 +169,7 @@ public class UsuarioServlet extends HttpServlet {
 			}
 			if (!errors.hasErrors()) {
 				try { 
-					usuario = usuarioSvc.logIn(email, password); 
+					usuario = WebUtils.usuarioSvc.logIn(email, password); 
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION,ErrorCodes.LOGIN_SERVICE_ERROR);
@@ -269,7 +255,7 @@ public class UsuarioServlet extends HttpServlet {
 				
 				if (!errors.hasErrors()) {
 					try {					
-						usuarioSvc.editarPerfil(usuario);
+						WebUtils.usuarioSvc.editarPerfil(usuario);
 						SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 					} catch (DataException e) {
 						logger.warn(e.getMessage(), e);
@@ -300,7 +286,7 @@ public class UsuarioServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					usuario = usuarioSvc.buscarId(idSesion, idContenido );
+					usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
 					request.setAttribute(ParameterNames.DENUNCIADO, usuario.getDenunciado());
 					request.setAttribute(ParameterNames.SIGUIENDO, usuario.getSiguiendo());
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
@@ -312,7 +298,7 @@ public class UsuarioServlet extends HttpServlet {
 				}
 			} else {
 				try {
-					usuario = usuarioSvc.buscarId(null, idContenido );
+					usuario = WebUtils.usuarioSvc.buscarId(null, idContenido );
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
@@ -344,7 +330,7 @@ public class UsuarioServlet extends HttpServlet {
 				int startIndex= (page-1)*pageSize+1;
 				int count= pageSize;
 				try {					
-					resultados = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+					resultados = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
@@ -378,7 +364,7 @@ public class UsuarioServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					usuario = usuarioSvc.buscarId(idSesion, idContenido );
+					usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
 					JsonObject usuarioJson = new JsonObject();
 					usuarioJson.addProperty("denunciado", usuario.getDenunciado());
 					usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());

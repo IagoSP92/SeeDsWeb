@@ -41,23 +41,6 @@ public class ContenidoServlet extends HttpServlet {
 
 	private static Logger logger = LogManager.getLogger(ContenidoServlet.class);
 
-	private DateUtils dateUtils = null;
-	private ContenidoService contenidoSvc = null;
-	private VideoService videoSvc = null;
-	private ListaService listaSvc = null;
-	private UsuarioService usuarioSvc = null;
-
-
-	public ContenidoServlet() {
-		super();
-		contenidoSvc = new ContenidoServiceImpl();
-		videoSvc = new VideoServiceImpl();
-		listaSvc = new ListaServiceImpl();
-		usuarioSvc = new UsuarioServiceImpl();
-		dateUtils = new DateUtils();
-	}
-
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String action = request.getParameter(ParameterNames.ACTION);
@@ -138,10 +121,10 @@ public class ContenidoServlet extends HttpServlet {
 				criteria.setValoracionMax(ValidationUtils.validDouble(errors, valoracionMax, ParameterNames.VALORACION_MAX, false));
 				criteria.setReproduccionesMin(ValidationUtils.validInt(errors, reproduccionesMin, ParameterNames.REPRODUCCIONES_MIN, false));
 				criteria.setReproduccionesMax(ValidationUtils.validInt(errors, reproduccionesMax, ParameterNames.REPRODUCCIONES_MAX, false));			
-				criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMin, ParameterNames.FECHA_MIN, false, dateUtils));
-				criteria.setFechaAltaHasta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, dateUtils));
+				criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMin, ParameterNames.FECHA_MIN, false, WebUtils.dateUtils));
+				criteria.setFechaAltaHasta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, WebUtils.dateUtils));
 				try { 
-					listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+					listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 				}				
@@ -172,7 +155,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);			
 			try { 
-				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}
@@ -187,7 +170,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(1l);
 			try { 
-				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}			
@@ -203,7 +186,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setCategoria(2l);
 			request.setAttribute(ParameterNames.CATEGORIA, criteria.getCategoria());			
 			try { 
-				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}			
@@ -218,7 +201,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(3l);			
 			try { 
-				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}
@@ -233,7 +216,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(4l);			
 			try { 
-				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}
@@ -248,7 +231,7 @@ public class ContenidoServlet extends HttpServlet {
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(5l);			
 			try { 
-				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+				listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}			
@@ -263,9 +246,9 @@ public class ContenidoServlet extends HttpServlet {
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==2) {
-					listado = videoSvc.cargarGuardados(idSesion, startIndex, count);
+					listado = WebUtils.videoSvc.cargarGuardados(idSesion, startIndex, count);
 				} else if(tipo==3) {
-					listado= listaSvc.cargarGuardados(idSesion, startIndex, count);
+					listado= WebUtils.listaSvc.cargarGuardados(idSesion, startIndex, count);
 				}
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
@@ -290,9 +273,9 @@ public class ContenidoServlet extends HttpServlet {
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==1) {
-					listado = usuarioSvc.cargarSeguidos(idSesion, startIndex, count);
+					listado = WebUtils.usuarioSvc.cargarSeguidos(idSesion, startIndex, count);
 				} else if(tipo==3) {
-					listado= listaSvc.cargarSeguidos(idSesion, startIndex, count);
+					listado= WebUtils.listaSvc.cargarSeguidos(idSesion, startIndex, count);
 				}
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
@@ -326,7 +309,7 @@ public class ContenidoServlet extends HttpServlet {
 				}
 				try {
 					criteria.setAutor(idSesion);
-					listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+					listado = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);

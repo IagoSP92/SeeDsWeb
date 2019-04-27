@@ -9,11 +9,13 @@ import com.isp.seeds.model.Contenido;
 import com.isp.seeds.service.CategoriaServiceImpl;
 import com.isp.seeds.service.ContenidoServiceImpl;
 import com.isp.seeds.service.ListaServiceImpl;
+import com.isp.seeds.service.PaisServiceImpl;
 import com.isp.seeds.service.UsuarioServiceImpl;
 import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.CategoriaService;
 import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.ListaService;
+import com.isp.seeds.service.spi.PaisService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
@@ -45,6 +47,8 @@ public class WebUtils {
 	public static ListaService listaSvc = null;
 	public static UsuarioService usuarioSvc = null;
 	public static CategoriaService categoriaSvc = null;
+	public static ValidationUtils validationUtils = null;
+	public static PaisService paisSvc = null;
 	
 	static {		
 		contenidoSvc = new ContenidoServiceImpl();
@@ -52,7 +56,9 @@ public class WebUtils {
 		listaSvc = new ListaServiceImpl();
 		usuarioSvc = new UsuarioServiceImpl();
 		dateUtils = new DateUtils();
-		categoriaSvc = new CategoriaServiceImpl();		
+		categoriaSvc = new CategoriaServiceImpl();
+		validationUtils = new ValidationUtils();
+		paisSvc = new PaisServiceImpl();
 	}
 	
 	
