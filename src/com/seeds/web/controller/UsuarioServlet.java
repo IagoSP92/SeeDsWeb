@@ -162,7 +162,7 @@ public class UsuarioServlet extends HttpServlet {
 				usuario.setPais(pais);
 				try {
 					usuario = WebUtils.usuarioSvc.crearCuenta(usuario);
-					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
+					//SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 				}

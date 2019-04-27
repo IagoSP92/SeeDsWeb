@@ -5,6 +5,14 @@
 <div class="mainWindow">
 	<h1><fmt:message key="nav.subidos" bundle="${messages}"/></h1>
 	
+	<div id="crearListaButtonDiv">
+		<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_CREAR_LISTA%>">
+			<button class="userButton">
+				<fmt:message key="usermenu.crearLista" bundle="${messages}"/>
+			</button>
+		</a>
+	</div>
+	
 	<span>
 		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=2">
 			<button class="dualButton">

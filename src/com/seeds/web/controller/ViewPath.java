@@ -6,6 +6,7 @@ public class ViewPath {
 	public static final String ENTRAR = "/html/login-page.jsp";
 	public static final String REGISTRO = "/html/registro-page.jsp";
 	public static final String SUBIR_VIDEO = "/html/subir-video-page.jsp";
+	public static final String CREAR_LISTA = "/html/crear-lista-page.jsp";
 
 	public static final String BUSCADOR = "/html/buscador-page.jsp";
 	

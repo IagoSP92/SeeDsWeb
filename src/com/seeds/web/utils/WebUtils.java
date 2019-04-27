@@ -37,7 +37,7 @@ public class WebUtils {
 			ConfigurationManager.getInstance().getParameter(
 					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
 
-	private static int pagingPageCount = Integer.valueOf(
+	public static int pagingPageCount = Integer.valueOf(
 			ConfigurationManager.getInstance().getParameter(
 					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 	

@@ -17,7 +17,6 @@ public interface ErrorCodes {
 	public static final String INVALID_PARAMETER = "INVALID_PARAMETER";
 	public static final String INVALID_COUNTRY = "INVALID_COUNTRY";
 	public static final String INVALID_CATEGORY = "INVALID_CATEGORY";
-
 	
 	public static final String PRERREGISTRO_ERROR = "PRERREGISTRO_ERROR";	
 	
@@ -29,6 +28,8 @@ public interface ErrorCodes {
 	
 	public static final String MISSING_SESSION = "MISSING_SESSION";
 	public static final String UNABLE_CHANGE_RELATION  = "UNABLE_CHANGE_RALATION";
+	public static final String UNABLE_CREATE  = "UNABLE_CREATE";
+
 
 
 	

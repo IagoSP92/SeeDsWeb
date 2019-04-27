@@ -23,6 +23,7 @@ public class Actions {
 	
 	public static final String PRE_SUBIR_VIDEO = "pre_subir_video";
 	public static final String SUBIR_VIDEO = "subir_video";
+	public static final String PRE_CREAR_LISTA = "pre_crear_lista";
 	public static final String CREAR_LISTA = "crear_lista";
 	
 	public static final String VALORAR = "valorar";
