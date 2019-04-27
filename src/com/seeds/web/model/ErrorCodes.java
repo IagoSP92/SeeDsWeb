@@ -26,6 +26,7 @@ public interface ErrorCodes {
 	public static final String UPDATE_ERROR = "UPDATE_ERROR";
 	
 	public static final String MISSING_SESSION = "MISSING_SESSION";
+	public static final String UNABLE_CHANGE_RELATION  = "UNABLE_CHANGE_RALATION";
 
 
 	

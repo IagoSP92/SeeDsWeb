@@ -59,42 +59,41 @@ public class RelationServlet extends HttpServlet {
 		}
 		
 		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
-		String idioma=null;
-		
-		if(locale!=null) {
+		String idioma=null;		
+		if (locale!=null) {
 			String rawIdioma = locale.toString();
 			idioma=rawIdioma.substring(0, 2);
 		}
-		
 		ErrorManager errors = new ErrorManager(); 
-		String target = null;
-		boolean redirect = false;
+//		String target = null;
+//		boolean redirect = false;
 		
 		Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-		String id= request.getParameter(ParameterNames.ID_CONTENIDO);
-		Long idContenido =ValidationUtils.validLong(errors, id, ParameterNames.ID_CONTENIDO, false);
+		idSesion = ValidationUtils.validLong(errors, idSesion.toString(), ParameterNames.ID_SESION, true);
+		// Se ha hecho esta conversion para validar el parámetro utilizando los métodos ya existentes
+		Long idContenido =ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_CONTENIDO), ParameterNames.ID_CONTENIDO, true);
+		Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 		
-		
-		if (Actions.SEGUIR.equalsIgnoreCase(action)) {			
-			Boolean nuevoValor=null;
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
-			if((tipo==1 || tipo==3)) {				
-				if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)) {
-					nuevoValor=false;
-				} else {nuevoValor=true;}
-				if (logger.isDebugEnabled()) {
-					logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
-				}
-				try {
-					contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);
-					
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					//erros
-				}				
+		if(errors.hasErrors()) {
+			logger.warn(" -- Invalid Parameters: BASIC -- ");
+			errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
+		} else {
+			if (Actions.SEGUIR.equalsIgnoreCase(action)) {
 				
-				request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
-				if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				if((tipo==1 || tipo==3)) {
+					Boolean nuevoValor=null;
+					if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.SIGUIENDO), ParameterNames.SIGUIENDO, true)) {
+						nuevoValor=false;
+					} else {
+						nuevoValor=true;
+					}
+					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
+					try {
+						contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);					
+					} catch (DataException e) {
+						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+					}				
+					//request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
 					try {
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==1) {
@@ -106,7 +105,7 @@ public class RelationServlet extends HttpServlet {
 							Lista lista=null;
 							lista = listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("siguiendo", lista.getSiguiendo());
-						}					
+						}
 						String mensaje="Default";
 						if(nuevoValor) {
 							if(idioma.equals("en")==true) {
@@ -124,41 +123,123 @@ public class RelationServlet extends HttpServlet {
 								mensaje="Seguir";
 							}
 						}					
-						usuarioJson.addProperty("mensaje", mensaje);
-	
+						usuarioJson.addProperty("mensaje", mensaje);	
 						response.setContentType("application/json;charset=ISO-8859-1");
 						response.getOutputStream().write(usuarioJson.toString().getBytes());
 						
 					} catch (DataException | NumberFormatException e) {
-						logger.warn(e.getMessage(), e);
-						errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
+						errorManagement ( errors, e, ErrorCodes.RECOVERY_ERROR );
 					}
 				} else {
-						logger.warn("No se ha detectado un usuario en sesion");
-						errors.add(ParameterNames.ACTION, ErrorCodes.MISSING_SESSION);
+					logger.warn(" -- Invalid Parameters: TYPE -- ");
+					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
 				}
-			}
-			
-		} else if (Actions.GUARDAR.equalsIgnoreCase(action)) {			
-			Boolean nuevoValor=null;
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
-			if(tipo==2||tipo==3) {
-				if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.GUARDADO), ParameterNames.GUARDADO, true)) {
-					nuevoValor=false;
-				} else {nuevoValor=true;}
-				if (logger.isDebugEnabled()) {
-					logger.debug("Action={}: nuevoValor={}", action, nuevoValor);
-				}
-				try {
-					contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);
+				
+			} else if (Actions.GUARDAR.equalsIgnoreCase(action)) {		
+				
+				if(tipo==2||tipo==3) {
+					Boolean nuevoValor=null;
+					if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.GUARDADO), ParameterNames.GUARDADO, true)) {
+						nuevoValor=false;
+					} else {
+						nuevoValor=true;
+					}
+					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
+					try {
+						contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);						
+					} catch (DataException e) {
+						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+					}
 					
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					//erros
+					//request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+					if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+						try {						
+							JsonObject usuarioJson = new JsonObject();
+							if(tipo==2) {
+								Video video=null;
+								video = videoSvc.buscarId(idSesion, idContenido );
+								usuarioJson.addProperty("guardado", video.getGuardado());
+							}
+							if(tipo==3) {
+								Lista lista=null;
+								lista = listaSvc.buscarId(idSesion, idContenido );
+								usuarioJson.addProperty("guardado", lista.getGuardado());
+							}
+							String mensaje="Default";
+							if(nuevoValor) {
+								if(idioma.equals("en")==true) {
+									mensaje="Delete";
+								}
+								if(idioma.equals("es")) {
+									mensaje="Borrarr";
+								}
+							}
+							if(!nuevoValor) {
+								if(idioma.equals("en")) {
+									mensaje="Save";
+								}
+								if(idioma.equals("es")) {
+									mensaje="Guardar";
+								}
+							}					
+							usuarioJson.addProperty("mensaje", mensaje);
+		
+							response.setContentType("application/json;charset=ISO-8859-1");
+							response.getOutputStream().write(usuarioJson.toString().getBytes());
+							
+						} catch (DataException | NumberFormatException e) {
+							errorManagement ( errors, e, ErrorCodes.RECOVERY_ERROR );
+						}
+					}
+				} else {
+					logger.warn(" -- Invalid Parameters: TYPE -- ");
+					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
 				}
 				
-				request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
-				if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
+				
+			} else if (Actions.DENUNCIAR.equalsIgnoreCase(action)) {
+				if(tipo==1||tipo==3||tipo==3 ) {
+					
+					String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
+					if(valorRecibido!=null) {
+						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
+						try {
+							contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
+							
+						} catch (DataException e) {
+							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+						}
+					} else {
+						try {
+							contenidoSvc.cancelarDenuncia(idSesion, idContenido);
+						} catch (DataException e) {
+							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+						}
+					}
+					
+				} else {
+					logger.warn(" -- Invalid Parameters: TYPE -- ");
+					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
+				}
+				
+			} else if (Actions.COMENTAR.equalsIgnoreCase(action)) {
+				if(tipo==2||tipo==3) {				
+					String valorRecibido = request.getParameter(ParameterNames.COMENTADO);				
+					if(valorRecibido!=null) {
+						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
+						try {
+							contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
+						} catch (DataException e) {
+							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+						}
+					} else {
+						try {
+							contenidoSvc.comentarContenido(idSesion, idContenido, null);
+						} catch (DataException e) {
+							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+						}
+					}					
+					//request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 					try {						
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==2) {
@@ -171,99 +252,7 @@ public class RelationServlet extends HttpServlet {
 							lista = listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("guardado", lista.getGuardado());
 						}
-						String mensaje="Default";
-						if(nuevoValor) {
-							if(idioma.equals("en")==true) {
-								mensaje="Delete";
-							}
-							if(idioma.equals("es")) {
-								mensaje="Borrarr";
-							}
-						}
-						if(!nuevoValor) {
-							if(idioma.equals("en")) {
-								mensaje="Save";
-							}
-							if(idioma.equals("es")) {
-								mensaje="Guardar";
-							}
-						}					
-						usuarioJson.addProperty("mensaje", mensaje);
-	
-						response.setContentType("application/json;charset=ISO-8859-1");
-						response.getOutputStream().write(usuarioJson.toString().getBytes());
-						
-					} catch (DataException | NumberFormatException e) {
-						logger.warn(e.getMessage(), e);
-						errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
-					}
-				}
-			}
-			
-			
-		} else if (Actions.DENUNCIAR.equalsIgnoreCase(action)) {
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
-			if(tipo==1||tipo==3||tipo==3 ) {
-				
-				String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
-				if(valorRecibido!=null) {
-					String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
-					try {
-						contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
-						
-					} catch (DataException e) {
-						logger.warn(e.getMessage(), e);
-						//erros
-					}
-				} else {
-					try {
-						contenidoSvc.cancelarDenuncia(idSesion, idContenido);
-					} catch (DataException e) {
-						logger.warn(e.getMessage(), e);
-						//erros
-					}
-				}
-				
-			}
-			
-		} else if (Actions.COMENTAR.equalsIgnoreCase(action)) {
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
-			if(tipo==2||tipo==3) {
-				
-				String valorRecibido = request.getParameter(ParameterNames.COMENTADO);
-				
-				if(valorRecibido!=null) {
-					String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
-					try {
-						contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
-					} catch (DataException e) {
-						logger.warn(e.getMessage(), e);
-						//erros
-					}
-				} else {
-					try {
-						contenidoSvc.comentarContenido(idSesion, idContenido, null);
-					} catch (DataException e) {
-						logger.warn(e.getMessage(), e);
-						//erros
-					}
-				}
-				
-				request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
-				if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
-					try {						
-						JsonObject usuarioJson = new JsonObject();
-						if(tipo==2) {
-							Video video=null;
-							video = videoSvc.buscarId(idSesion, idContenido );
-							usuarioJson.addProperty("guardado", video.getGuardado());
-						}
-						if(tipo==3) {
-							Lista lista=null;
-							lista = listaSvc.buscarId(idSesion, idContenido );
-							usuarioJson.addProperty("guardado", lista.getGuardado());
-						}
-						
+
 						String mensaje="Default";
 						if(valorRecibido!=null) {
 							if(idioma.equals("en")==true) {
@@ -281,35 +270,71 @@ public class RelationServlet extends HttpServlet {
 							}
 						}					
 						usuarioJson.addProperty("mensaje", mensaje);
-	
+
+						response.setContentType("application/json;charset=ISO-8859-1");
+						response.getOutputStream().write(usuarioJson.toString().getBytes());
+
+					} catch (DataException | NumberFormatException e) {
+						errorManagement ( errors, e, ErrorCodes.RECOVERY_ERROR );
+					}
+				} else {
+					logger.warn(" -- Invalid Parameters: TYPE -- ");
+					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
+				}
+				
+			} else if (Actions.VALORAR.equalsIgnoreCase(action)) {
+				if(tipo==2||tipo==3) {			
+				Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.VALORACION), ParameterNames.VALORACION, true);			
+					try {
+						contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
+					} catch (DataException e) {					
+						 errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+					}					
+					try {						
+						JsonObject usuarioJson = new JsonObject();
+						Integer myValoration =  contenidoSvc.getValoracion(idSesion, idContenido );
+						usuarioJson.addProperty("myValoration", myValoration);
+						
 						response.setContentType("application/json;charset=ISO-8859-1");
 						response.getOutputStream().write(usuarioJson.toString().getBytes());
 						
 					} catch (DataException | NumberFormatException e) {
-						logger.warn(e.getMessage(), e);
-						errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
-					}
+						errorManagement ( errors, e, ErrorCodes.RECOVERY_ERROR );
+					}					
+				} else {
+					logger.warn(" -- Invalid Parameters: TYPE -- ");
+					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
 				}
 			}
-			
-		} else if (Actions.VALORAR.equalsIgnoreCase(action)) {
-			Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.VALORACION), ParameterNames.VALORACION, true);			
-			try {
-				contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				//erros
+			else {
+				logger.error("Action desconocida");
 			}
 			
 		}
-		else {
-			logger.error("Action desconocida");
-		}
-		
+
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
+	
+	private static void definedLogger (String action, Long User, Long Content, int tipo, String nV, int choose) {
+		
+		if(choose==1) {
+			if (logger.isDebugEnabled()) {					
+				logger.debug(" Action={}: Usuario={} Contenido={} Tipo={} Nuevo Valor={}",
+									action, User, Content, tipo,  nV);
+			}
+		}
+	}
+	
+	private static void errorManagement (ErrorManager errors, Exception e, String errorCode) {
+		
+		logger.warn(e.getMessage(), e);
+		errors.add(ParameterNames.ACTION, errorCode);
+
+	}
+	
+
 
 }

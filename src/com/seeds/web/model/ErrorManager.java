@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.logging.log4j.Logger;
+
+import com.seeds.web.controller.ParameterNames;
 
 public class ErrorManager {
 	
@@ -45,5 +48,15 @@ public class ErrorManager {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
 	}
+	
+//	public static void errorManagement (Logger logger, ErrorManager errors, Exception e, String errorCode) {
+//		
+//		logger.warn(e.getMessage(), e);
+//		errors.add(ParameterNames.ACTION, errorCode);
+//
+//	}
+	
+	
+	
 	
 }
