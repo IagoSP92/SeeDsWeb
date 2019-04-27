@@ -21,7 +21,9 @@
 	 <script src="<%=request.getContextPath()%>/javascript/jquery-3.3.1.min.js" type="text/javascript"></script> 
 	 <script src="/SeeDsWeb/javascript/web.js"></script>
 
+	<link rel="stylesheet" type="text/css"  media="screen" href="/SeeDsWeb/css/w3css.css">
 	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/main.css">
+	
 </head>
 
 <%

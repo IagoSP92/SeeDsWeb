@@ -59,7 +59,8 @@ public class RelationServlet extends HttpServlet {
 		}
 		
 		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
-		String idioma=null;		
+		String idioma=null;
+		
 		if (locale!=null) {
 			String rawIdioma = locale.toString();
 			idioma=rawIdioma.substring(0, 2);
@@ -289,12 +290,21 @@ public class RelationServlet extends HttpServlet {
 						contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
 					} catch (DataException e) {					
 						 errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
-					}					
+					}
 					try {						
 						JsonObject usuarioJson = new JsonObject();
 						Integer myValoration =  contenidoSvc.getValoracion(idSesion, idContenido );
 						usuarioJson.addProperty("myValoration", myValoration);
-						
+						if(tipo==2) {
+							Video video=null;
+							video = videoSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("valoracion", video.getValoracion());
+						}
+						if(tipo==3) {
+							Lista lista=null;
+							lista = listaSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("valoracion", lista.getValoracion());
+						}						
 						response.setContentType("application/json;charset=ISO-8859-1");
 						response.getOutputStream().write(usuarioJson.toString().getBytes());
 						

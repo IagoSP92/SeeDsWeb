@@ -56,14 +56,6 @@ public class ContenidoServlet extends HttpServlet {
 		usuarioSvc = new UsuarioServiceImpl();
 		dateUtils = new DateUtils();
 	}
-	
-	private static int pageSize = Integer.valueOf(
-			ConfigurationManager.getInstance().getParameter(
-					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
-
-	private static int pagingPageCount = Integer.valueOf(
-			ConfigurationManager.getInstance().getParameter(
-					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -87,27 +79,25 @@ public class ContenidoServlet extends HttpServlet {
 		
 		int page = WebUtils.
 				getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
-		int startIndex= (page-1)*pageSize+1;
-		int count= pageSize;
+		int startIndex= (page-1)*WebUtils.pageSize+1;
+		int count= WebUtils.pageSize;
 		
 		Results<Contenido> listado = null;
 		ContenidoCriteria criteria = new ContenidoCriteria();
 
 		if (Actions.BUSCAR.equalsIgnoreCase(action)) {
-			request.setAttribute(ParameterNames.ACTION, Actions.BUSCAR);
 			
+			request.setAttribute(ParameterNames.ACTION, Actions.BUSCAR);			
 			Boolean aceptarTodo= null;
 			Boolean aceptarVideo= null;
 			Boolean aceptarLista= null;
 			Boolean aceptarUsuario= null;
 			
-			if(  request.getParameter(ParameterNames.ACEPTAR_TODOS)==null ) {			
+			if( request.getParameter(ParameterNames.ACEPTAR_TODOS)==null ) {			
 				String checkTodos = request.getParameter(ParameterNames.CHECK_TODOS);
 				String checkVideos = request.getParameter(ParameterNames.CHECK_VIDEO);
 				String checkListas = request.getParameter(ParameterNames.CHECK_LISTA);
-				String checkUsuarios = request.getParameter(ParameterNames.CHECK_USUARIO);
-				
-				System.out.println(checkTodos+"-"+checkVideos+"-"+checkListas+"-"+checkUsuarios);
+				String checkUsuarios = request.getParameter(ParameterNames.CHECK_USUARIO);				
 				
 				aceptarTodo= (ValidationUtils.validCheck(errors, checkTodos, ParameterNames.CHECK_TODOS, false));
 				aceptarVideo= (ValidationUtils.validCheck(errors, checkVideos, ParameterNames.CHECK_VIDEO, false));
@@ -119,7 +109,6 @@ public class ContenidoServlet extends HttpServlet {
 				aceptarLista= ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.ACEPTAR_LISTA), ParameterNames.ACEPTAR_LISTA, true);
 				aceptarUsuario= ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.ACEPTAR_USUARIO), ParameterNames.ACEPTAR_USUARIO, true);				
 			}
-			System.out.println(request.getParameter(ParameterNames.NOMBRE));
 			request.setAttribute(ParameterNames.ACEPTAR_TODOS, aceptarTodo);
 			request.setAttribute(ParameterNames.ACEPTAR_VIDEO, aceptarVideo);
 			request.setAttribute(ParameterNames.ACEPTAR_LISTA, aceptarLista);
@@ -140,51 +129,34 @@ public class ContenidoServlet extends HttpServlet {
 					aceptarVideo= false;
 					aceptarLista= false;
 					aceptarUsuario= false;
-				}
-				
+				}				
 				criteria.setAceptarVideo(aceptarVideo);
 				criteria.setAceptarLista(aceptarLista);
-				criteria.setAceptarUsuario(aceptarUsuario);
-				System.out.println(criteria.getAceptarUsuario()+"-"+criteria.getAceptarLista()+"-"+criteria.getAceptarVideo());
-				
+				criteria.setAceptarUsuario(aceptarUsuario);				
 				criteria.setNombre(ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, false));
 				criteria.setValoracionMin(ValidationUtils.validDouble(errors, valoracionMin, ParameterNames.VALORACION_MIN, false));
 				criteria.setValoracionMax(ValidationUtils.validDouble(errors, valoracionMax, ParameterNames.VALORACION_MAX, false));
 				criteria.setReproduccionesMin(ValidationUtils.validInt(errors, reproduccionesMin, ParameterNames.REPRODUCCIONES_MIN, false));
 				criteria.setReproduccionesMax(ValidationUtils.validInt(errors, reproduccionesMax, ParameterNames.REPRODUCCIONES_MAX, false));			
 				criteria.setFechaAlta(ValidationUtils.validDate(errors, fechaMin, ParameterNames.FECHA_MIN, false, dateUtils));
-				criteria.setFechaAltaHasta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, dateUtils));			
-
+				criteria.setFechaAltaHasta(ValidationUtils.validDate(errors, fechaMax, ParameterNames.FECHA_MAX, false, dateUtils));
 				try { 
 					listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
-				}
-				
-				request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-				request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-				
-				// Datos para paginacion (Calculos aqui, datos comodos para renderizar)
-				int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-				int firstPagedPage = Math.max(1, page-pagingPageCount);
-				int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-				request.setAttribute(ParameterNames.PAGE, page);
-				request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-				request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-				request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-							
+				}				
 				// PARAMETROS DE BUSQUEDA
-				
-
 				request.setAttribute(ParameterNames.NOMBRE, nombre);				
 				request.setAttribute(ParameterNames.VALORACION_MIN, valoracionMin);
 				request.setAttribute(ParameterNames.VALORACION_MAX, valoracionMax);
 				request.setAttribute(ParameterNames.REPRODUCCIONES_MIN, reproduccionesMin);
 				request.setAttribute(ParameterNames.REPRODUCCIONES_MAX, reproduccionesMax);				
 				request.setAttribute(ParameterNames.FECHA_MIN, fechaMin);
-				request.setAttribute(ParameterNames.FECHA_MAX, fechaMax);			
-			}
-			
+				request.setAttribute(ParameterNames.FECHA_MAX, fechaMax);				
+				// PARAMETROS PAGINACION
+				WebUtils.pagParams ( request,  listado,  page);
+						
+			}			
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
 					logger.debug("Búsqueda 	Fallida: {}", errors);
@@ -194,245 +166,152 @@ public class ContenidoServlet extends HttpServlet {
 			target = ViewPath.BUSCADOR;
 
 		} else if (Actions.GENERAL.equalsIgnoreCase(action)) {
-			request.setAttribute(ParameterNames.ACTION, Actions.BUSCAR);
+			
+			request.setAttribute(ParameterNames.ACTION, Actions.GENERAL);
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
-			criteria.setAceptarUsuario(false);
-			
+			criteria.setAceptarUsuario(false);			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}
-			
-			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-			
-			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-			
-			target = ViewPath.HOME;
+			WebUtils.pagParams ( request,  listado,  page);			
+			target = ViewPath.BUSCADOR;
 			
 		}  else if (Actions.MUSICA.equalsIgnoreCase(action)){
-			request.setAttribute(ParameterNames.ACTION, Actions.MUSICA);
-	
+			
+			request.setAttribute(ParameterNames.ACTION, Actions.MUSICA);	
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(1l);
-			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
-			}
-			
-			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-			
-			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-			
-			target = ViewPath.MUSICA;
+			}			
+			WebUtils.pagParams ( request,  listado,  page);
+			target = ViewPath.BUSCADOR;
 			
 		}  else if (Actions.SERIES.equalsIgnoreCase(action)){
+			
 			request.setAttribute(ParameterNames.ACTION, Actions.SERIES);
-
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
 			criteria.setCategoria(2l);
-			request.setAttribute(ParameterNames.CATEGORIA, criteria.getCategoria());
-			
-			request.setAttribute(ParameterNames.ACEPTAR_TODOS, true);
-			request.setAttribute(ParameterNames.ACEPTAR_VIDEO, true);
-			request.setAttribute(ParameterNames.ACEPTAR_LISTA, true);
-			request.setAttribute(ParameterNames.ACEPTAR_USUARIO, true);
-			
+			request.setAttribute(ParameterNames.CATEGORIA, criteria.getCategoria());			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
-			}
-			
-			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-			
-			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-			
-			target = ViewPath.HOME;
+			}			
+			WebUtils.pagParams ( request,  listado,  page);
+			target = ViewPath.BUSCADOR;
 
 		}  else if (Actions.CORTOS.equalsIgnoreCase(action)){
+			
 			request.setAttribute(ParameterNames.ACTION, Actions.CORTOS);
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
-			criteria.setCategoria(3l);
-			
+			criteria.setCategoria(3l);			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}
-			
-			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-			
-			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-			
-			target = ViewPath.HOME;
+			WebUtils.pagParams ( request,  listado,  page);
+			target = ViewPath.BUSCADOR;
 
 		}  else if (Actions.DOCUMENTAL.equalsIgnoreCase(action)){
+			
 			request.setAttribute(ParameterNames.ACTION, Actions.DOCUMENTAL);
-
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
-			criteria.setCategoria(4l);
-			
+			criteria.setCategoria(4l);			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			}
-			
-			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-			
-			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-			
-			target = ViewPath.HOME;
+			WebUtils.pagParams ( request,  listado,  page);			
+			target = ViewPath.BUSCADOR;
 
 		}  else if (Actions.GUIAS.equalsIgnoreCase(action)){
+			
 			request.setAttribute(ParameterNames.ACTION, Actions.GUIAS);
-
 			criteria.setAceptarVideo(true);
 			criteria.setAceptarLista(false);
 			criteria.setAceptarUsuario(false);
-			criteria.setCategoria(5l);
-			
+			criteria.setCategoria(5l);			
 			try { 
 				listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
-			}
-			
-			request.setAttribute(AttributeNames.RESULTADOS, listado.getPage());
-			request.setAttribute(AttributeNames.TOTAL, listado.getTotal());
-			
-			int totalPages = (int) Math.ceil((double)listado.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
-			
-			target = ViewPath.HOME;
+			}			
+			WebUtils.pagParams ( request,  listado,  page);			
+			target = ViewPath.BUSCADOR;
 			
 		}  else if (Actions.GUARDADOS.equalsIgnoreCase(action)){
-			request.setAttribute(ParameterNames.ACTION, Actions.GUARDADOS);
 			
-			Results<Contenido> resultados = null;
+			request.setAttribute(ParameterNames.ACTION, Actions.GUARDADOS);				
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==2) {
-					resultados = videoSvc.cargarGuardados(idSesion, startIndex, count);
+					listado = videoSvc.cargarGuardados(idSesion, startIndex, count);
 				} else if(tipo==3) {
-					resultados= listaSvc.cargarGuardados(idSesion, startIndex, count);
+					listado= listaSvc.cargarGuardados(idSesion, startIndex, count);
 				}
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 			}
 			request.setAttribute(ParameterNames.TIPO, tipo);
-			request.setAttribute(AttributeNames.RESULTADOS, resultados.getPage());
-			request.setAttribute(AttributeNames.TOTAL, resultados.getTotal());			
-			int totalPages = (int) Math.ceil((double)resultados.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			WebUtils.pagParams ( request,  listado,  page);
+			
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Operacion fallida: {}", errors);
 				}
 				request.setAttribute(AttributeNames.ERRORS, errors);
-			}
-			
+			}			
 			target = ViewPath.GUARDADOS;
 			
 		}  else if (Actions.SEGUIDOS.equalsIgnoreCase(action)){
+			
 			request.setAttribute(ParameterNames.ACTION, Actions.SEGUIDOS);
-
-			Results<Contenido> resultados = null;
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==1) {
-					resultados = usuarioSvc.cargarSeguidos(idSesion, startIndex, count);
+					listado = usuarioSvc.cargarSeguidos(idSesion, startIndex, count);
 				} else if(tipo==3) {
-					resultados= listaSvc.cargarSeguidos(idSesion, startIndex, count);
+					listado= listaSvc.cargarSeguidos(idSesion, startIndex, count);
 				}
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 			}
-			request.setAttribute(ParameterNames.TIPO, tipo);
-			request.setAttribute(AttributeNames.RESULTADOS, resultados.getPage());
-			request.setAttribute(AttributeNames.TOTAL, resultados.getTotal());			
-			int totalPages = (int) Math.ceil((double)resultados.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
+			request.setAttribute(ParameterNames.TIPO, tipo);			
+			WebUtils.pagParams ( request,  listado,  page);
+			
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Operacion fallida: {}", errors);
 				}
 				request.setAttribute(AttributeNames.ERRORS, errors);
-			}
-			
+			}			
 			target = ViewPath.SEGUIDOS;
 			
 		}  else if (Actions.SUBIDOS.equalsIgnoreCase(action)){
+			
 			request.setAttribute(ParameterNames.ACTION, Actions.SUBIDOS);
-			Results<Contenido> resultados = null;
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
@@ -440,33 +319,21 @@ public class ContenidoServlet extends HttpServlet {
 					criteria.setAceptarVideo(true);
 					criteria.setAceptarLista(false);
 					criteria.setAceptarUsuario(false);
-
-
 				} else if(tipo==3) {
 					criteria.setAceptarVideo(false);
 					criteria.setAceptarLista(true);
 					criteria.setAceptarUsuario(false);
 				}
-
 				try {
 					criteria.setAutor(idSesion);
-					resultados = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+					listado = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 				}
-
-			request.setAttribute(ParameterNames.TIPO, tipo);
-			request.setAttribute(AttributeNames.RESULTADOS, resultados.getPage());
-			request.setAttribute(AttributeNames.TOTAL, resultados.getTotal());
+			request.setAttribute(ParameterNames.TIPO, tipo);			
+			WebUtils.pagParams ( request,  listado,  page);	
 			
-			int totalPages = (int) Math.ceil((double)resultados.getTotal()/(double)pageSize);
-			int firstPagedPage = Math.max(1, page-pagingPageCount);
-			int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
-			request.setAttribute(ParameterNames.PAGE, page);
-			request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
-			request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
-			request.setAttribute(AttributeNames.LAST_PAGED_PAGES, lastPagedPage);
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Operacion fallida: {}", errors);
@@ -479,8 +346,7 @@ public class ContenidoServlet extends HttpServlet {
 			// Mmm...
 			logger.error("Action desconocida");
 			// target ?
-		} 
-		
+		}		
 		
 		logger.info("Forwarding from ContenidoServlet to "+target);
 		request.getRequestDispatcher(target).forward(request, response);
@@ -491,4 +357,7 @@ public class ContenidoServlet extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
+
+	
+	
 }

@@ -30,9 +30,10 @@ public interface ErrorCodes {
 
 
 	
-	
-	
+	public static final String PRE_SUBIR_VIDEO = "PRE_SUBIR_VIDEO";
 
+	
+	
 
 	
 

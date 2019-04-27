@@ -69,12 +69,66 @@
 <!-- Total de resultados  -->
 <p>
 	<c:if test="${not empty total}">
-		<h3>
-			<fmt:message key="busqueda.titulo2" bundle="${messages}">
-				<fmt:param value="${total}"></fmt:param>
-			</fmt:message>
-		</h3>
+		<h3><%
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("BUSCAR") ){
+				%>
+				<fmt:message key="busqueda.titulo2" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%   
+			}
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("GENERAL") ){
+				%>
+				<fmt:message key="busqueda.general" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%   
+			}
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("MUSICA") ){
+				%>
+				<fmt:message key="busqueda.general" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%   
+			}
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("SERIES") ){
+				%>
+				<fmt:message key="busqueda.general" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%     
+			}
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("CORTOS") ){
+				%>
+				<fmt:message key="busqueda.general" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%  
+			}
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("DOCUMENTAL") ){
+				%>
+				<fmt:message key="busqueda.general" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%  
+			}
+			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("GUIAS") ){
+				%>
+				<fmt:message key="busqueda.general" bundle="${messages}">
+					<fmt:param value="${total}"></fmt:param>
+				</fmt:message>
+				<%  
+			}
+		
+		%></h3>
 	</c:if>
+	<c:if test="${empty total}">
+		<h3>
+			<fmt:message key="busqueda.sinresultados" bundle="${messages}">
+				<fmt:param value="${total}"></fmt:param>
+			</fmt:message> 
+		</h3>
+	</c:if>	
 </p>
 
 <!-- Resultados -->
@@ -104,66 +158,26 @@
 	<!-- Paginacion  -->
 	<p><center>
 		
-	<c:url var="urlBase" value="contenido" scope="page">
-		<c:param name="action" value="${action}"/>
-
-		<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>		
-		<c:param name="<%=ParameterNames.VALORACION_MIN%>" value="${valoracion_min}"/>
-		<c:param name="<%=ParameterNames.VALORACION_MAX%>" value="${valoracion_max}"/>
-		<c:param name="<%=ParameterNames.REPRODUCCIONES_MIN%>" value="${reproducciones_min}"/>
-		<c:param name="<%=ParameterNames.REPRODUCCIONES_MAX%>" value="${reproduccione_max}"/>
-		<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
-		<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
-		
-		<c:param name="<%=ParameterNames.ACEPTAR_TODOS%>" value="${aceptar_todos}"/>
-		<c:param name="<%=ParameterNames.ACEPTAR_VIDEO%>" value="${aceptar_video}"/>
-		<c:param name="<%=ParameterNames.ACEPTAR_LISTA%>" value="${aceptar_lista}"/>
-		<c:param name="<%=ParameterNames.ACEPTAR_USUARIO%>" value="${aceptar_usuario}"/>
-		
-		<c:param name="<%=ParameterNames.CATEGORIA%>" value="${categoria}"/>
-		
-	</c:url>
+		<c:url var="urlBase" value="contenido" scope="page">
+			<c:param name="action" value="${action}"/>
 	
-	<c:if test="${page > 1}"><!-- Primera Página -->
-		<a href="${urlBase}&page=1">
-			<fmt:message key="pag.primera" bundle="${messages}"/>
-		</a>
-		&nbsp;&nbsp;
-	</c:if>
-	
-	<c:if test="${page > 1}"><!-- Página Anterior -->
-		<a href="${urlBase}&page=${page - 1}">
-			<fmt:message key="pag.anterior" bundle="${messages}"/>
-		</a>
-		&nbsp;&nbsp;
-	</c:if>
-
-	<c:if test="${totalPages > 1}">		
-		<c:forEach begin="${firstPagedPage}" end="${lastPagedPage}" var="i">
-			<c:choose>
-			  <c:when test="${page != i}">
-					&nbsp;<a href="${urlBase}&page=${i}"><b>${i}</b></a>&nbsp;
-			  </c:when>
-			  <c:otherwise>
-					&nbsp;<b>${i}</b>&nbsp;
-			  </c:otherwise>
-			</c:choose>
-		</c:forEach>
-	</c:if>
-	
-	<c:if test="${page < totalPages}"><!-- Siguiente Página -->	
-		&nbsp;&nbsp;		
-		<a href="${urlBase}&page=${page + 1}">
-			<fmt:message key="pag.siguiente" bundle="${messages}"/>
-		</a>			
-	</c:if>	
-	<c:if test="${page != totalPages}"><!-- Ultima Página -->
-		&nbsp;&nbsp;
-		<a href="${urlBase}&page=${totalPages}">
-			<fmt:message key="pag.ultima" bundle="${messages}"/>
-		</a>
-	</c:if>		
-
+			<c:param name="<%=ParameterNames.NOMBRE%>" value="${nombre}"/>		
+			<c:param name="<%=ParameterNames.VALORACION_MIN%>" value="${valoracion_min}"/>
+			<c:param name="<%=ParameterNames.VALORACION_MAX%>" value="${valoracion_max}"/>
+			<c:param name="<%=ParameterNames.REPRODUCCIONES_MIN%>" value="${reproducciones_min}"/>
+			<c:param name="<%=ParameterNames.REPRODUCCIONES_MAX%>" value="${reproduccione_max}"/>
+			<c:param name="<%=ParameterNames.FECHA_MIN%>" value="${fecha_min}"/>
+			<c:param name="<%=ParameterNames.FECHA_MAX%>" value="${fecha_max}"/>
+			
+			<c:param name="<%=ParameterNames.ACEPTAR_TODOS%>" value="${aceptar_todos}"/>
+			<c:param name="<%=ParameterNames.ACEPTAR_VIDEO%>" value="${aceptar_video}"/>
+			<c:param name="<%=ParameterNames.ACEPTAR_LISTA%>" value="${aceptar_lista}"/>
+			<c:param name="<%=ParameterNames.ACEPTAR_USUARIO%>" value="${aceptar_usuario}"/>
+			
+			<c:param name="<%=ParameterNames.CATEGORIA%>" value="${categoria}"/>
+			
+		</c:url>
+		<%@include file="/html/common/paginacion.jsp"%>	
 	</center></p>
 	
 </c:if>

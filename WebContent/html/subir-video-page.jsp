@@ -10,7 +10,7 @@
 
 <div class="mainWindow">
 
-	<h3><fmt:message key="interfaz.subirVideo" bundle="${messages}"/></h3>
+	<h2 class="w3-text-blue"><b><fmt:message key="interfaz.subirVideo" bundle="${messages}"/></b></h2>
 
 	<div id="subir-video-form">
 		
@@ -18,25 +18,25 @@
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.SUBIR_VIDEO%>"/>
 								
 				<div id="campoNombre">
-				<span class="rotuloCampo"><%=ParameterNames.NOMBRE%>:</span>
-				<input type="text"
+				<span class="w3-text-blue"><b><fmt:message key="form.titulo" bundle="${messages}"/></b></span>
+				<input type="text" class="w3-input w3-border" 
 						name="<%=ParameterNames.NOMBRE%>" 
 						value="<%=ParameterUtils.getParameter(request, ParameterNames.NOMBRE) %>"/>	
 				</div>
 				
 				<div id="campoDescripcionVideo">
-				<span class="rotuloCampo"><%=ParameterNames.DESCRIPCION%>:</span>
-				<input type="text"
+				<span class="w3-text-blue"><b><fmt:message key="form.descripcion" bundle="${messages}"/></b></span>
+				<input type="text" class="w3-input w3-border" 
 						name="<%=ParameterNames.DESCRIPCION%>" 
 						value="<%=ParameterUtils.getParameter(request, ParameterNames.DESCRIPCION) %>"/>
 				</div>
 				
 				<div id="campoRuta">
-				<span class="rotuloCampo"><%=ParameterNames.RUTA_VIDEO%>:</span>
-				<input type="file" name="<%=ParameterNames.RUTA_VIDEO%>"/>
+				<span class="w3-text-blue"><b><fmt:message key="form.rutaVideo" bundle="${messages}"/></b></span>
+				<input type="file" class="w3-input w3-border" name="<%=ParameterNames.RUTA_VIDEO%>"/>
 				</div>
-	
-				<input type="submit" name="subir_video" value="Subir"/>
+				<br/>
+				<input type="submit" class="w3-btn w3-blue" id="submit" name="subir_video" value="Subir"/>
 			</form>
 			
 	</div>

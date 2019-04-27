@@ -10,25 +10,18 @@ $(document).ready(function () {
 				'id':$(this).attr("data-idContenido"),
 				'tipo':$(this).attr("data-tipo"),
 				'siguiendo': $(this).attr("data-siguiendo"),
-				'action':"seguir"},
-				
+				'action':"seguir"},				
 				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",				
 				dataType:"json",
 				
-				success: function( valor ){
-					
+				success: function( valor ){					
 					if(valor.siguiendo==false){
-						$(".seguirButton").attr("data-siguiendo", "false");
-						
-						$(".seguirButton").html(valor.mensaje);
-						
-						}
-					
+						$(".seguirButton").attr("data-siguiendo", "false");						
+						$(".seguirButton").html(valor.mensaje);						
+					}					
 					if(valor.siguiendo==true){
-						$(".seguirButton").attr("data-siguiendo", "true");
-						
-						$(".seguirButton").html(valor.mensaje);
-						
+						$(".seguirButton").attr("data-siguiendo", "true");						
+						$(".seguirButton").html(valor.mensaje);						
 					}
 				}	
 		});
@@ -60,26 +53,19 @@ $(document).ready(function () {
 				'id':$(this).attr("data-idContenido"),
 				'tipo':$(this).attr("data-tipo"),
 				'guardado': $(this).attr("data-guardado"),
-				'action':"guardar"},				
+				'action':"guardar"},
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",				
+				dataType:"json",
 				success:
 				function(valor){
-
 					if(valor.guardado==false){
-						$(".guardarButton").attr("data-guardado", "false");
-						
-						$(".guardarButton").html(valor.mensaje);
-						
-						}
-					
+						$(".guardarButton").attr("data-guardado", "false");						
+						$(".guardarButton").html(valor.mensaje);						
+					}					
 					if(valor.guardado==true){
-						$(".guardarButton").attr("data-guardado", "true");
-						
-						$(".guardarButton").html(valor.mensaje);
-						
+						$(".guardarButton").attr("data-guardado", "true");						
+						$(".guardarButton").html(valor.mensaje);						
 					}
-					// CARGAR USUARIO CON JSON
-//					location.reload(true);
-//					location.reload(true);
 				}
 		});
 	})
@@ -108,10 +94,16 @@ $(document).ready(function () {
 			data: { 
 				'id':$(this).attr("data-idContenido"),
 				'tipo':$(this).attr("data-tipo"),
-				'valoracion': $(this).attr("data-valoracion"),
-				'action':"valorar"},				
+				//'valoracion': $(this).attr("data-valoracion"),
+				'action':"valorar"},
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",				
+				dataType:"json",
 				success:
-				function(){
+				function(valoracion, myValoration){
+					
+					$(".seguirButton").attr("data-siguiendo", "false");						
+					$(".seguirButton").html(valor.mensaje);						
+					
 					// CARGAR USUARIO CON JSON
 					location.reload(true);
 					location.reload(true);
@@ -222,7 +214,7 @@ $(document).ready(function () {
 
 });
 
-
+/*
 function desplegarMenu() {
 	document.getElementById("meumenudes").classList.toggle("show");
 }

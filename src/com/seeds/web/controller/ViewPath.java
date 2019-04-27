@@ -1,7 +1,6 @@
 package com.seeds.web.controller;
 
-public class ViewPath {
-	
+public class ViewPath {	
 	
 	public static final String HOME = "/html/index.jsp";
 	public static final String ENTRAR = "/html/login-page.jsp";
@@ -10,7 +9,7 @@ public class ViewPath {
 
 	public static final String BUSCADOR = "/html/buscador-page.jsp";
 	
-	public static final String DETALLE_PERFIL = "/html/profile-page.jsp";
+	public static final String DETALLE_PERFIL = "/html/user-page.jsp";
 	public static final String DETALLE_VIDEO = "/html/video-page.jsp";
 	public static final String DETALLE_LISTA = "/html/list-page.jsp";
 	
@@ -23,8 +22,6 @@ public class ViewPath {
 
 	public static final String GUARDADOS = "/html/guardados-page.jsp";
 	public static final String SUBIDOS = "/html/subidos-page.jsp";
-	public static final String SEGUIDOS = "/html/seguidos-page.jsp";
-
-	
+	public static final String SEGUIDOS = "/html/seguidos-page.jsp";	
 
 }

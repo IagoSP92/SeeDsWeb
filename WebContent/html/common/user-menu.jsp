@@ -33,7 +33,7 @@
 						<fmt:message key="usermenu.perfil" bundle="${messages}"/>
 					</button>
 				</a>
-				<a href="/SeeDsWeb<%=ViewPath.SUBIR_VIDEO%>">
+				<a href="<%=ControllerPath.VIDEO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_SUBIR_VIDEO%>">
 					<button class="userButton">
 						<fmt:message key="usermenu.subir" bundle="${messages}"/>
 					</button>

@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.model.Categoria;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
 import com.isp.seeds.service.ContenidoServiceImpl;
@@ -37,6 +38,7 @@ import com.seeds.web.utils.FileUtils;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
+import com.seeds.web.utils.WebUtils;
 
 
 @WebServlet("/video")
@@ -54,6 +56,7 @@ public class VideoServlet extends HttpServlet {
 
 	private UsuarioService usuarioSvc = null;
 	private VideoService videoSvc = null;
+
 
 	private ContenidoService contenidoSvc = null;
 
@@ -129,7 +132,7 @@ public class VideoServlet extends HttpServlet {
 				}
 			} else {
 				try {
-					video = videoSvc.buscarId(null, idContenido );
+					video = WebUtils.videoSvc.buscarId(null, idContenido );
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
@@ -147,23 +150,30 @@ public class VideoServlet extends HttpServlet {
 			}			
 			target = ViewPath.DETALLE_VIDEO;
 
+		} else if (Actions.PRE_SUBIR_VIDEO.equalsIgnoreCase(action)) { //CHAPUZA
+			
+			List<Categoria> categorias = null;
+			try {
+				String idioma= WebUtils.getIdioma(request);
+				System.out.println(idioma);
+				categorias = WebUtils.categoriaSvc.findAll(idioma);
+			} catch (DataException e) {
+				logger.warn(e.getMessage(), e);
+				errors.add(AttributeNames.CATEGORIAS, ErrorCodes.PRE_SUBIR_VIDEO);
+			}
+			request.setAttribute(AttributeNames.CATEGORIAS, categorias);
+			target = ViewPath.SUBIR_VIDEO;
+			
 		} else if (Actions.SUBIR_VIDEO.equalsIgnoreCase(action)){
-			
-			
-			
+						
 			Long idAutor= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 			String nombre = null;
 			String descripcion =  null;
-			String ruta = null;	        
-			   
-	         //formItems = new ArrayList<FileItem>();
+			String ruta = null;	   
+
 	        // parses the request's content to extract file data
-			for(Object o:formItems) {
-				System.out.println(o.toString());;
-			}
 			nombre = formItems.get(1).getString();
 			descripcion = formItems.get(2).getString();
-			System.out.println(nombre);
 	        	        
 	        nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 	        descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.NOMBRE, true);
