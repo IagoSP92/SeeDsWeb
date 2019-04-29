@@ -190,7 +190,7 @@ public class RelationServlet extends HttpServlet {
 									mensaje="Delete";
 								}
 								if(idioma.equals("es")) {
-									mensaje="Borrarr";
+									mensaje="Guardado";
 								}
 							}
 							if(!nuevoValor) {

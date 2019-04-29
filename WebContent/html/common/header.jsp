@@ -48,6 +48,6 @@
 			</a>
 			</div>
 		</div>
-		
+		<%@include file="/html/common/action-errors.jsp"%>
 		<%@include file="/html/common/user-menu.jsp"%>
 		<%@include file="/html/common/nav-menu.jsp"%>

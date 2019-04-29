@@ -168,13 +168,8 @@ public class UsuarioServlet extends HttpServlet {
 				}
 			}
 			if (!errors.hasErrors()) {
-//				try { 
-					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
-//					usuario = WebUtils.usuarioSvc.logIn(email, password); 
-//				} catch (DataException e) {
-//					logger.warn(e.getMessage(), e);
-//					errors.add(ParameterNames.ACTION,ErrorCodes.LOGIN_SERVICE_ERROR);
-//				}
+				SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
+				target = ViewPath.MI_PERFIL;
 			}			
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
@@ -183,7 +178,7 @@ public class UsuarioServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.REGISTRO;			
 			}
-			target = ViewPath.MI_PERFIL;
+			
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			

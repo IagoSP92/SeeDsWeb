@@ -50,7 +50,6 @@
 					</button>
 	  			</c:otherwise>		
 			</c:choose>
-
 			<c:choose>
 				<c:when test="${siguiendo == true}">
 					<button class="w3-btn w3-border2 w3-text-blue2" id="seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="true">
@@ -62,8 +61,7 @@
 						<fmt:message key="detalle.seguir" bundle="${messages}"/>
 					</button>
 	  			</c:otherwise>		
-			</c:choose>
-			
+			</c:choose>			
 			<c:choose>
 				<c:when test="${comentado != 'Null'}">
 					<button class="w3-btn w3-border2 w3-text-blue2" id="noComentarButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-comentado="Null">
@@ -75,128 +73,114 @@
 						<fmt:message key="detalle.comentar" bundle="${messages}"/>
 					</button>
 	  			</c:otherwise>		
-			</c:choose>			
+			</c:choose>
 
-	    
-	      <div class="textAreaDiv" hidden=true id="commentarioTextDiv">
-	      	<textarea id="comentarioText"rows="4" cols="80"></textarea>
-	      	<button class="w3-btn w3-border2 w3-text-blue2" id="comentarButtonEnviar" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-comentado="comentario">
-				<fmt:message key="detalle.comentarEnviar" bundle="${messages}"/>
-			</button>
-	      </div>
+			<div class="textAreaDiv" hidden=true id="commentarioTextDiv">
+				<textarea id="comentarioText" rows="4" cols="80"></textarea>
+				<button class="w3-btn w3-border2 w3-text-blue2"
+					id="comentarButtonEnviar" data-tipo="${lista.tipo}"
+					data-idContenido="${lista.id}" data-comentado="comentario">
+					<fmt:message key="detalle.comentarEnviar" bundle="${messages}" />
+				</button>
+			</div>
 
+
+			<c:if test="${lista.autor==id_sesion}">
+				<div class="menuAutor">
+					<h4><b><fmt:message key="menuAutor.menuAutor" bundle="${messages}"/></b></h4>
+					
+					<button class=" autorButton w3-btn w3-border" id="editarContenidoButton">
+						<fmt:message key="menuAutor.editar" bundle="${messages}"/>
+					</button>
+					
+					<button hidden=true class="autorButton w3-btn w3-border"  id="botonEditarListaCancelar" onclick=window.location.reload()>
+						<fmt:message key="editar.editarPerfilCancelar" bundle="${messages}"/>
+					</button>
+					
+					<button class=" autorButton w3-btn w3-border" id="editarVideosListaButton">
+						<fmt:message key="menuAutor.videosLista" bundle="${messages}"/>
+					</button>				
+				</div><!-- MENU AUTOR -->
+				<!-- Funciones para mover los videos de la lista -->
+				<script src="/SeeDsWeb/javascript/list-functions.js"></script>
+			</c:if><!-- IF AUTOR -->
 			
-		<c:if test="${lista.autor==id_sesion}">
-			<div class="menuAutor">
-				<h4><b><fmt:message key="menuAutor.menuAutor" bundle="${messages}"/></b></h4>
-				
-				<button class=" autorButton w3-btn w3-border" id="editarContenidoButton">
-					<fmt:message key="menuAutor.editar" bundle="${messages}"/>
-				</button>
-				
-				<button hidden=true class="autorButton w3-btn w3-border"  id="botonEditarListaCancelar" onclick=window.location.reload()>
-					<fmt:message key="editar.editarPerfilCancelar" bundle="${messages}"/>
-				</button>
-				
-				<button class=" autorButton w3-btn w3-border" id="editarVideosListaButton">
-					<fmt:message key="menuAutor.videosLista" bundle="${messages}"/>
-				</button>								
+			<div id="edicionLista" hidden=true>
+			<br/>		
+				<form action="/SeeDsWeb/<%=ControllerPath.LISTA%>" method="post">	
+					<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.EDITAR_LISTA%>"/>
+					<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
+	
+					<div id="campoNombre">
+					<span class="w3-text-blue"><b><fmt:message key="form.titulo" bundle="${messages}"/></b></span>
+					<input type="text" class="w3-input w3-border" 
+							name="<%=ParameterNames.NOMBRE%>" 
+							value="${lista.nombre}"/>
+					</div>
+					
+					<div id="campoDescripcionLista">
+					<span class="w3-text-blue"><b><fmt:message key="form.descripcion" bundle="${messages}"/></b></span>
+					<input type="text" class="w3-input w3-border" 
+							name="<%=ParameterNames.DESCRIPCION%>" 
+							value="${lista.descripcion}"/>
+					</div>
+					<br/>
+	
+					<input id="botonEditarListaSalvar" class=" autorButton w3-btn w3-border2" type="submit"
+						 name="lista" value="<fmt:message key="editar.guardarEdicion" bundle="${messages}"/>"/>
+				</form>
 								
-			</div><!-- MENU AUTOR -->
-		</c:if><!-- IF autenticado -->
-		
-		<div id="edicionLista" hidden=true>
-		<br/>
-		
-			<form action="/SeeDsWeb/<%=ControllerPath.LISTA%>" method="post">	
-				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.EDITAR_LISTA%>"/>
-				<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
+				<div id="eliminarDiv"><!-- BOTONES PARA ELIMINACION -->
 				<br/>
-				
-				<div class="editarCampoDiv"> <span><strong> <fmt:message key="editar.fechaCreacion" bundle="${messages}"/> </strong></span> ${lista.fechaAlta} </div>
-				<br/>
-
-				<div id="campoNombre">
-				<span class="w3-text-blue"><b><fmt:message key="form.titulo" bundle="${messages}"/></b></span>
-				<input type="text" class="w3-input w3-border" 
-						name="<%=ParameterNames.NOMBRE%>" 
-						value="<%=ParameterUtils.getParameter(request, ParameterNames.NOMBRE) %>"/>	
-				</div>
-				
-				<div id="campoDescripcionLista">
-				<span class="w3-text-blue"><b><fmt:message key="form.descripcion" bundle="${messages}"/></b></span>
-				<input type="text" class="w3-input w3-border" 
-						name="<%=ParameterNames.DESCRIPCION%>" 
-						value="<%=ParameterUtils.getParameter(request, ParameterNames.DESCRIPCION) %>"/>
-				</div>
-<!--  
-				<div class="editarCampoDiv" > <span> <strong><fmt:message key="editar.nombre" bundle="${messages}"/></strong> </span> ${lista.nombre}			
-					<div class="edicionSpan"> <span class="rotuloCampo"><%/*=ParameterNames.NOMBRE*/%>:</span>
-						<input type="text" name="<%/*=ParameterNames.NOMBRE*/%>" value="${lista.nombre}"/>	
-				</div></div><br/>
-				
-				<div class="editarCampoDiv"> <span><strong> <fmt:message key="editar.descripcion" bundle="${messages}"/> </strong></span> ${lista.descripcion} 
-					<div class="edicionSpan"> <fmt:message key="editar.nuevo" bundle="${messages}"/> 
-					<input type="text" name="<%/*=ParameterNames.DESCRIPCION*/%>" value="${lista.descripcion}"> 
-				</div></div><br/>
--->
-				<input id="botonEditarListaSalvar" class=" autorButton w3-btn w3-border2" type="submit" name="lista" value="<fmt:message key="editar.guardarEdicion" bundle="${messages}"/>"/>
-			</form>
-			
-			<div id="eliminarDiv">
-			<br/>
-				<button class=" autorButton w3-btn w3-border" id="eliminarButton">
-					<fmt:message key="menuAutor.eliminar" bundle="${messages}"/>
-				</button>
-				<button class=" autorButton w3-btn w3-border" id="cancelarEliminarButton" hidden=true>
-					<fmt:message key="menuAutor.cancelar" bundle="${messages}"/>
-				</button>
-				
-				<h5 id="textConfirm" hidden=true><fmt:message key="menuAutor.confirmEliminar" bundle="${messages}"/></h5>
-				<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.ELIMINAR%>
-						&<%=ParameterNames.ID_CONTENIDO%>=${lista.id}" hidden=true  id="confirmButtonA">
-					<button class=" autorButton w3-btn w3-border"  id="confirmButton">
+					<button class=" autorButton w3-btn w3-border" id="eliminarButton">
 						<fmt:message key="menuAutor.eliminar" bundle="${messages}"/>
 					</button>
-				</a>
-			</div>
-				
-				
-		</div>
-		
-		<div id="operacionesLista" hidden=true>
-		
-			<div id="listaLista" class="listasLista">			
-				<c:forEach items="${listaLista}" var="video">
-					<div class="listaElemento">
-						${video.id}
-						<pre>   </pre>
-						${video.nombre}
-						<button class="userButton seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="false">
-							<fmt:message key="menuAutor.excluir" bundle="${messages}"/>
+					<button class=" autorButton w3-btn w3-border" id="cancelarEliminarButton" hidden=true>
+						<fmt:message key="menuAutor.cancelar" bundle="${messages}"/>
+					</button>
+					
+					<h5 id="textConfirm" hidden=true><fmt:message key="menuAutor.confirmEliminar" bundle="${messages}"/></h5>
+					<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.ELIMINAR%>
+							&<%=ParameterNames.ID_CONTENIDO%>=${lista.id}" hidden=true  id="confirmButtonA">
+						<button class=" autorButton w3-btn w3-border"  id="confirmButton">
+							<fmt:message key="menuAutor.eliminar" bundle="${messages}"/>
 						</button>
-					</div>		
-				</c:forEach>			
-			</div>
-			
-			<div id="listaUsuario" class="listasLista">
-				<c:forEach items="${listaUsuario}" var="video">
-					<div class="listaElemento">
-						${video.id}
-						<pre>   </pre>
-						${video.nombre}
-						<button class="userButton seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="false">
-							<fmt:message key="menuAutor.incluir" bundle="${messages}"/>
-						</button>
-					</div>		
-				</c:forEach>
-			</div>
-		</div>
-	     </c:if>
+					</a>
+				</div><!-- FIN BOTONES ELIMINACION -->		
+			</div><!-- EDICION DETALLES/ELIMINAR -->
+		
+			<div id="operacionesLista" hidden=true> <!-- MANIPULAR VIDEOS CONTENIDOS -->		
+				<div id="listaLista" class="listasLista">			
+					<c:forEach items="${listaLista}" var="video">
+						<div class="listaElemento">
+							${video.id}
+							<pre>   </pre>
+							${video.nombre}
+							<button class="userButton seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="false">
+								<fmt:message key="menuAutor.excluir" bundle="${messages}"/>
+							</button>
+						</div>		
+					</c:forEach>			
+				</div>			
+				<div id="listaUsuario" class="listasLista">
+					<c:forEach items="${listaUsuario}" var="video">
+						<div class="listaElemento">
+							${video.id}
+							<pre>   </pre>
+							${video.nombre}
+							<button class="userButton seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="false">
+								<fmt:message key="menuAutor.incluir" bundle="${messages}"/>
+							</button>
+						</div>		
+					</c:forEach>
+				</div>
+			</div> <!-- MANIPULAR VIDEOS CONTENIDOS -->	
+		</c:if><!-- IF USUARIO AUTENTICADO -->	
 	</div>
 	
-	<div id="videosEnListaDiv">
-	<h3><fmt:message key="detalle.videos-lista" bundle="${messages}"></fmt:message></h3>
+	
+	<div id="videosEnListaDiv"><!-- SECCION PUBLICA -->	
+		<h3><fmt:message key="detalle.videos-lista" bundle="${messages}"></fmt:message></h3>
 		<c:if test="${not empty resultados}">		
 			<c:forEach items="${resultados}" var="video">
 				<div class="thumbDiv">
@@ -223,7 +207,7 @@
 		
 			</center></p>
 		</c:if>
-	</div>
+	</div><!-- SECCION PUBLICA -->	
 	
 	<div class="comentariosDv">
 		<h3><fmt:message key="detalle.comentarios" bundle="${messages}"/></h3>

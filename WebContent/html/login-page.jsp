@@ -9,8 +9,7 @@
 		
 			
 			<form action="/SeeDsWeb/<%=ControllerPath.USUARIO%>" method="post">			
-				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.ENTRAR%>"/>				
-				<%@include file="/html/common/action-errors.jsp"%> <!--  !!!!!!!!!!!!!!!!!!! -->
+				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.ENTRAR%>"/>
 			
 				<label class="w3-text-blue"><b><fmt:message key="form.email" bundle="${messages}"/></b></label>
 				<input  class="w3-input w3-border" type="email" name="<%=ParameterNames.EMAIL%>" 
@@ -19,7 +18,9 @@
 							<%
 								parameterErrors = errors.getErrors(ParameterNames.EMAIL);
 								for (String error: parameterErrors) {
-									%><li><%=error%></li><%
+									if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
+										%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
+									}
 								}
 							%>
 				
@@ -28,7 +29,9 @@
 							<%
 								parameterErrors = errors.getErrors(ParameterNames.PASSWORD);
 								for (String error: parameterErrors) {									
-									%><li><%=error%></li><%
+									if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
+										%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
+									}
 								}
 							%>
 				
@@ -37,7 +40,7 @@
 			</form>
 			<br/><br/>
 			
-			<a class="w3-btn w3-blue" id="submitAlt" href="<%=ControllerPath.USUARIO%>?action=<%=Actions.PRERREGISTRO%>"><b><fmt:message key="form.registrate" bundle="${messages}"/></b></a>
+			<a class="w3-btn w3-blue" id="submitAlt" href="/SeeDsWeb<%=ControllerPath.USUARIO%>?action=<%=Actions.PRERREGISTRO%>"><b><fmt:message key="form.registrate" bundle="${messages}"/></b></a>
 	</div>
 </div>
 <%@include file="/html/common/footer.jsp"%>

@@ -14,14 +14,23 @@
 
 	<div id="subir-video-form">
 		
-			<form action="/SeeDsWeb/<%=ControllerPath.LISTA%>" method="post" >	
+			<form action="/SeeDsWeb/<%=ControllerPath.LISTA%>" method="post" >				
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.CREAR_LISTA%>"/>
+
 								
 				<div id="campoNombre">
 				<span class="w3-text-blue"><b><fmt:message key="form.titulo" bundle="${messages}"/></b></span>
 				<input type="text" class="w3-input w3-border" 
 						name="<%=ParameterNames.NOMBRE%>" 
-						value="<%=ParameterUtils.getParameter(request, ParameterNames.NOMBRE) %>"/>	
+						value="<%=ParameterUtils.getParameter(request, ParameterNames.NOMBRE) %>"/>
+					<%
+						parameterErrors = errors.getErrors(ParameterNames.NOMBRE);
+							for (String error: parameterErrors) {
+								if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
+									%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
+								}
+							}
+					%>
 				</div>
 				
 				<div id="campoDescripcionLista">
@@ -29,6 +38,14 @@
 				<input type="text" class="w3-input w3-border" 
 						name="<%=ParameterNames.DESCRIPCION%>" 
 						value="<%=ParameterUtils.getParameter(request, ParameterNames.DESCRIPCION) %>"/>
+					<%
+						parameterErrors = errors.getErrors(ParameterNames.DESCRIPCION);
+							for (String error: parameterErrors) {
+								if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
+									%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
+								}
+							}
+					%>
 				</div>
 				
 				
@@ -39,7 +56,15 @@
 							<c:forEach items="${categorias}" var="categoria">
 								<option value="${categoria.idCategoria}">${categoria.nombreCategoria}</option>		
 							</c:forEach>
-					</select>		
+					</select>
+					<%
+						parameterErrors = errors.getErrors(ParameterNames.CATEGORIA);
+							for (String error: parameterErrors) {
+								if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
+									%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
+								}
+							}
+					%>
 				</div>
 				
 				<br/>
