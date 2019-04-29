@@ -9,7 +9,7 @@
     %>
 
 <div id="buscador-form">
-	<form action="<%=ControllerPath.CONTENIDO%>" method="post">
+	<form action="/SeeDsWeb/<%=ControllerPath.CONTENIDO%>" method="post">
 		<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.BUSCAR%>"/>
 	
 		<span id="checkTodosDiv">
@@ -133,13 +133,13 @@
 <c:if test="${not empty resultados}">
 	<!-- Listado -->	
 	<div id="resultadosDiv">
-		<c:forEach items="${resultados}" var="contenido">					
+		<c:forEach items="${resultados}" var="contenido">		
 			<div class="thumbDiv hover">
-				<c:url var="urlDetalle" scope="page" value="/redirect">
+				<c:url var="urlDetalle" scope="page" value="<%=ControllerPath.CONTENIDO%>">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
 					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
-				</c:url>		
+				</c:url>
 
 				<a class="a_sinsub" href="${urlDetalle}">
 					${contenido.nombre}<br>

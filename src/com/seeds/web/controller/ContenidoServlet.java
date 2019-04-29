@@ -65,6 +65,13 @@ public class ContenidoServlet extends HttpServlet {
 		int startIndex= (page-1)*WebUtils.pageSize+1;
 		int count= WebUtils.pageSize;
 		
+		String idContenidoStr = request.getParameter(ParameterNames.ID_CONTENIDO);
+		String tipoStr = request.getParameter(ParameterNames.TIPO);
+		Long idContenido=null;
+		Integer tipo=null;
+		if(idContenidoStr!=null) {idContenido =ValidationUtils.validLong(errors, idContenidoStr, ParameterNames.ID_CONTENIDO, true);}
+		if(tipoStr!=null) {tipo = ValidationUtils.validInt(errors, tipoStr , ParameterNames.TIPO, true);}
+		
 		Results<Contenido> listado = null;
 		ContenidoCriteria criteria = new ContenidoCriteria();
 
@@ -242,7 +249,7 @@ public class ContenidoServlet extends HttpServlet {
 			
 			request.setAttribute(ParameterNames.ACTION, Actions.GUARDADOS);				
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			/*Integer*/ tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==2) {
@@ -269,7 +276,7 @@ public class ContenidoServlet extends HttpServlet {
 			
 			request.setAttribute(ParameterNames.ACTION, Actions.SEGUIDOS);
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			/*Integer*/ tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==1) {
@@ -296,7 +303,7 @@ public class ContenidoServlet extends HttpServlet {
 			
 			request.setAttribute(ParameterNames.ACTION, Actions.SUBIDOS);
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-			Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			/*Integer*/ tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 				if(tipo==2) {
 					criteria.setAceptarVideo(true);
@@ -325,14 +332,49 @@ public class ContenidoServlet extends HttpServlet {
 			}			
 			target = ViewPath.SUBIDOS;
 			
-		}  else {// LA ACTION RECIBIDA NO ESTA DEFINIDA			
-			// Mmm...
+		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
+			
+//			Long id = Long.parseLong(request.getParameter(ParameterNames.ID_CONTENIDO));
+//			Integer tipo = Integer.parseInt(request.getParameter(ParameterNames.TIPO));			
+
+			if(tipo!=null && tipo<=3 && tipo>0) { // Se comprueba la validez del TIPO
+				request.setAttribute(ParameterNames.TIPO, tipo);
+				if(idContenido!=null && idContenido>= 0) { // Se comprueba la validez del ID
+					request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
+					
+					if(tipo==1) {
+						target = ControllerPath.USUARIO;
+					}
+					if(tipo==2) {					
+						target = ControllerPath.VIDEO;
+					}
+					if(tipo==3) {
+						target = ControllerPath.LISTA;
+					}
+					
+					//request.getRequestDispatcher(target).forward(request, response);
+				} else {//ID INVALIDO					
+					target = ViewPath.ERROR500;
+					request.getRequestDispatcher(target).forward(request, response);
+//					logger.info("Forwarding to "+target);
+//					request.getRequestDispatcher(target).forward(request, response);
+				}
+			} else {//TIPO INVALIDO
+				target = ViewPath.ERROR500;// molaria mandalo a donde estaba e que aparecese un mensaxe nesa mima paxina
+				logger.info("INVALID CONTENT TYPE -> Forwarding to "+target);
+				//request.getRequestDispatcher(target).forward(request, response);
+			}
+
+		} else {
+			// LA ACTION RECIBIDA NO ESTA DEFINIDA
+			errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_ACTION);
 			logger.error("Action desconocida");
-			// target ?
-		}		
-		
+			target = ViewPath.HOME;
+		}
+	
 		logger.info("Forwarding from ContenidoServlet to "+target);
 		request.getRequestDispatcher(target).forward(request, response);
+		
 	}
 
 

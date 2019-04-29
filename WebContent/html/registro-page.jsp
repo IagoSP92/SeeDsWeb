@@ -7,7 +7,7 @@
 <div id="registro-form">
 		<h1 class="w3-text-blue"><fmt:message key="interfaz.registro" bundle="${messages}"/></h1>
 	
-		<form action="<%=ControllerPath.USUARIO%>" method="post">	
+		<form action="/SeeDsWeb/<%=ControllerPath.USUARIO%>" method="post">	
 			<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.REGISTRO%>"/>
 			<%@include file="/html/common/action-errors.jsp"%>
 			
@@ -30,7 +30,7 @@
 			
 			<div id="campoPass">
 			<span  class="w3-text-blue"><b><fmt:message key="form.pass" bundle="${messages}"/></b></span>	
-			<input type="text" class="w3-input w3-border"
+			<input type="password" class="w3-input w3-border"
 					name="<%=ParameterNames.PASSWORD%>" 
 					value="<%=ParameterUtils.getParameter(request, ParameterNames.PASSWORD) %>"/>
 			</div>

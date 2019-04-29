@@ -38,12 +38,12 @@
 		</div>
 		<div class="flagsDiv">
 			<div class="flag">
-			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES">
+			<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES">
 				<img src="/SeeDsWeb/img/flags/ES.png">
 			</a>
 			</div>
 			<div class="flag">
-			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB">
+			<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB">
 				<img src="/SeeDsWeb/img/flags/EN.png">
 			</a>
 			</div>

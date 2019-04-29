@@ -14,7 +14,7 @@
 
 	<div id="subir-video-form">
 		
-			<form action="<%=ControllerPath.LISTA%>" method="post" >	
+			<form action="/SeeDsWeb/<%=ControllerPath.LISTA%>" method="post" >	
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.CREAR_LISTA%>"/>
 								
 				<div id="campoNombre">

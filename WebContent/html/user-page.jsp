@@ -51,14 +51,14 @@
 
 	<div id="dualMenuDiv">
 		<span>
-			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=2">
+			<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=2">
 				<button class="dualButton w3-btn w3-border w3-text-blue">
 					<fmt:message key="dual.videos" bundle="${messages}"/>
 				</button>
 			</a>
 		</span>
 		<span>
-			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=3">
+			<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=3">
 				<button class="dualButton w3-btn w3-border w3-text-blue">
 					<fmt:message key="dual.listas" bundle="${messages}"/>
 				</button>
@@ -79,7 +79,7 @@
 			</c:choose>
 			<c:forEach items="${resultados}" var="contenido">
 				<div class="thumbDiv">
-					<c:url var="urlDetalle" scope="page" value="/redirect">
+					<c:url var="urlDetalle" scope="page" value="<%=ControllerPath.CONTENIDO%>">
 						<c:param name="action" value="<%=Actions.DETALLE%>"/>
 						<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.getId()}"/>
 						<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.getTipo()}"/>

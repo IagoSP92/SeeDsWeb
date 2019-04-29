@@ -56,18 +56,17 @@ public class RelationServlet extends HttpServlet {
 			idSesion= u.getId();
 			idSesion = ValidationUtils.validLong(errors, idSesion.toString(), ParameterNames.ID_SESION, true);
 		}
-		
+		String idContenidoStr = request.getParameter(ParameterNames.ID_CONTENIDO);
+		String tipoStr = request.getParameter(ParameterNames.TIPO);
 			
-		
-		// Se ha hecho esta conversion para validar el parámetro utilizando los métodos ya existentes
-		Long idContenido =ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_CONTENIDO), ParameterNames.ID_CONTENIDO, true);
-		Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+		Long idContenido =ValidationUtils.validLong(errors, idContenidoStr, ParameterNames.ID_CONTENIDO, true);
+		Integer tipo = ValidationUtils.validInt(errors, tipoStr , ParameterNames.TIPO, true);
 		
 		 if (Actions.SUMAR_VISITA.equalsIgnoreCase(action)) {
 				if (logger.isDebugEnabled()) {					
 					logger.debug(" Action={}:  Contenido={} Tipo={}",action, idContenido, tipo );
 				}
-				if(tipo==1||tipo==2||tipo==3 ) {			
+				if(tipo==1||tipo==2||tipo==3 ) {
 					Integer nuevoValor = null;
 					try {
 						Contenido contenido = WebUtils.contenidoSvc.buscarId(idContenido);

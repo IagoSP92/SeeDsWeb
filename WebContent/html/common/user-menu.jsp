@@ -16,7 +16,7 @@
 		</button>
 	</a>
 			
-	<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>">
+	<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRERREGISTRO%>">
 		<button class="userButton">
 			<fmt:message key="usermenu.registro" bundle="${messages}"/>
 		</button>
@@ -28,17 +28,17 @@
 			<div id="usuario">
 				<span><%=u.getNombre()%></span>
 				
-				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.MI_PERFIL%>">
+				<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.MI_PERFIL%>">
 					<button class="userButton">
 						<fmt:message key="usermenu.perfil" bundle="${messages}"/>
 					</button>
 				</a>
-				<a href="<%=ControllerPath.VIDEO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_SUBIR_VIDEO%>">
+				<a href="/SeeDsWeb/<%=ControllerPath.VIDEO%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_SUBIR_VIDEO%>">
 					<button class="userButton">
 						<fmt:message key="usermenu.subir" bundle="${messages}"/>
 					</button>
 				</a>
-				<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.SALIR%>">
+				<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.SALIR%>">
 					<button class="userButton">
 						<fmt:message key="usermenu.salir" bundle="${messages}"/>
 					</button>

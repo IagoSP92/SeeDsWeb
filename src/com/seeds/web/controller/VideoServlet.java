@@ -48,9 +48,9 @@ public class VideoServlet extends HttpServlet {
 	
 	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
 	// upload settings
-	private static final int MEMORY_THRESHOLD   = 1024 * 1024 * 3;  // 3MB
-	private static final int MAX_FILE_SIZE      = 1024 * 1024 * 4; // 4MB
-	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 5; // 5MB
+	private static final int MEMORY_THRESHOLD   = 1024 * 1024 * 30;  // 30MB
+	private static final int MAX_FILE_SIZE      = 1024 * 1024 * 40; // 40MB
+	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 50; // 50MB
 
 	private static Logger logger = LogManager.getLogger(VideoServlet.class);
 	
@@ -70,6 +70,8 @@ public class VideoServlet extends HttpServlet {
 
 		String action = null;
 		List<FileItem> formItems=null;
+		
+		
         
         if(ServletFileUpload.isMultipartContent(request)) {
         	 formItems = new ArrayList<FileItem>();
@@ -105,11 +107,22 @@ public class VideoServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
-
+		
+		String idContenidoStr = request.getParameter(ParameterNames.ID_CONTENIDO);
+		String tipoStr = request.getParameter(ParameterNames.TIPO);
+		Long idContenido=null;
+		Integer tipo=null;
+		if(idContenidoStr!=null) {idContenido =ValidationUtils.validLong(errors, idContenidoStr, ParameterNames.ID_CONTENIDO, true);}
+		if(tipoStr!=null) {tipo = ValidationUtils.validInt(errors, tipoStr , ParameterNames.TIPO, true);}
+		
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
+			if (logger.isDebugEnabled()) {
+				logger.info("DETALLE PERFIL -> id:{} tipo:{} ", idContenido, tipo);
+			}
+						
 			Video video=null;
-			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			/*Long*/ idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
@@ -225,12 +238,19 @@ public class VideoServlet extends HttpServlet {
 			if (!errors.hasErrors()) {
 				
 				// Podriamos enviar a video detalle
+				//request.setAttribute(ParameterNames.ACTION, Actions.DETALLE);
+//				request.setAttribute(ParameterNames.ACTION, Actions.DETALLE);
+//				request.setAttribute(ParameterNames.ID_CONTENIDO, video.getId());
+//				request.setAttribute(ParameterNames.TIPO, video.getTipo());
+				target= ControllerPath.VIDEO;
 				
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Subir Video Fallido: {}", errors);
 				}				
-				request.setAttribute(AttributeNames.ERRORS, errors);								
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				
+				target= ViewPath.SUBIR_VIDEO;
 			}
 
 //			request.setAttribute(ParameterNames.ACTION, Actions.DETALLE_VIDEO );
@@ -238,7 +258,7 @@ public class VideoServlet extends HttpServlet {
 //			request.setAttribute(ParameterNames.TIPO, video.getTipo());	
 //			target = ControllerPath.VIDEO;
 			
-			target = ViewPath.HOME;
+			//target = ViewPath.HOME;
 			
 			
 		} else   if (Actions.REPRODUCIR_VIDEO.equalsIgnoreCase(action)) {// LA ACTION RECIBIDA NO ESTA DEFINIDA

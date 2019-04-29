@@ -14,7 +14,7 @@
 
 	<div id="subir-video-form">
 		
-			<form action="<%=ControllerPath.VIDEO%>" method="post" enctype="multipart/form-data" >	
+			<form action="/SeeDsWeb/<%=ControllerPath.VIDEO%>" method="post" enctype="multipart/form-data" >	
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.SUBIR_VIDEO%>"/>
 								
 				<div id="campoNombre">

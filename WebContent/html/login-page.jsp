@@ -8,7 +8,7 @@
 		<h1 class="w3-text-blue"><fmt:message key="interfaz.entrar" bundle="${messages}"/></h1>
 		
 			
-			<form action="<%=ControllerPath.USUARIO%>" method="post">			
+			<form action="/SeeDsWeb/<%=ControllerPath.USUARIO%>" method="post">			
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.ENTRAR%>"/>				
 				<%@include file="/html/common/action-errors.jsp"%> <!--  !!!!!!!!!!!!!!!!!!! -->
 			

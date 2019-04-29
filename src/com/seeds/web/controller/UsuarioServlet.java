@@ -281,6 +281,7 @@ public class UsuarioServlet extends HttpServlet {
 
 		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
+
 			Usuario usuario=null;
 			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	

@@ -20,7 +20,7 @@
 	</a>
 	
 	<div id="recuadro_usuario">
-		<form action="<%=ControllerPath.USUARIO%>" method="post">	
+		<form action="/SeeDsWeb/<%=ControllerPath.USUARIO%>" method="post">	
 			<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.EDITAR_PERFIL%>"/>
 			<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${usuario.id}"/>
 			<br/>

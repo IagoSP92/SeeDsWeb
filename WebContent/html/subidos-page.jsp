@@ -6,14 +6,14 @@
 	<h1><fmt:message key="nav.subidos" bundle="${messages}"/></h1>
 
 	<span>
-		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=2">
+		<a href="/SeeDsWeb/<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=2">
 			<button class="dualButton  w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="dual.videos" bundle="${messages}"/>
 			</button>
 		</a>
 	</span>
 	<span>
-		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=3">
+		<a href="/SeeDsWeb/<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=3">
 			<button class="dualButton  w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="dual.listas" bundle="${messages}"/>
 			</button>
@@ -21,7 +21,7 @@
 	</span>	
 	
 	<span id="crearListaButtonDiv">
-		<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_CREAR_LISTA%>">
+		<a href="/SeeDsWeb/<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_CREAR_LISTA%>">
 			<button class="  w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="usermenu.crearLista" bundle="${messages}"/>
 			</button>
@@ -40,7 +40,7 @@
 			</c:choose>
 			<c:forEach items="${resultados}" var="contenido">
 				<div class="thumbDiv">
-					<c:url var="urlDetalle" scope="page" value="/redirect">
+					<c:url var="urlDetalle" scope="page" value="<%=ControllerPath.CONTENIDO%>">
 						<c:param name="action" value="<%=Actions.DETALLE%>"/>
 						<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.getId()}"/>
 						<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.getTipo()}"/>

@@ -108,7 +108,7 @@
 		<div id="edicionLista" hidden=true>
 		<br/>
 		
-			<form action="<%=ControllerPath.LISTA%>" method="post">	
+			<form action="/SeeDsWeb/<%=ControllerPath.LISTA%>" method="post">	
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.EDITAR_LISTA%>"/>
 				<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
 				<br/>
@@ -200,7 +200,7 @@
 		<c:if test="${not empty resultados}">		
 			<c:forEach items="${resultados}" var="video">
 				<div class="thumbDiv">
-					<c:url var="urlDetalle" scope="page" value="/redirect">
+					<c:url var="urlDetalle" scope="page" value="<%=ControllerPath.CONTENIDO%>">
 						<c:param name="action" value="<%=Actions.DETALLE%>"/>
 						<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${video.getId()}"/>
 						<c:param name="<%=ParameterNames.TIPO%>" value="${video.getTipo()}"/>
