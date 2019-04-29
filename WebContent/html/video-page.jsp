@@ -11,7 +11,7 @@
 			<div class="detalle-autor">  ${nombre_autor} </div>	
 		</div><!-- cabeceraVideoDiv -->
 		<br/>
-		<div class="reproductorDiv w3-border2">
+		<div class="reproductorDiv">
 			<c:url var="urlVideo" scope="page" value="/video">
 				<c:param name="action" value="<%=Actions.REPRODUCIR_VIDEO%>"/>
 				<c:param name="<%=ParameterNames.ID_VIDEO%>"   value="${video.id}"/>

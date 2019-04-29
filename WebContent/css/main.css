@@ -5,11 +5,13 @@ html, body {
 	height: 98%;
 }
 
-:root { -
+:root {
+	--w3blue: #2196F3;
 	--fondo_muy_uscuro: #172B4D;
 	--fondo_oscuro: #026aa7;
-	--fondo_intermedio: rgba(9, 30, 66, .08);
-	--fondo_claro: rgb(149, 199, 240); 
+	--fondo_claro2: rgba(142, 210, 236, 0.767); 
+	--fondo_intermedio: rgb(157, 210, 236); 
+	--fondo_claro: rgb(115, 182, 238); 
 	--fondo_muy_claro: #E4F0F6; 
 	--ancho_reproductor1: 854px; 
 	--alto_reproductor1: 480px; 
@@ -121,12 +123,14 @@ html, body {
 	width: 100%;
 	height: 35px;
 	background-color: rgb(1, 122, 221);
+	background-color:var(--w3blue);
 	border: 1px solid black;
 }
 
 .userButton {
 	margin: 5px;
 	background-color: rgb(149, 199, 240);
+	background-color: var(--fondo_muy_claro);
 	height: 25px;
 	margin-left: 3%;
 	border: none;
@@ -141,6 +145,7 @@ html, body {
 	width: 130px;
 	height: 100%;
 	background-color: rgb(1, 136, 247);
+	background-color:var(--w3blue);
 	border: 1px solid black;
 	text-align: center;
 	justify-content: center;
@@ -152,6 +157,7 @@ html, body {
 	margin: 5px;
 	padding: 5px;
 	background-color: rgb(149, 199, 240);
+	background-color: var(--fondo_intermedio);
 	position: relative;
 	left: 10px;
 	width: 100px;
@@ -159,8 +165,11 @@ html, body {
 	font-weight: bolder;
 	font-family: Georgia, 'Times New Roman', Times, serif;
 	color: rgb(0, 58, 244);
+	color: rgb(18, 73, 155);
 }
-
+.navButton:hover, .userButton:hover {
+box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
+}
 #nav-menu a {
 	text-decoration: none;
 }
@@ -169,25 +178,32 @@ html, body {
 	background-color: red;
 }
 
-#buscador-form {
-	background-color: rgb(149, 199, 240);
-	border: 1px solid rgb(62, 141, 206);
-	padding: 10px;
-	margin: 10px;
-	display: inline-block;
-	color: #172B4D;
-}
+
 
 #buscarButton {
-	
+	padding:8px 16px;vertical-align:middle;
+	overflow:hidden;
+	text-decoration:none;color:var(--fondo_oscuro);
+	background-color: var(--fondo_muy_claro);
+	cursor:pointer;white-space:nowrap}
+
+.hover:hover {
+	box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
+
 }
+
+
+
 
 .thumbDiv {
 	background-color: rgb(149, 199, 240);
-	background-color: var(--fondo_claro);
+	background-color: var(--fondo_claro2);
 	border: 1px solid black;
 	padding: 10px;
 	margin: 20px;
+	width: 45%;
+	height: 100px;
+	display: inline-block;
 }
 
 .comentario {
@@ -227,12 +243,30 @@ html, body {
 .editarCampoDiv {
 	width: 30%;
 }
+
+
+#buscador-form {
+	background-color: rgb(149, 199, 240);
+	background-color: var(--fondo_intermedio);
+	border: 1px solid #026aa7;
+	padding: 2%;
+	margin: 10px;
+	display: inline-block;
+	color: #172B4D;
+}
+
+
+
 .inline-block{
 	display: inline-block;
 }
 
 button:hover {
 	cursor: pointer;
+}
+
+input, select{
+	background-color: var(--fondo_muy_claro);
 }
 
 video {

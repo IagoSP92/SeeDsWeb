@@ -19,7 +19,7 @@
 								
 				<div id="campoNombre">
 				<span class="w3-text-blue"><b><fmt:message key="form.titulo" bundle="${messages}"/></b></span>
-				<input type="text" class="w3-input w3-border" 
+				<input type="text" class="w3-input w3-border"  maxlength=62
 						name="<%=ParameterNames.NOMBRE%>" 
 						value="<%=ParameterUtils.getParameter(request, ParameterNames.NOMBRE) %>"/>	
 				</div>

@@ -7,14 +7,14 @@
 	
 	<span>
 		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.GUARDADOS%>&<%=ParameterNames.TIPO%>=2">
-			<button class="dualButton">
+			<button class="dualButton w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="dual.videos" bundle="${messages}"/>
 			</button>
 		</a>
 	</span>
 	<span>
 		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.GUARDADOS%>&<%=ParameterNames.TIPO%>=3">
-			<button class="dualButton">
+			<button class="dualButton w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="dual.listas" bundle="${messages}"/>
 			</button>
 		</a>

@@ -4,30 +4,30 @@
 
 <div class="mainWindow">
 	<h1><fmt:message key="nav.subidos" bundle="${messages}"/></h1>
-	
-	<div id="crearListaButtonDiv">
-		<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_CREAR_LISTA%>">
-			<button class="userButton">
-				<fmt:message key="usermenu.crearLista" bundle="${messages}"/>
-			</button>
-		</a>
-	</div>
-	
+
 	<span>
 		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=2">
-			<button class="dualButton">
+			<button class="dualButton  w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="dual.videos" bundle="${messages}"/>
 			</button>
 		</a>
 	</span>
 	<span>
 		<a href="<%=ControllerPath.CONTENIDO%>?<%=ParameterNames.ACTION%>=<%=Actions.SUBIDOS%>&<%=ParameterNames.TIPO%>=3">
-			<button class="dualButton">
+			<button class="dualButton  w3-btn w3-border2 w3-text-blue2">
 				<fmt:message key="dual.listas" bundle="${messages}"/>
 			</button>
 		</a>
 	</span>	
-
+	
+	<span id="crearListaButtonDiv">
+		<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.PRE_CREAR_LISTA%>">
+			<button class="  w3-btn w3-border2 w3-text-blue2">
+				<fmt:message key="usermenu.crearLista" bundle="${messages}"/>
+			</button>
+		</a>
+	</span>
+	
 <div id="subidosDiv">
 		<c:if test="${not empty resultados}">
 			<c:choose>

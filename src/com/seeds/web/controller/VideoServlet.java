@@ -233,12 +233,12 @@ public class VideoServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.ERRORS, errors);								
 			}
 
-			request.setAttribute(ParameterNames.ACTION, Actions.DETALLE_VIDEO );
-			request.setAttribute(ParameterNames.ID_CONTENIDO, video.getId());	
-			request.setAttribute(ParameterNames.TIPO, video.getTipo());	
-			target = ControllerPath.VIDEO;
+//			request.setAttribute(ParameterNames.ACTION, Actions.DETALLE_VIDEO );
+//			request.setAttribute(ParameterNames.ID_CONTENIDO, video.getId());	
+//			request.setAttribute(ParameterNames.TIPO, video.getTipo());	
+//			target = ControllerPath.VIDEO;
 			
-			//target = ViewPath.HOME;
+			target = ViewPath.HOME;
 			
 			
 		} else   if (Actions.REPRODUCIR_VIDEO.equalsIgnoreCase(action)) {// LA ACTION RECIBIDA NO ESTA DEFINIDA

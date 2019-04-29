@@ -13,53 +13,51 @@
 		<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.BUSCAR%>"/>
 	
 		<span id="checkTodosDiv">
-		<input type="checkbox" name="<%=ParameterNames.CHECK_TODOS%>" id="checkTodos" onchange="checkCompatible()">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_TODOS%>" id="checkTodos" onchange="checkCompatible()"  class="hover">
 			<fmt:message key="buscador.todo" bundle="${messages}"/>
 		</span>
 		<span id="checkVideosDiv">
-		<input type="checkbox" name="<%=ParameterNames.CHECK_VIDEO%>" id="checkVideos" onchange="checkCompatible()">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_VIDEO%>" id="checkVideos" onchange="checkCompatible()"  class="hover">
 			<fmt:message key="buscador.videos" bundle="${messages}"/>
 		</span>
 		<span id="checkListassDiv">	
-		<input type="checkbox" name="<%=ParameterNames.CHECK_LISTA%>" id="checkListas" onchange="checkCompatible()">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_LISTA%>" id="checkListas" onchange="checkCompatible()"  class="hover">
 			<fmt:message key="buscador.listas" bundle="${messages}"/>
 		</span>
 		<span id="checkUsuariosDiv">
-		<input type="checkbox" name="<%=ParameterNames.CHECK_USUARIO%>" id="checkUsuarios" onchange="checkCompatible()">
+		<input type="checkbox" name="<%=ParameterNames.CHECK_USUARIO%>" id="checkUsuarios" onchange="checkCompatible()"  class="hover">
 			<fmt:message key="buscador.usuarios" bundle="${messages}"/>
 		</span>
 		<br/>			
-		<input type="text" size=80
-				name="<%=ParameterNames.NOMBRE%>" 
-				value="${requestScope.nombre}" 
+		<input type="text" size=80 name="<%=ParameterNames.NOMBRE%>" value="${requestScope.nombre}"  class="hover"
 				placeholder='<fmt:message key="buscador.nombre" bundle="${messages}"/>'/>
-		<input id="buscarButton" type="submit" value='<fmt:message key="buscador.buscar" bundle="${messages}"/>'>
+		<input id="buscarButton" class="w3-blue inline-block w3-border2 w3-text-blue2 hover" type="submit" value='<fmt:message key="buscador.buscar" bundle="${messages}"/>'>
 		<br id="br-buscador"/>			
 					
 		<span class="buscador-label"><fmt:message key="buscador.valoracion" bundle="${messages}"/></span>
-		<input name="<%=ParameterNames.VALORACION_MIN%>" type="text" size=2
+		<input name="<%=ParameterNames.VALORACION_MIN%>" type="text" size=2 class="hover"
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.VALORACION_MIN) %>"
 				placeholder="<fmt:message key="buscador.desde" bundle="${messages}"/>"/>
 				
-		<input name="<%=ParameterNames.VALORACION_MAX%>" type="text" size=2
+		<input name="<%=ParameterNames.VALORACION_MAX%>" type="text" size=2 class="hover"
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.VALORACION_MAX) %>"
 				placeholder="<fmt:message key="buscador.hasta" bundle="${messages}"/>"/>
 				
 		<span class="buscador-label"><fmt:message key="buscador.reproducciones" bundle="${messages}"/></span>
-		<input name="<%=ParameterNames.REPRODUCCIONES_MIN%>" type="text" size=3
+		<input name="<%=ParameterNames.REPRODUCCIONES_MIN%>" type="text" size=3 class="hover"
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.REPRODUCCIONES_MIN) %>"
 				placeholder="<fmt:message key="buscador.desde" bundle="${messages}"/>"/>
 				
-		<input name="<%=ParameterNames.REPRODUCCIONES_MAX%>" type="text" size=3
+		<input name="<%=ParameterNames.REPRODUCCIONES_MAX%>" type="text" size=3 class="hover"
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.REPRODUCCIONES_MAX) %>"
 				placeholder="<fmt:message key="buscador.hasta" bundle="${messages}"/>"/>
 
 		<span class="buscador-label"><fmt:message key="buscador.fecha" bundle="${messages}"/></span>
-		<input name="<%=ParameterNames.FECHA_MIN%>" type="text" size=6
+		<input name="<%=ParameterNames.FECHA_MIN%>" type="text" size=6 class="hover"
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_MIN) %>"
 				placeholder="<fmt:message key="buscador.desde" bundle="${messages}"/>"/>
 				
-		<input name="<%=ParameterNames.FECHA_MAX%>" type="text" size=6
+		<input name="<%=ParameterNames.FECHA_MAX%>" type="text" size=6  class="hover"
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.FECHA_MAX) %>"
 				placeholder="<fmt:message key="buscador.hasta" bundle="${messages}"/>"/>			
 	</form>
@@ -134,26 +132,24 @@
 <!-- Resultados -->
 <c:if test="${not empty resultados}">
 	<!-- Listado -->	
-	<ul>
+	<div id="resultadosDiv">
 		<c:forEach items="${resultados}" var="contenido">					
-			<div class="thumbDiv">
+			<div class="thumbDiv hover">
 				<c:url var="urlDetalle" scope="page" value="/redirect">
 					<c:param name="action" value="<%=Actions.DETALLE%>"/>
 					<c:param name="<%=ParameterNames.ID_CONTENIDO%>" value="${contenido.id}"/>
 					<c:param name="<%=ParameterNames.TIPO%>" value="${contenido.tipo}"/>
 				</c:url>		
-				<li>
-					<a class="a_sinsub" href="${urlDetalle}">
-						${contenido.nombre}<br>
-						${contenido.getTipo()}<br>
-						${contenido.fechaAlta}
-						 - 
-						${contenido.fechaMod}
-					</a>
-				</li>
+
+				<a class="a_sinsub" href="${urlDetalle}">
+					${contenido.nombre}<br>
+					${contenido.getTipo()}<br>
+					${contenido.fechaAlta}
+				</a>
+
 			</div>
 		</c:forEach>
-	</ul>
+	</div>
 
 	<!-- Paginacion  -->
 	<p><center>
