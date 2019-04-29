@@ -6,7 +6,7 @@
 
 	<h1><fmt:message key="miPerfil" bundle="${messages}"/></h1>
 	
-	<button class="userButton" id="botonEditarPerfil">
+	<button class="w3-btn w3-border2 w3-text-blue2" id="botonEditarPerfil">
 			<fmt:message key="editar.editarPerfil" bundle="${messages}"/>
 	</button>
 	
@@ -14,7 +14,7 @@
 		<c:param name="action" value="<%=Actions.MI_PERFIL%>"/>
 	</c:url>
 	<a class="a_sinsub" href="${urlCancel}" id="botonEditarPerilCancelar" hidden=true>
-		<button class="userButton"  id="botonEditarPerfilCancelar">
+		<button class="w3-btn w3-border2 w3-text-blue2"  id="botonEditarPerfilCancelar">
 			<fmt:message key="editar.editarPerfilCancelar" bundle="${messages}"/>
 		</button>
 	</a>
@@ -59,7 +59,7 @@
 				<input type="date" name="<%=ParameterNames.FECHA_NAC%>" value="${usuario.fechaNac}">
 			</div></div><br/>
 			
-			<input id="botonEditarPerilSalvar" hidden=true type="submit" name="usuario" value="<fmt:message key="editar.guardarEdicion" bundle="${messages}"/>"/>
+			<input id="botonEditarPerilSalvar" class="w3-btn w3-border2 w3-text-blue2" hidden=true type="submit" name="usuario" value="<fmt:message key="editar.guardarEdicion" bundle="${messages}"/>"/>
 		</form>
 		
 	</div>

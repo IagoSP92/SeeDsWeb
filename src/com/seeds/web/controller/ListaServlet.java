@@ -69,7 +69,8 @@ public class ListaServlet extends HttpServlet {
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
 			Lista lista=null;
-			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));			
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));	
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
@@ -77,7 +78,11 @@ public class ListaServlet extends HttpServlet {
 					request.setAttribute(ParameterNames.COMENTARIOS, lista.getComentarios());
 					request.setAttribute(ParameterNames.DENUNCIADO, lista.getDenunciado());
 					request.setAttribute(ParameterNames.SIGUIENDO, lista.getSiguiendo());
-					request.setAttribute(ParameterNames.COMENTADO, lista.getComentado());
+					if(lista.getComentado()==null) {
+						request.setAttribute(ParameterNames.COMENTADO, "Null");
+					}else {
+						request.setAttribute(ParameterNames.COMENTADO, lista.getComentado());
+					}
 					request.setAttribute(ParameterNames.VALORACION, lista.getValorado());
 					request.setAttribute(ParameterNames.GUARDADO, lista.getGuardado());
 					
@@ -120,6 +125,9 @@ public class ListaServlet extends HttpServlet {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 				}
+				
+				Long idSesion = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+				request.setAttribute(ParameterNames.ID_SESION, idSesion);
 				
 				// Datos para paginacion
 				int totalPages = (int) Math.ceil((double)videosLista.getTotal()/(double)WebUtils.pageSize);
@@ -194,17 +202,83 @@ public class ListaServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.HOME;	
 			}
+
+//			response.setHeader(ParameterNames.ACTION, Actions.DETALLE );			
+//			request.setAttribute(ParameterNames.ID_CONTENIDO, lista.getId());	
+//			request.setAttribute(ParameterNames.TIPO, lista.getTipo());
+//			target = ControllerPath.REDIRECT;
+			
 			target = ViewPath.HOME;
 
-		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
+		} else if (Actions.EDITAR_LISTA.equalsIgnoreCase(action)) {
+			
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));	
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
+			String nombre = request.getParameter(ParameterNames.NOMBRE);
+			String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
+			//String categoria = request.getParameter(ParameterNames.ID_CATEGORIA);
+//			Long idCategoria = ValidationUtils.validCategoria(errors, categoria, ParameterNames.CATEGORIA, true, idsCategoria);
+//			if (logger.isDebugEnabled()) {
+//				logger.info("CREAR LISTA -> Nombre:{} descripcion:{} categoria:{}"
+//												+ nombre, descripcion, idCategoria);
+//			}
+			Lista lista= new Lista();
+			if (!errors.hasErrors()) {
+				try {
+					lista= WebUtils.listaSvc.buscarId(null, idContenido);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(Actions.EDITAR_LISTA, ErrorCodes.RECOVERY_ERROR);
+				}
+				lista.setFechaMod(new Date());
+				nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
+				descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.DESCRIPCION, true);
+
+
+//				try {
+//					lista.setCategoria(WebUtils.categoriaSvc.findById(idCategoria, "ES"));
+//				} catch (DataException e) {
+//					logger.warn(e.getMessage(), e);
+//					errors.add(Actions.CREAR_LISTA, ErrorCodes.RECOVERY_ERROR);
+//				}			
+			}
+			if (!errors.hasErrors()) {
+				try {
+					lista.setNombre(nombre);
+					lista.setDescripcion(descripcion);					
+					WebUtils.listaSvc.editarLista(lista);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(Actions.CREAR_LISTA, ErrorCodes.UNABLE_CREATE);
+				}
+			}		
+			if (errors.hasErrors()) {	
+				if (logger.isDebugEnabled()) {
+					logger.debug("La edicion no ha podido realizarse: {}", errors);
+				}				
+				request.setAttribute(AttributeNames.ERRORS, errors);				
+				target = ViewPath.HOME;	
+			}
+			
+			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
+			target = ViewPath.HOME;
+
+			
+		} else  {// LA ACTION RECIBIDA NO ESTA DEFINIDA
 			
 			// Mmm...
 			logger.error("Action desconocida");
 			// target ?
 		}
 		
-		logger.info("Forwarding to "+target);
-		request.getRequestDispatcher(target).forward(request, response);
+		if (redirect) {
+			logger.info("Redirecting to "+target);
+			response.sendRedirect(target);
+		} else {
+			logger.info("Forwarding to "+target);
+			request.getRequestDispatcher(target).forward(request, response);
+		}
+
 	}
 
 

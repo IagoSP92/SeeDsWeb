@@ -1,6 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@ page import="com.seeds.web.utils.*, com.seeds.web.model.*,com.isp.seeds.model.*, com.seeds.web.controller.*" %>    
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="com.seeds.web.utils.*, com.seeds.web.model.*, com.seeds.web.controller.*" %>    
 <%@ page import="java.util.List" %>
 
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -16,12 +15,12 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	 <title>See D's</title>
+	<title>See D's</title>
 	 
-	 <script src="<%=request.getContextPath()%>/javascript/jquery-3.3.1.min.js" type="text/javascript"></script> 
-	 <script src="/SeeDsWeb/javascript/web.js"></script>
+	<script src="<%=request.getContextPath()%>/javascript/jquery-3.3.1.min.js" type="text/javascript"></script> 
+	<script src="/SeeDsWeb/javascript/web.js"></script>
 
-	<link rel="stylesheet" type="text/css"  media="screen" href="/SeeDsWeb/css/w3css.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/w3css.css">
 	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/main.css">
 	
 </head>

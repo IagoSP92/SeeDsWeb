@@ -30,6 +30,12 @@ public class RedirectServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		String action = request.getParameter(ParameterNames.ACTION);
+		
+		if(Actions.CREAR_LISTA.equalsIgnoreCase(action)
+				||Actions.SUBIR_VIDEO.equalsIgnoreCase(action)) {
+			action= Actions.DETALLE;
+		}
+		
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		

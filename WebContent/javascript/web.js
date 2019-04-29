@@ -1,8 +1,6 @@
-
-
 $(document).ready(function () {
 	
-	$(".seguirButton").click(function(){
+	$("#seguirButton").click(function(){
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
@@ -16,18 +14,18 @@ $(document).ready(function () {
 				
 				success: function( valor ){					
 					if(valor.siguiendo==false){
-						$(".seguirButton").attr("data-siguiendo", "false");						
-						$(".seguirButton").html(valor.mensaje);						
+						$("#seguirButton").attr("data-siguiendo", "false");						
+						$("#seguirButton").html(valor.mensaje);						
 					}					
 					if(valor.siguiendo==true){
-						$(".seguirButton").attr("data-siguiendo", "true");						
-						$(".seguirButton").html(valor.mensaje);						
+						$("#seguirButton").attr("data-siguiendo", "true");						
+						$("#seguirButton").html(valor.mensaje);						
 					}
 				}	
 		});
 	})
 	
-	$(".denunciarButton").click(function(){
+	$("#denunciarButton").click(function(){
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
@@ -35,17 +33,24 @@ $(document).ready(function () {
 				'id':$(this).attr("data-idContenido"),
 				'tipo':$(this).attr("data-tipo"),
 				'denunciado': $(this).attr("data-denunciado"),
-				'action':"denunciar"},				
+				'action':"denunciar"},	
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",				
+				dataType:"json",
 				success:
-				function(){
-					// CARGAR USUARIO CON JSON
-					location.reload(true);
-					location.reload(true);
+				function(valor){
+					if(valor.denunciado==false){
+						$("#denunciarButton").attr("data-denunciado", "false");						
+						$("#denunciarButton").html(valor.mensaje);						
+					}					
+					if(valor.denunciado==true){
+						$("#denunciarButton").attr("data-denunciado", "true");						
+						$("#denunciarButton").html(valor.mensaje);						
+					}
 				}
 		});
 	})
 	
-	$(".guardarButton").click(function(){
+	$("#guardarButton").click(function(){
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
@@ -59,18 +64,64 @@ $(document).ready(function () {
 				success:
 				function(valor){
 					if(valor.guardado==false){
-						$(".guardarButton").attr("data-guardado", "false");						
-						$(".guardarButton").html(valor.mensaje);						
+						$("#guardarButton").attr("data-guardado", "false");						
+						$("#guardarButton").html(valor.mensaje);						
 					}					
 					if(valor.guardado==true){
-						$(".guardarButton").attr("data-guardado", "true");						
-						$(".guardarButton").html(valor.mensaje);						
+						$("#guardarButton").attr("data-guardado", "true");						
+						$("#guardarButton").html(valor.mensaje);						
 					}
 				}
 		});
 	})
 	
-	$(".comentarButton").click(function(){
+	
+	$("#detalleValoracion").click(function(){
+		$("#insertarNota").toggle('hidden');
+		$(".insertarNotaButton").toggle('hidden');
+	})	
+	$(".insertarNotaButton").click(function(){
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id':$(".mainWindow").attr("data-idContenido"),
+				'tipo':$(".mainWindow").attr("data-tipo"),
+				'mi_valoracion':$("#insertarNota").val(),
+				'action':"valorar"},
+				contentType:"application/x-www-form-urlencoded; charset=ISO-8859-1",				
+				dataType:"json",
+				success:
+				function( valor ){
+					$("#detalleValoracion").html(valor.valor);
+				}
+		});
+		$("#insertarNota").hide();
+		$(".insertarNotaButton").hide();
+	})
+	
+	
+	
+	$("#comentarButton").click(function(){
+		$("#commentarioTextDiv").removeAttr('hidden');
+	})
+	$("#comentarButtonEnviar").click(function(){
+		$.ajax({
+			type: "GET",
+			url: "/SeeDsWeb/relaciones",
+			data: { 
+				'id':$(this).attr("data-idContenido"),
+				'tipo':$(this).attr("data-tipo"),
+				'comentado':$("#comentarioText").val(),
+				'action':"comentar"},				
+				success:
+				function(){
+					location.reload(true);
+				}
+		});
+	})
+	
+		$("#noComentarButton").click(function(){
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
@@ -81,13 +132,14 @@ $(document).ready(function () {
 				'action':"comentar"},				
 				success:
 				function(){
-
 					location.reload(true);
 				}
 		});
 	})
 	
-	$(".valorarButton").click(function(){
+	
+		
+	$("#valorarButton").click(function(){
 		$.ajax({
 			type: "GET",
 			url: "/SeeDsWeb/relaciones",
@@ -111,36 +163,37 @@ $(document).ready(function () {
 		});
 	})
 	
+	
 	$("#botonEditarPerfil").click(function(){
-
-		$("#botonEditarPerilSalvar").removeAttr('hidden');
-		$("#botonEditarPerilCancelar").removeAttr('hidden');
-		$(".edicionSpan").removeAttr('hidden');
-
-/*
-		$("#inputNombre").on('change', function() {
-			$(this).attr('disabled','disabled');
-		});
-		$("#inputDescripcion").on('change', function() {
-			$(this).attr('disabled','disabled');
-		});
-		$("#inputAvatar").on('change', function() {
-			$(this).attr('disabled','disabled');
-		});
-		$("#inputReal").on('change', function() {
-			$(this).attr('disabled','disabled');
-		});
-		$("#inputApellidos").on('change', function() {
-			$(this).attr('disabled','disabled');
-		});
-		$("#inputFecha").on('change', function() {
-			$(this).attr('disabled','disabled');
-		});
-*/
-
+		
+		$(".edicionSpan").toggle('hidden');
+		$("#botonEditarPerilCancelar").toggle('hidden');
+		$("#botonEditarPerilSalvar").toggle('hidden');
 		}
 	);
 	
+	$("#editarContenidoButton").click(function(){
+		$("#edicionLista").toggle('hidden');
+		$("#botonEditarListaCancelar").toggle('hidden');
+		}
+	);
+	$("#editarVideosListaButton").click(function(){
+		$("#operacionesLista").toggle('hidden');
+		}
+	);
+	$("#eliminarButton").click(function(){
+		$("#textConfirm").toggle('hidden');
+		$("#cancelarEliminarButton").toggle('hidden');
+		$("#confirmButtonA").toggle('hidden');
+		$(this).toggle('hidden');
+		}
+	);
+	$("#cancelarEliminarButton").click(function(){
+		$("#textConfirm").toggle('hidden');
+		$("#confirmButtonA").toggle('hidden');
+		$("#eliminarButton").toggle('hidden');
+		$(this).toggle('hidden');
+	});
 	
 	checkCompatible();
 	divCheck();

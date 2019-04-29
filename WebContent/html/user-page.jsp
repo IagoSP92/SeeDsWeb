@@ -2,69 +2,70 @@
 
 <%@include file="/html/common/header.jsp"%>
 
-<div class="mainWindow">
-	<h1>Perfil de Usuario</h1>
+<div class="mainWindow" data-idContenido="${usuario.id}" data-tipo="${usuario.tipo}">
 	
 	<div id="recuadro_usuario">	
-		<div id="nombrePerfilDiv"><h1> ${usuario.nombre} </h1></div>
+		<div id="nombrePerfilDiv" class="detalle-titulo"><h1> ${usuario.nombre} </h1></div>
 		<div id="avatarPerfilDiv">  ${usuario.avatarUrl}   </div>
 		<div id="descripcionPerfilDiv"> ${usuario.descripcion} </div>
 		<div id="fechaPerfilDiv"> <span><fmt:message key="detalle.miembroDesde" bundle="${messages}"/></span>${usuario.fechaAlta} </div>
+		<span><fmt:message key="detalle.visitas" bundle="${messages}"/></span> ${usuario.reproducciones}		
 	</div>	
 	
-	<div id="perfilAutenticadosDiv">
-	
+	<div id="perfilAutenticadosDiv">	
 		<c:if test = "${autenticado==true}">
 		
 			<c:choose>
 				<c:when test="${siguiendo == true}">
-					<div id="seguirDiv">
-						<button class="userButton seguirButton" id="seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="true">
+						<button class="w3-btn w3-border2 w3-text-blue2" id="seguirButton"
+							 data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="true">
 							<fmt:message key="detalle.noseguir" bundle="${messages}"/>
 						</button>
-					</div>
 				</c:when>
 				<c:otherwise>
-					<div id="seguirDiv">
-						<button class="userButton seguirButton" id="seguirButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="false">
+						<button class="w3-btn w3-border2 w3-text-blue2" id="seguirButton" 
+							data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-siguiendo="false">
 							<fmt:message key="detalle.seguir" bundle="${messages}"/>
 						</button>
-					</div>
 	  			</c:otherwise>		
-			</c:choose>
-			
+			</c:choose>			
 			
 			<c:choose>
-				<c:when test="${denunciado != null}">
-					<button class="userButton denunciarButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciando="Null">
+				<c:when test="${denunciado == true}">
+					<button class="w3-btn w3-border2 w3-text-blue2" id="denunciarButton" 
+						data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciado="true">
 						<fmt:message key="detalle.nodenunciar" bundle="${messages}"/>
 					</button>
 				</c:when>
 				<c:otherwise>
-					<button class="userButton denunciarButton" data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciado="denuncia">
+					<button class="w3-btn w3-border2 w3-text-blue2" id="denunciarButton" 
+						data-tipo="${usuario.tipo}" data-idContenido="${usuario.id}" data-denunciado="false">
 						<fmt:message key="detalle.denunciar" bundle="${messages}"/>
 					</button>
 	  			</c:otherwise>		
 			</c:choose>	
-	     </c:if>
-	     
-	     
-	</div>
+			
+	     </c:if>	     
+	</div><!-- perfilAutenticadosDiv -->
 	
-	<span>
-		<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=2">
-			<button class="dualButton">
-				<fmt:message key="dual.videos" bundle="${messages}"/>
-			</button>
-		</a>
-	</span>
-	<span>
-		<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=3">
-			<button class="dualButton">
-				<fmt:message key="dual.listas" bundle="${messages}"/>
-			</button>
-		</a>
-	</span>	
+
+	<div id="dualMenuDiv">
+		<span>
+			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=2">
+				<button class="dualButton w3-btn w3-border w3-text-blue">
+					<fmt:message key="dual.videos" bundle="${messages}"/>
+				</button>
+			</a>
+		</span>
+		<span>
+			<a href="<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.DETALLE%>&<%=ParameterNames.ID_CONTENIDO%>=${id}&<%=ParameterNames.TIPO%>=3">
+				<button class="dualButton w3-btn w3-border w3-text-blue">
+					<fmt:message key="dual.listas" bundle="${messages}"/>
+				</button>
+			</a>
+		</span>
+	</div><!-- dualMenuDiv -->
+	
 	
 	<div id="subidosPerfilDiv">
 		<c:if test="${not empty resultados}">
@@ -101,9 +102,9 @@
 		
 			</center></p>
 		</c:if>
-	</div>
+	</div><!-- subidosPerfilDiv -->
 
 </div>
 
-
+<script src="/SeeDsWeb/javascript/countVisits.js"></script>
 <%@include file="/html/common/footer.jsp"%>

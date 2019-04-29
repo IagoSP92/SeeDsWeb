@@ -23,10 +23,17 @@ public class ParameterNames {
 	public static final String FECHA_MAX = "fecha_max";
 	public static final String CATEGORIA = "categoria";
 	
+	
+	
+	public static final String NOTA_DEL_VIDEO = "nota_del_video";
+
 	public static final String PAGE = "page"; 
 	public static final String TOTAL_PAGES = "total-pages";	
 	public static final String VALORACION_MEDIA = "valoracion_media";
 
+	public static final String MI_VALORACION = "mi_valoracion"; 
+
+	
 	public static final String ID_CONTENIDO = "id";
 	public static final String NOMBRE = "nombre";
 	public static final String FECHA_ALTA = "f_alta";
@@ -77,6 +84,9 @@ public class ParameterNames {
 	public static final String ID_VIDEO = "id_video";
 	
 	public static final String COMENTARIOS = "comentarios";
+	
+	public static final String ID_OPERAR = "id_operar";
+
 
 
 

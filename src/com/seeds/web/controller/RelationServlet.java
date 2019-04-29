@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
 import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
@@ -49,12 +50,49 @@ public class RelationServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 //		String target = null;
 //		boolean redirect = false;
+		Long idSesion= null;
+		Usuario u = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO));
+		if(u!=null){
+			idSesion= u.getId();
+			idSesion = ValidationUtils.validLong(errors, idSesion.toString(), ParameterNames.ID_SESION, true);
+		}
 		
-		Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-		idSesion = ValidationUtils.validLong(errors, idSesion.toString(), ParameterNames.ID_SESION, true);
+			
+		
 		// Se ha hecho esta conversion para validar el parámetro utilizando los métodos ya existentes
 		Long idContenido =ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_CONTENIDO), ParameterNames.ID_CONTENIDO, true);
 		Integer tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+		
+		 if (Actions.SUMAR_VISITA.equalsIgnoreCase(action)) {
+				if (logger.isDebugEnabled()) {					
+					logger.debug(" Action={}:  Contenido={} Tipo={}",action, idContenido, tipo );
+				}
+				if(tipo==1||tipo==2||tipo==3 ) {			
+					Integer nuevoValor = null;
+					try {
+						Contenido contenido = WebUtils.contenidoSvc.buscarId(idContenido);
+						 nuevoValor = contenido.getReproducciones()+1;
+						contenido.setReproducciones(nuevoValor);
+						WebUtils.contenidoSvc.update(contenido);
+
+					} catch (DataException e) {
+						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+					}
+					
+					if(!errors.hasErrors()) {
+						JsonObject objetoJson = new JsonObject();
+						objetoJson.addProperty("visitas", nuevoValor);
+						
+						response.setContentType("application/json;charset=ISO-8859-1");
+						response.getOutputStream().write(objetoJson.toString().getBytes());
+					}
+					
+				} else {
+					logger.warn(" -- Invalid Parameters: TYPE -- ");
+					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
+				}
+				
+			}  
 		
 		if(errors.hasErrors()) {
 			logger.warn(" -- Invalid Parameters: BASIC -- ");
@@ -180,25 +218,61 @@ public class RelationServlet extends HttpServlet {
 				
 				
 			} else if (Actions.DENUNCIAR.equalsIgnoreCase(action)) {
-				if(tipo==1||tipo==3||tipo==3 ) {
-					
-					String valorRecibido = request.getParameter(ParameterNames.DENUNCIADO);
-					if(valorRecibido!=null) {
-						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true);
-						try {
-							WebUtils.contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);
-							
-						} catch (DataException e) {
-							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
-						}
+				if((tipo==1 || tipo==2 || tipo==3)) {
+					Boolean nuevoValor=null;
+					if(ValidationUtils.validBoolean(errors, request.getParameter(ParameterNames.DENUNCIADO), ParameterNames.DENUNCIADO, true)) {
+						nuevoValor=false;
 					} else {
-						try {
-							WebUtils.contenidoSvc.cancelarDenuncia(idSesion, idContenido);
-						} catch (DataException e) {
-							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
-						}
+						nuevoValor=true;
 					}
-					
+					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
+					try {
+						WebUtils.contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);					
+					} catch (DataException e) {
+						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
+					}				
+					//request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);	
+					try {
+						JsonObject usuarioJson = new JsonObject();
+						if(tipo==1) {
+							Usuario usuario=null;
+							usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("denunciado", usuario.getDenunciado());
+						}
+						if(tipo==2) {
+							Video video=null;
+							video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("denunciado", video.getDenunciado());
+						}
+						if(tipo==3) {
+							Lista lista=null;
+							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
+							usuarioJson.addProperty("denunciado", lista.getDenunciado());
+						}
+						String mensaje="Default";
+						if(nuevoValor) {
+							if(idioma.equals("en")==true) {
+								mensaje="Cancel Report";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Cancelar Denuncia";
+							}
+						}
+						if(!nuevoValor) {
+							if(idioma.equals("en")) {
+								mensaje="Report";
+							}
+							if(idioma.equals("es")) {
+								mensaje="Denunciar";
+							}
+						}					
+						usuarioJson.addProperty("mensaje", mensaje);	
+						response.setContentType("application/json;charset=ISO-8859-1");
+						response.getOutputStream().write(usuarioJson.toString().getBytes());
+						
+					} catch (DataException | NumberFormatException e) {
+						errorManagement ( errors, e, ErrorCodes.RECOVERY_ERROR );
+					}
 				} else {
 					logger.warn(" -- Invalid Parameters: TYPE -- ");
 					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
@@ -206,9 +280,10 @@ public class RelationServlet extends HttpServlet {
 				
 			} else if (Actions.COMENTAR.equalsIgnoreCase(action)) {
 				if(tipo==2||tipo==3) {				
-					String valorRecibido = request.getParameter(ParameterNames.COMENTADO);				
+					String valorRecibido = request.getParameter(ParameterNames.COMENTADO);
 					if(valorRecibido!=null) {
 						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
+						definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 						try {
 							WebUtils.contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
 						} catch (DataException e) {
@@ -220,7 +295,7 @@ public class RelationServlet extends HttpServlet {
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
-					}					
+					}
 					//request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 					try {						
 						JsonObject usuarioJson = new JsonObject();
@@ -265,29 +340,19 @@ public class RelationServlet extends HttpServlet {
 				}
 				
 			} else if (Actions.VALORAR.equalsIgnoreCase(action)) {
-				if(tipo==2||tipo==3) {			
-				Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.VALORACION), ParameterNames.VALORACION, true);			
+				
+				if(tipo==1||tipo==2||tipo==3) {			
+				Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.MI_VALORACION), ParameterNames.MI_VALORACION, true);			
 					try {
 						WebUtils.contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
 					} catch (DataException e) {					
 						 errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}
 					try {						
-						JsonObject usuarioJson = new JsonObject();
-						Integer myValoration =  WebUtils.contenidoSvc.getValoracion(idSesion, idContenido );
-						usuarioJson.addProperty("myValoration", myValoration);
-						if(tipo==2) {
-							Video video=null;
-							video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
-							usuarioJson.addProperty("valoracion", video.getValoracion());
-						}
-						if(tipo==3) {
-							Lista lista=null;
-							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
-							usuarioJson.addProperty("valoracion", lista.getValoracion());
-						}						
+						JsonObject objetoJson = new JsonObject();
+						objetoJson.addProperty("valor", WebUtils.contenidoSvc.getValoracion(idContenido));
 						response.setContentType("application/json;charset=ISO-8859-1");
-						response.getOutputStream().write(usuarioJson.toString().getBytes());
+						response.getOutputStream().write(objetoJson.toString().getBytes());
 						
 					} catch (DataException | NumberFormatException e) {
 						errorManagement ( errors, e, ErrorCodes.RECOVERY_ERROR );
@@ -296,8 +361,7 @@ public class RelationServlet extends HttpServlet {
 					logger.warn(" -- Invalid Parameters: TYPE -- ");
 					errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_PARAMETER);
 				}
-			}
-			else {
+			} else {
 				logger.error("Action desconocida");
 			}
 			

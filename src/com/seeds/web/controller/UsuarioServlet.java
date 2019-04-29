@@ -168,12 +168,13 @@ public class UsuarioServlet extends HttpServlet {
 				}
 			}
 			if (!errors.hasErrors()) {
-				try { 
-					usuario = WebUtils.usuarioSvc.logIn(email, password); 
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					errors.add(ParameterNames.ACTION,ErrorCodes.LOGIN_SERVICE_ERROR);
-				}
+//				try { 
+					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
+//					usuario = WebUtils.usuarioSvc.logIn(email, password); 
+//				} catch (DataException e) {
+//					logger.warn(e.getMessage(), e);
+//					errors.add(ParameterNames.ACTION,ErrorCodes.LOGIN_SERVICE_ERROR);
+//				}
 			}			
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
@@ -182,11 +183,12 @@ public class UsuarioServlet extends HttpServlet {
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.REGISTRO;			
 			}
-			target = ViewPath.HOME;
+			target = ViewPath.MI_PERFIL;
 
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
 			request.getSession(true).setAttribute(SessionAttributeNames.USUARIO, null);
+			redirect=true;
 			target = ViewPath.HOME;
 			
 		} else if (Actions.MI_PERFIL.equalsIgnoreCase(action)) {

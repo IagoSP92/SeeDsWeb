@@ -9,15 +9,21 @@ public class Actions {
 	public static final String DETALLE_VIDEO = "detalle_video";
 	public static final String DETALLE_LISTA = "detalle_lista";
 	public static final String DETALLE_PERFIL = "detalle_perfil";
-	public static final String ACTUALIZAR = "editar_perfil";
+	public static final String ACTUALIZAR = "actualizar";
 
 	
 	public static final String MI_PERFIL = "mi_perfil";
-	public static final String EDITAR_PERFIL = "actualizar";
+	public static final String EDITAR_PERFIL = "editar_perfil";
+	public static final String EDITAR_LISTA = "editar_lista";
+	public static final String EDITAR_VIDEO = "editar_video";
+	public static final String ELIMINAR = "eliminar";
 
 	public static final String ENTRAR = "entrar";
 	public static final String BUSCAR = "buscar";
 	public static final String SALIR = "salir";
+	
+	public static final String SUMAR_VISITA = "sumar_visita";
+
 	
 	public static final String CAMBIAR_LOCALE = "cambiar_locale";
 	
@@ -48,7 +54,9 @@ public class Actions {
 	public static final String SUBIDOS = "subidos";
 	
 	public static final String REPRODUCIR_VIDEO = "reproducir_video";
-
-
+		
+	public static final String INCLUIR = "incluir";
+	public static final String EXCLUIR = "excluir";
+	public static final String CAMBIAR_POSICION = "cambiar_posicion";
 
 }
