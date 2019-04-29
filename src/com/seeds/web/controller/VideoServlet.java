@@ -290,7 +290,29 @@ public class VideoServlet extends HttpServlet {
 			request.getRequestDispatcher(target).forward(request, response);
 		}
 	}
-
+	/*
+	public class RedirectOrForward {
+		
+		public static final void send(HttpServletRequest request, HttpServletResponse response,
+				Boolean redirect, String target, Boolean send) throws ServletException, IOException {
+			System.out.println(redirect+","+target+" "+send);
+			if(send) {
+				StringBuilder s = new StringBuilder();
+				s.append(request.getContextPath()).append(target);
+				
+				if (redirect) {
+					response.sendRedirect(s.toString());
+				} else {
+					request.getRequestDispatcher(target).forward(request, response);
+				}
+			} else {
+				target = request.getHeader("referer");
+				System.out.println(target);
+				response.sendRedirect(target);
+			}
+		}
+	}
+*/
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
