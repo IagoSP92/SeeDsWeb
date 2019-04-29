@@ -72,7 +72,9 @@ public class ListaServlet extends HttpServlet {
 			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));	
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
-				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+				
+				Long idSesion = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
+				request.setAttribute(ParameterNames.ID_SESION, idSesion);
 				try {
 					lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
 					request.setAttribute(ParameterNames.COMENTARIOS, lista.getComentarios());
@@ -125,9 +127,7 @@ public class ListaServlet extends HttpServlet {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
 				}
-				
-				Long idSesion = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-				request.setAttribute(ParameterNames.ID_SESION, idSesion);
+
 				
 				// Datos para paginacion
 				int totalPages = (int) Math.ceil((double)videosLista.getTotal()/(double)WebUtils.pageSize);

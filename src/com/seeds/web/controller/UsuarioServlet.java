@@ -188,7 +188,6 @@ public class UsuarioServlet extends HttpServlet {
 		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
 			
 			request.getSession(true).setAttribute(SessionAttributeNames.USUARIO, null);
-			redirect=true;
 			target = ViewPath.HOME;
 			
 		} else if (Actions.MI_PERFIL.equalsIgnoreCase(action)) {
@@ -405,11 +404,6 @@ public class UsuarioServlet extends HttpServlet {
 			
 			response.sendRedirect(request.getHeader("referer"));
 
-		} else if (Actions.SALIR.equalsIgnoreCase(action)) {
-			
-			SessionManager.set(request, SessionAttributeNames.USUARIO, null);			
-			target = ViewPath.HOME;
-			
 		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
 			
 			// Mmm...
