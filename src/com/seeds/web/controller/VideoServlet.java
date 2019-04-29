@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.mail.SendFailedException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -242,7 +243,12 @@ public class VideoServlet extends HttpServlet {
 //				request.setAttribute(ParameterNames.ACTION, Actions.DETALLE);
 //				request.setAttribute(ParameterNames.ID_CONTENIDO, video.getId());
 //				request.setAttribute(ParameterNames.TIPO, video.getTipo());
-				target= ControllerPath.VIDEO;
+				/*
+				target = ControllerPaths.NO_CONTEXT_PRODUCTO.concat("?").concat(ParameterNames.ACTION).concat("=").concat(Actions.SEARCH_PRODUCTS)
+						.concat("&").concat(ParameterNames.DEFAULT).concat("=").concat(defaultSearch);
+						*/
+				//RedirectOrForward.send(request, response, false, target, true);
+				target= ViewPath.DETALLE_VIDEO;
 				
 			} else {
 				if (logger.isDebugEnabled()) {
