@@ -23,7 +23,8 @@ public class ParameterNames {
 	public static final String FECHA_MAX = "fecha_max";
 	public static final String CATEGORIA = "categoria";
 	
-	
+	public static final String LISTA_LISTA = "lista_lista";
+	public static final String LISTA_USUARIO = "lista_usuario";
 	
 	public static final String NOTA_DEL_VIDEO = "nota_del_video";
 

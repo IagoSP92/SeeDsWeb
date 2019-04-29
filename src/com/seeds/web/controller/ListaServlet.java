@@ -1,6 +1,7 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,20 +22,10 @@ import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
-import com.isp.seeds.service.ContenidoServiceImpl;
-import com.isp.seeds.service.ListaServiceImpl;
-import com.isp.seeds.service.UsuarioServiceImpl;
-import com.isp.seeds.service.VideoServiceImpl;
-import com.isp.seeds.service.spi.ContenidoService;
-import com.isp.seeds.service.spi.ListaService;
-import com.isp.seeds.service.spi.UsuarioService;
-import com.isp.seeds.service.spi.VideoService;
+import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.util.Results;
-import com.seeds.web.config.ConfigurationManager;
-import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
-import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
@@ -65,6 +56,7 @@ public class ListaServlet extends HttpServlet {
 		ErrorManager errors = new ErrorManager(); 
 		String target = null;
 		boolean redirect = false;
+		String idioma=SessionManager.get(request, ConstantValues.USER_LOCALE).toString().substring(0, 2).toUpperCase();	
 
 		if (Actions.DETALLE.equalsIgnoreCase(action)) {
 			
@@ -86,10 +78,37 @@ public class ListaServlet extends HttpServlet {
 						request.setAttribute(ParameterNames.COMENTADO, lista.getComentado());
 					}
 					request.setAttribute(ParameterNames.VALORACION, lista.getValorado());
-					request.setAttribute(ParameterNames.GUARDADO, lista.getGuardado());
-					
+					request.setAttribute(ParameterNames.GUARDADO, lista.getGuardado());					
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
 					request.setAttribute(ParameterNames.ID_SESION, idSesion);	
+					
+					// Parametros para manipulacion de listas
+					if(idSesion==lista.getAutor()) {
+						List<Contenido> listaTodos = new ArrayList<Contenido>();
+						List<Video> listaLista = new ArrayList<Video>();
+						List <Contenido> listaUsuario = new ArrayList<Contenido>();
+						ContenidoCriteria criteria = new ContenidoCriteria();
+						criteria.setAceptarVideo(true);
+						criteria.setAceptarLista(false);
+						criteria.setAceptarUsuario(false);
+						criteria.setAutor(idSesion);
+						listaTodos= WebUtils.contenidoSvc.buscarCriteria(criteria,
+								Integer.MAX_VALUE, Integer.MAX_VALUE, idioma).getPage();
+								Double infinito = Double.POSITIVE_INFINITY;
+						// Workaround para aprobechar funcion que devuelve resultados paginados
+						// Podrá ser añadida una sin paginación o controlarlo en esta con un IF y un Boolean
+						listaLista = WebUtils.listaSvc.verVideosLista(idContenido, 0, infinito.intValue()).getPage();
+						//categorias =WebUtils.categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
+						for(Contenido v: listaTodos) {
+							if(!listaLista.contains(v)) {
+								listaUsuario.add(v);
+							}
+						}
+						request.setAttribute(ParameterNames.LISTA_LISTA, listaLista);
+						request.setAttribute(ParameterNames.LISTA_USUARIO, listaUsuario);						
+						
+					}				
+					
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);

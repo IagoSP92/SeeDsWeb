@@ -161,7 +161,32 @@
 							</button>
 						</div>		
 					</c:forEach>			
-				</div>			
+				</div>
+				
+				<div id="corralPutoJefe">
+				<br/>
+					<div id="recuadrosMagicos" class="inline-block">
+						<select name="possible" class="possible" multiple>
+							<c:forEach items="${lista_usuario}" var="contenido">
+								<option value="${contenido.id}">${contenido.nombre}</option>		
+							</c:forEach>
+					        <option value="one">One</option>
+					        <option value="two">Two</option>
+					    </select>
+					
+					    <select name="wishlist" class="wishlist" multiple>
+					    	<c:forEach items="${lista_lista}" var="contenido">
+								<option value="${contenido.id}">${contenido.nombre}</option>		
+							</c:forEach>
+					    </select>
+				    </div>
+				    <div id="botonesMagicos" class="inline-block">				    
+					    <input type="button" value="Add to wishlist" onclick="MyMoveItem();">
+					    <br>
+					    <input type="button" value="Remove from wishlist" onclick="RemoveItem();">
+				    </div>
+			    </div><!-- corralPutoJefe -->
+						
 				<div id="listaUsuario" class="listasLista">
 					<c:forEach items="${listaUsuario}" var="video">
 						<div class="listaElemento">

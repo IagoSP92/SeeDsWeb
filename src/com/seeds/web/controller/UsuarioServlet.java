@@ -136,7 +136,8 @@ public class UsuarioServlet extends HttpServlet {
 			String apellidos = request.getParameter(ParameterNames.APELLIDOS);
 			String pais = request.getParameter(ParameterNames.ID_PAIS);			
 			if (logger.isDebugEnabled()) {
-				logger.info("REGISTRO -> Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ", nombre, email, password, fNac, nombreReal, apellidos, pais);
+				logger.info("REGISTRO -> Nombre:{} email:{} pass:{} fnac:{} nombrereal:{} apeliidos:{} pais:{} ",
+											nombre, email, password, fNac, nombreReal, apellidos, pais);
 			}
 			
 			Usuario usuario= new Usuario();

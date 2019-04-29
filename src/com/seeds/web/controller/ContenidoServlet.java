@@ -53,12 +53,7 @@ public class ContenidoServlet extends HttpServlet {
 		String target = null;
 		boolean redirect = false;
 		
-		Object locale =  SessionManager.get(request, ConstantValues.USER_LOCALE);
-		String idioma=null;		
-		if(locale!=null) {
-			String rawIdioma = locale.toString();
-			idioma=rawIdioma.substring(0, 2);
-		}
+		String idioma=SessionManager.get(request, ConstantValues.USER_LOCALE).toString().substring(0, 2).toUpperCase();	
 		
 		int page = WebUtils.
 				getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
