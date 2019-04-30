@@ -420,11 +420,11 @@ public class UsuarioServlet extends HttpServlet  implements ConstantsInterface {
 			
 			response.sendRedirect(request.getHeader("referer"));
 
-		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
-			
-			// Mmm...
+		} else {
+			// LA ACTION RECIBIDA NO ESTA DEFINIDA
+			errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_ACTION);
 			logger.error("Action desconocida");
-			// target ?
+			target = ViewPath.HOME;
 		}
 		
 		// POR ULTIMO SE ENVIA A DONDE/COMO CORRESPONDA:

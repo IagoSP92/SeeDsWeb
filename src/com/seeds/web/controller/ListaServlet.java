@@ -52,13 +52,9 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 	private static ListaService listaSvc = null;
 	private static ContenidoService contenidoSvc = null;
 	private static CategoriaService categoriaSvc = null;
-	private static VideoService videoSvc = null;
-	private static UsuarioService usuarioSvc = null;
 	
 	public ListaServlet() {
 		super();
-		videoSvc = new VideoServiceImpl();
-		usuarioSvc = new UsuarioServiceImpl();
 		contenidoSvc = new ContenidoServiceImpl();
 		listaSvc = new ListaServiceImpl();
 		categoriaSvc = new CategoriaServiceImpl();
@@ -250,12 +246,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 				target = ViewPath.HOME;
 			}
 
-//			response.setHeader(ParameterNames.ACTION, Actions.DETALLE );			
-//			request.setAttribute(ParameterNames.ID_CONTENIDO, lista.getId());	
-//			request.setAttribute(ParameterNames.TIPO, lista.getTipo());
-//			target = ControllerPath.REDIRECT;
-			
-			//
+
 
 		} else if (Actions.EDITAR_LISTA.equalsIgnoreCase(action)) {
 			//cargarCategorias(request, errors);
@@ -265,12 +256,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			String nombre = request.getParameter(ParameterNames.NOMBRE);
 			String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
-			//String categoria = request.getParameter(ParameterNames.ID_CATEGORIA);
-//			Long idCategoria = ValidationUtils.validCategoria(errors, categoria, ParameterNames.CATEGORIA, true, idsCategoria);
-//			if (logger.isDebugEnabled()) {
-//				logger.info("CREAR LISTA -> Nombre:{} descripcion:{} categoria:{}"
-//												+ nombre, descripcion, idCategoria);
-//			}
+
 			Lista lista= new Lista();
 			if (!errors.hasErrors()) {
 				try {
@@ -302,13 +288,11 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 				target = ViewPath.HOME;	
 			}
 			
-			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
 			target = ViewPath.SUBIDOS;
 
 			
 		} else if (Actions.INCLUIR.equalsIgnoreCase(action)) {
 
-			//cargarCategorias(request, errors);
 			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			String[] ids = request.getParameterValues("wishlist");
@@ -351,16 +335,13 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.HOME;
 			}
-			
-			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
 			target = ViewPath.SUBIDOS;
-
 			
-		} else  {// LA ACTION RECIBIDA NO ESTA DEFINIDA
-			
-			// Mmm...
+		} else  {
+			// LA ACTION RECIBIDA NO ESTA DEFINIDA
+			errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_ACTION);
 			logger.error("Action desconocida");
-			// target ?
+			target = ViewPath.HOME;
 		}
 		
 		if (redirect) {

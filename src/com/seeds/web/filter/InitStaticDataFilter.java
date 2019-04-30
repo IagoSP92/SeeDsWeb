@@ -33,13 +33,7 @@ public class InitStaticDataFilter implements Filter {
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		/*
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		
-		String idioma = (String) SessionManager.get(httpRequest, ConstantValues.IDIOMA);
-		
-		logger.debug("Idioma {}", idioma);
-				*/
+
 
 		chain.doFilter(request, response);
 	}

@@ -21,34 +21,13 @@ public class WebUtils implements ConstantsInterface {
 
 	private static Logger logger = LogManager.getLogger(WebUtils.class.getName());
 		
-
 	
 	private static CategoriaService categoriaSvc = null;
 	
 	public WebUtils () {
 		categoriaSvc = new CategoriaServiceImpl();
 	}
-	/*
-	public static DateUtils dateUtils = null;
-	public static ContenidoService contenidoSvc = null;
-	public static VideoService videoSvc = null;
-	public static ListaService listaSvc = null;
-	public static UsuarioService usuarioSvc = null;
-	
-	public static ValidationUtils validationUtils = null;
-	public static PaisService paisSvc = null;
-	
-	static {		
-		contenidoSvc = new ContenidoServiceImpl();
-		videoSvc = new VideoServiceImpl();
-		listaSvc = new ListaServiceImpl();
-		usuarioSvc = new UsuarioServiceImpl();
-		dateUtils = new DateUtils();
-		
-		validationUtils = new ValidationUtils();
-		paisSvc = new PaisServiceImpl();
-	}
-	*/
+
 	
 	public static HttpServletRequest pagParams (HttpServletRequest request, Results<Contenido> listado, int page) {
 		// PARAMETROS PAGINACION
@@ -92,7 +71,29 @@ public class WebUtils implements ConstantsInterface {
 		return idioma;
 	}
 	
-
+	/*
+	public class RedirectOrForward {
+		
+		public static final void send(HttpServletRequest request, HttpServletResponse response,
+				Boolean redirect, String target, Boolean send) throws ServletException, IOException {
+			System.out.println(redirect+","+target+" "+send);
+			if(send) {
+				StringBuilder s = new StringBuilder();
+				s.append(request.getContextPath()).append(target);
+				
+				if (redirect) {
+					response.sendRedirect(s.toString());
+				} else {
+					request.getRequestDispatcher(target).forward(request, response);
+				}
+			} else {
+				target = request.getHeader("referer");
+				System.out.println(target);
+				response.sendRedirect(target);
+			}
+		}
+	}
+*/
 
 
 }

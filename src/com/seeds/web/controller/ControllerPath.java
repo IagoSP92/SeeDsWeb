@@ -6,8 +6,6 @@ public class ControllerPath {
 	public static final String VIDEO = "/video";
 	public static final String LISTA = "/lista";
 	public static final String CONTENIDO = "/contenido";
-	public static final String BUSCAR_CONTENIDO = "/buscarContenido";
-	// public static final String REDIRECT = "redirect";
 	public static final String RELACIONES = "relaciones";
 
 

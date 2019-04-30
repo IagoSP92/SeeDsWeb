@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.mail.SendFailedException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,24 +23,18 @@ import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.Exceptions.DataException;
 import com.isp.seeds.model.Categoria;
-import com.isp.seeds.model.Pais;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
 import com.isp.seeds.service.CategoriaServiceImpl;
 import com.isp.seeds.service.ContenidoServiceImpl;
-import com.isp.seeds.service.ListaServiceImpl;
-import com.isp.seeds.service.UsuarioServiceImpl;
 import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.CategoriaService;
 import com.isp.seeds.service.spi.ContenidoService;
-import com.isp.seeds.service.spi.ListaService;
-import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.ConstantsInterface;
-import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.FileUtils;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
@@ -134,7 +127,7 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 			}
 						
 			Video video=null;
-			/*Long*/ idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			 idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
@@ -170,8 +163,7 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 			try {
 				request.setAttribute(AttributeNames.VIDEO, video);
 				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(video.getAutor()).getNombre());
-//				Long idSesion = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-//				request.setAttribute(ParameterNames.ID_SESION, idSesion);
+
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			} catch (NumberFormatException e) {
@@ -242,18 +234,7 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 			}
 			if (!errors.hasErrors()) {
 				
-				// Podriamos enviar a video detalle
-				//request.setAttribute(ParameterNames.ACTION, Actions.DETALLE);
-//				request.setAttribute(ParameterNames.ACTION, Actions.DETALLE);
-//				request.setAttribute(ParameterNames.ID_CONTENIDO, video.getId());
-//				request.setAttribute(ParameterNames.TIPO, video.getTipo());
-				/*
-				target = ControllerPaths.NO_CONTEXT_PRODUCTO.concat("?").concat(ParameterNames.ACTION).concat("=").concat(Actions.SEARCH_PRODUCTS)
-						.concat("&").concat(ParameterNames.DEFAULT).concat("=").concat(defaultSearch);
-						*/
-				//RedirectOrForward.send(request, response, false, target, true);
-				
-				target= ViewPath.DETALLE_VIDEO;
+				target= ViewPath.SUBIDOS;
 				
 			} else {
 				if (logger.isDebugEnabled()) {
@@ -263,13 +244,6 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 				cargarCategorias(request, errors);
 				target= ViewPath.SUBIR_VIDEO;
 			}
-
-//			request.setAttribute(ParameterNames.ACTION, Actions.DETALLE_VIDEO );
-//			request.setAttribute(ParameterNames.ID_CONTENIDO, video.getId());	
-//			request.setAttribute(ParameterNames.TIPO, video.getTipo());	
-//			target = ControllerPath.VIDEO;
-			
-			//target = ViewPath.HOME;
 			
 			
 		} else   if (Actions.REPRODUCIR_VIDEO.equalsIgnoreCase(action)) {// LA ACTION RECIBIDA NO ESTA DEFINIDA
@@ -279,11 +253,11 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 			FileUtils.readVideo(response,urlBase, idVideo);
 			return;			
 			
-		} else {// LA ACTION RECIBIDA NO ESTA DEFINIDA
-			
-			// Mmm...
+		} else {
+			// LA ACTION RECIBIDA NO ESTA DEFINIDA
+			errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_ACTION);
 			logger.error("Action desconocida");
-			// target ?
+			target = ViewPath.HOME;
 		}
 		
 		// POR ULTIMO SE ENVIA A DONDE/COMO CORRESPONDA:
@@ -295,29 +269,8 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 			request.getRequestDispatcher(target).forward(request, response);
 		}
 	}
-	/*
-	public class RedirectOrForward {
-		
-		public static final void send(HttpServletRequest request, HttpServletResponse response,
-				Boolean redirect, String target, Boolean send) throws ServletException, IOException {
-			System.out.println(redirect+","+target+" "+send);
-			if(send) {
-				StringBuilder s = new StringBuilder();
-				s.append(request.getContextPath()).append(target);
-				
-				if (redirect) {
-					response.sendRedirect(s.toString());
-				} else {
-					request.getRequestDispatcher(target).forward(request, response);
-				}
-			} else {
-				target = request.getHeader("referer");
-				System.out.println(target);
-				response.sendRedirect(target);
-			}
-		}
-	}
-*/
+	
+
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);

@@ -258,7 +258,7 @@ public class ContenidoServlet extends HttpServlet  implements ConstantsInterface
 			
 			request.setAttribute(ParameterNames.ACTION, Actions.GUARDADOS);				
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-			/*Integer*/ tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==2) {
@@ -285,7 +285,7 @@ public class ContenidoServlet extends HttpServlet  implements ConstantsInterface
 			
 			request.setAttribute(ParameterNames.ACTION, Actions.SEGUIDOS);
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-			/*Integer*/ tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			 tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 			try {
 				if(tipo==1) {
@@ -312,7 +312,7 @@ public class ContenidoServlet extends HttpServlet  implements ConstantsInterface
 			
 			request.setAttribute(ParameterNames.ACTION, Actions.SUBIDOS);
 			Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
-			/*Integer*/ tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
+			 tipo = ValidationUtils.validInt(errors, request.getParameter(ParameterNames.TIPO), ParameterNames.TIPO, true);
 			if(!errors.hasErrors()) {
 				if(tipo==2) {
 					criteria.setAceptarVideo(true);
@@ -341,10 +341,7 @@ public class ContenidoServlet extends HttpServlet  implements ConstantsInterface
 			}			
 			target = ViewPath.SUBIDOS;
 			
-		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {
-			
-//			Long id = Long.parseLong(request.getParameter(ParameterNames.ID_CONTENIDO));
-//			Integer tipo = Integer.parseInt(request.getParameter(ParameterNames.TIPO));			
+		} else if (Actions.DETALLE.equalsIgnoreCase(action)) {	
 
 			if(tipo!=null && tipo<=3 && tipo>0) { // Se comprueba la validez del TIPO
 				request.setAttribute(ParameterNames.TIPO, tipo);
@@ -361,17 +358,13 @@ public class ContenidoServlet extends HttpServlet  implements ConstantsInterface
 						target = ControllerPath.LISTA;
 					}
 					
-					//request.getRequestDispatcher(target).forward(request, response);
 				} else {//ID INVALIDO					
 					target = ViewPath.ERROR500;
 					request.getRequestDispatcher(target).forward(request, response);
-//					logger.info("Forwarding to "+target);
-//					request.getRequestDispatcher(target).forward(request, response);
 				}
 			} else {//TIPO INVALIDO
-				target = ViewPath.ERROR500;// molaria mandalo a donde estaba e que aparecese un mensaxe nesa mima paxina
+				target = ViewPath.ERROR500;
 				logger.info("INVALID CONTENT TYPE -> Forwarding to "+target);
-				//request.getRequestDispatcher(target).forward(request, response);
 			}
 
 		} else {
