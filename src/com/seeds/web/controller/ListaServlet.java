@@ -84,24 +84,23 @@ public class ListaServlet extends HttpServlet {
 					
 					// Parametros para manipulacion de listas
 					if(idSesion==lista.getAutor()) {
+						
 						List<Contenido> listaTodos = new ArrayList<Contenido>();
-						List<Video> listaLista = new ArrayList<Video>();
+						List<Contenido> listaLista = new ArrayList<Contenido>();
 						List <Contenido> listaUsuario = new ArrayList<Contenido>();
 						ContenidoCriteria criteria = new ContenidoCriteria();
 						criteria.setAceptarVideo(true);
 						criteria.setAceptarLista(false);
 						criteria.setAceptarUsuario(false);
 						criteria.setAutor(idSesion);
-						listaTodos= WebUtils.contenidoSvc.buscarCriteria(criteria,
-								Integer.MAX_VALUE, Integer.MAX_VALUE, idioma).getPage();
-								Double infinito = Double.POSITIVE_INFINITY;
+						listaTodos= WebUtils.contenidoSvc.verVideosAutor(idSesion);
 						// Workaround para aprobechar funcion que devuelve resultados paginados
 						// Podrá ser añadida una sin paginación o controlarlo en esta con un IF y un Boolean
-						listaLista = WebUtils.listaSvc.verVideosLista(idContenido, 0, infinito.intValue()).getPage();
+						listaLista = WebUtils.listaSvc.verContenidosLista(idContenido);
 						//categorias =WebUtils.categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
-						for(Contenido v: listaTodos) {
-							if(!listaLista.contains(v)) {
-								listaUsuario.add(v);
+						for(Contenido c: listaTodos) {
+							if(!listaLista.contains(c)) {
+								listaUsuario.add(c);
 							}
 						}
 						request.setAttribute(ParameterNames.LISTA_LISTA, listaLista);
