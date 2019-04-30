@@ -22,10 +22,21 @@ import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
+import com.isp.seeds.service.CategoriaServiceImpl;
+import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
+import com.isp.seeds.service.UsuarioServiceImpl;
+import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.criteria.ContenidoCriteria;
+import com.isp.seeds.service.spi.CategoriaService;
+import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
+import com.isp.seeds.service.spi.UsuarioService;
+import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
+import com.seeds.web.utils.ConstantsInterface;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
@@ -33,15 +44,26 @@ import com.seeds.web.utils.WebUtils;
 
 
 @WebServlet("/lista")
-public class ListaServlet extends HttpServlet {
+public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 
 	private static Logger logger = LogManager.getLogger(ListaServlet.class);
 	
 	private List<Long> idsCategoria;
+	private static ListaService listaSvc = null;
+	private static ContenidoService contenidoSvc = null;
+	private static CategoriaService categoriaSvc = null;
+	private static VideoService videoSvc = null;
+	private static UsuarioService usuarioSvc = null;
+	
 	public ListaServlet() {
-		super();			
+		super();
+		videoSvc = new VideoServiceImpl();
+		usuarioSvc = new UsuarioServiceImpl();
+		contenidoSvc = new ContenidoServiceImpl();
+		listaSvc = new ListaServiceImpl();
+		categoriaSvc = new CategoriaServiceImpl();
 		try {
-			idsCategoria = WebUtils.categoriaSvc.findAll("ES").stream().map(Categoria::getIdCategoria).collect(Collectors.toList());
+			idsCategoria = categoriaSvc.findAll("ES").stream().map(Categoria::getIdCategoria).collect(Collectors.toList());
 		} catch (DataException e) {
 			logger.warn(e.getMessage(), e);
 		}
@@ -68,7 +90,7 @@ public class ListaServlet extends HttpServlet {
 				Long idSesion = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				request.setAttribute(ParameterNames.ID_SESION, idSesion);
 				try {
-					lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
+					lista = listaSvc.buscarId(idSesion, idContenido );
 					request.setAttribute(ParameterNames.COMENTARIOS, lista.getComentarios());
 					request.setAttribute(ParameterNames.DENUNCIADO, lista.getDenunciado());
 					request.setAttribute(ParameterNames.SIGUIENDO, lista.getSiguiendo());
@@ -93,16 +115,20 @@ public class ListaServlet extends HttpServlet {
 						criteria.setAceptarLista(false);
 						criteria.setAceptarUsuario(false);
 						criteria.setAutor(idSesion);
-						listaTodos= WebUtils.contenidoSvc.verVideosAutor(idSesion);
-						// Workaround para aprobechar funcion que devuelve resultados paginados
-						// Podrá ser añadida una sin paginación o controlarlo en esta con un IF y un Boolean
-						listaLista = WebUtils.listaSvc.verContenidosLista(idContenido);
-						//categorias =WebUtils.categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
-						for(Contenido c: listaTodos) {
-							if(!listaLista.contains(c)) {
-								listaUsuario.add(c);
+						listaTodos= contenidoSvc.verVideosAutor(idSesion);
+						listaLista = listaSvc.verContenidosLista(idContenido);
+						//categorias =categoriaSvc.findAll(getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
+						
+						if(listaLista.size()>0) {
+							for(Contenido c: listaTodos) {
+								if(!listaLista.contains(c)) {
+									listaUsuario.add(c);
+								}
 							}
+						} else {
+							listaUsuario = listaTodos;
 						}
+						
 						request.setAttribute(ParameterNames.LISTA_LISTA, listaLista);
 						request.setAttribute(ParameterNames.LISTA_USUARIO, listaUsuario);						
 						
@@ -114,7 +140,7 @@ public class ListaServlet extends HttpServlet {
 				}
 			} else {
 				try {
-					lista = WebUtils.listaSvc.buscarId(null, idContenido );
+					lista = listaSvc.buscarId(null, idContenido );
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
@@ -123,7 +149,7 @@ public class ListaServlet extends HttpServlet {
 			}
 			try {
 				request.setAttribute(AttributeNames.LISTA, lista);
-				request.setAttribute(AttributeNames.NOMBRE_AUTOR, WebUtils.contenidoSvc.buscarId(lista.getAutor()).getNombre());	
+				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(lista.getAutor()).getNombre());	
 				request.setAttribute(ParameterNames.ID_CONTENIDO, lista.getId());
 				request.setAttribute(ParameterNames.TIPO, lista.getTipo());
 			} catch (DataException e) {
@@ -134,13 +160,13 @@ public class ListaServlet extends HttpServlet {
 			}
 			try {
 
-				int page = WebUtils.
-						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
-				int startIndex= (page-1)*WebUtils.pageSize+1;
-				int count= WebUtils.pageSize;
+				int page = 
+						WebUtils.getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+				int startIndex= (page-1)*pageSize+1;
+				int count= pageSize;
 				Results<Video> videosLista= null;
 				try { 
-					videosLista = WebUtils.listaSvc.verVideosLista(lista.getId(), startIndex, count);
+					videosLista = listaSvc.verVideosLista(lista.getId(), startIndex, count);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
@@ -148,9 +174,9 @@ public class ListaServlet extends HttpServlet {
 
 				
 				// Datos para paginacion
-				int totalPages = (int) Math.ceil((double)videosLista.getTotal()/(double)WebUtils.pageSize);
-				int firstPagedPage = Math.max(1, page-WebUtils.pagingPageCount);
-				int lastPagedPage = Math.min(totalPages, page+WebUtils.pagingPageCount);
+				int totalPages = (int) Math.ceil((double)videosLista.getTotal()/(double)pageSize);
+				int firstPagedPage = Math.max(1, page-pagingPageCount);
+				int lastPagedPage = Math.min(totalPages, page+pagingPageCount);
 				request.setAttribute(ParameterNames.PAGE, page);
 				request.setAttribute(AttributeNames.TOTAL_PAGES, totalPages);
 				request.setAttribute(AttributeNames.FIRST_PAGED_PAGES, firstPagedPage);
@@ -165,14 +191,8 @@ public class ListaServlet extends HttpServlet {
 
 		} else if (Actions.PRE_CREAR_LISTA.equalsIgnoreCase(action)) {
 			
-			List<Categoria> categorias = null;			
-			try {
-				categorias =WebUtils.categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				errors.add(AttributeNames.CATEGORIAS, ErrorCodes.PRE_SUBIR_VIDEO);
-			}
-			request.setAttribute(AttributeNames.CATEGORIAS, categorias);
+			cargarCategorias(request, errors);
+			
 			target = ViewPath.CREAR_LISTA;
 			
 		} else if (Actions.CREAR_LISTA.equalsIgnoreCase(action)) {
@@ -199,7 +219,7 @@ public class ListaServlet extends HttpServlet {
 				lista.setDescripcion(descripcion);
 				lista.setPublica(true);
 				try {
-					lista.setCategoria(WebUtils.categoriaSvc.findById(idCategoria, "ES"));
+					lista.setCategoria(categoriaSvc.findById(idCategoria, "ES"));
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(Actions.CREAR_LISTA, ErrorCodes.RECOVERY_ERROR);
@@ -207,7 +227,11 @@ public class ListaServlet extends HttpServlet {
 			}
 			if (!errors.hasErrors()) {
 				try {
-					lista = WebUtils.listaSvc.crearLista(lista);
+					lista = listaSvc.crearLista(lista);
+					if(lista.getId()==null) {
+						logger.warn("Create List Error");
+						errors.add(ParameterNames.ACTION,ErrorCodes.UNABLE_CREATE);
+					}
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(Actions.CREAR_LISTA, ErrorCodes.UNABLE_CREATE);
@@ -217,8 +241,16 @@ public class ListaServlet extends HttpServlet {
 				if (logger.isDebugEnabled()) {
 					logger.debug("La creación no ha podido realizarse: {}", errors);
 				}				
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				cargarCategorias(request, errors);
 				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPath.HOME;	
+				target = ViewPath.CREAR_LISTA;	
+			}
+			if(!errors.hasErrors()) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("List Created: {}", errors);
+				}
+				target = ViewPath.HOME;
 			}
 
 //			response.setHeader(ParameterNames.ACTION, Actions.DETALLE );			
@@ -226,11 +258,13 @@ public class ListaServlet extends HttpServlet {
 //			request.setAttribute(ParameterNames.TIPO, lista.getTipo());
 //			target = ControllerPath.REDIRECT;
 			
-			target = ViewPath.HOME;
+			//
 
 		} else if (Actions.EDITAR_LISTA.equalsIgnoreCase(action)) {
+			//cargarCategorias(request, errors);
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			String[] ids = request.getParameterValues("wishlist");
 			
-			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));	
 			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
 			String nombre = request.getParameter(ParameterNames.NOMBRE);
 			String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
@@ -243,7 +277,7 @@ public class ListaServlet extends HttpServlet {
 			Lista lista= new Lista();
 			if (!errors.hasErrors()) {
 				try {
-					lista= WebUtils.listaSvc.buscarId(null, idContenido);
+					lista= listaSvc.buscarId(null, idContenido);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(Actions.EDITAR_LISTA, ErrorCodes.RECOVERY_ERROR);
@@ -251,20 +285,13 @@ public class ListaServlet extends HttpServlet {
 				lista.setFechaMod(new Date());
 				nombre = ValidationUtils.validString(errors, nombre, ParameterNames.NOMBRE, true);
 				descripcion = ValidationUtils.validString(errors, descripcion, ParameterNames.DESCRIPCION, true);
-
-
-//				try {
-//					lista.setCategoria(WebUtils.categoriaSvc.findById(idCategoria, "ES"));
-//				} catch (DataException e) {
-//					logger.warn(e.getMessage(), e);
-//					errors.add(Actions.CREAR_LISTA, ErrorCodes.RECOVERY_ERROR);
-//				}			
+			
 			}
 			if (!errors.hasErrors()) {
 				try {
 					lista.setNombre(nombre);
 					lista.setDescripcion(descripcion);					
-					WebUtils.listaSvc.editarLista(lista);
+					listaSvc.editarLista(lista);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(Actions.CREAR_LISTA, ErrorCodes.UNABLE_CREATE);
@@ -276,6 +303,54 @@ public class ListaServlet extends HttpServlet {
 				}				
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.HOME;	
+			}
+			
+			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
+			target = ViewPath.HOME;
+
+			
+		} else if (Actions.INCLUIR.equalsIgnoreCase(action)) {
+
+			//cargarCategorias(request, errors);
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
+			String[] ids = request.getParameterValues("wishlist");
+			if (logger.isDebugEnabled()) {
+				logger.debug("Inluir: Lista={}", idContenido);
+			}
+			List<Long> nuevosVideos = new ArrayList<Long>();
+			Long idVideo = null;
+			if(ids!=null){
+				for(int i=0; i<ids.length;i++) {
+					idVideo= ValidationUtils.validLong(errors, ids[i], ParameterNames.WISHLIST, true);
+					nuevosVideos.add(idVideo);				
+				}
+			}
+			
+			String nombre = request.getParameter(ParameterNames.NOMBRE);
+			String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
+			request.setAttribute(ParameterNames.NOMBRE, nombre);
+			request.setAttribute(ParameterNames.DESCRIPCION, descripcion);
+
+			if (!errors.hasErrors()) {
+				try {
+					listaSvc.redefinirIncluidos(idContenido, nuevosVideos);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(Actions.INCLUIR, ErrorCodes.RECOVERY_ERROR);
+				}			
+			}
+			
+			if (!errors.hasErrors()) {
+				logger.warn("La lista ha sido redefinida");
+			}
+	
+			if (errors.hasErrors()) {	
+				if (logger.isDebugEnabled()) {
+					logger.debug("La edicion no ha podido redefinirse: {}", errors);
+				}				
+				request.setAttribute(AttributeNames.ERRORS, errors);				
+				target = ViewPath.HOME;
 			}
 			
 			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
@@ -302,6 +377,18 @@ public class ListaServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+	}
+	
+	private static void cargarCategorias (HttpServletRequest request, ErrorManager errors){
+		
+		List<Categoria> categorias = null;			
+		try {
+			categorias =categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
+		} catch (DataException e) {
+			logger.warn(e.getMessage(), e);
+			errors.add(AttributeNames.CATEGORIAS, ErrorCodes.PRE_SUBIR_VIDEO);
+		}
+		request.setAttribute(AttributeNames.CATEGORIAS, categorias);
 	}
 
 }

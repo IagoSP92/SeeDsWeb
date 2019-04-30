@@ -150,33 +150,23 @@
 			</div><!-- EDICION DETALLES/ELIMINAR -->
 		
 			<div id="operacionesLista" hidden=true> <!-- MANIPULAR VIDEOS CONTENIDOS -->		
-				<div id="listaLista" class="listasLista">			
-					<c:forEach items="${listaLista}" var="video">
-						<div class="listaElemento">
-							${video.id}
-							<pre>   </pre>
-							${video.nombre}
-							<button class="userButton seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="false">
-								<fmt:message key="menuAutor.excluir" bundle="${messages}"/>
-							</button>
-						</div>		
-					</c:forEach>			
-				</div>
 				
-				<div id="corralPutoJefe">
+				<div id="moverVideosDiv">
 				<br/>
+					<form action="/SeeDsWeb<%=ControllerPath.LISTA%>" method="post">
+						<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.INCLUIR%>"/>
+						<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
+						
 					<div id="recuadrosMagicos" class="inline-block">
 						<select name="possible" class="possible" multiple>
 							<c:forEach items="${lista_usuario}" var="contenido">
-								<option value="${contenido.id}">${contenido.nombre}</option>		
+								<option value="${contenido.id}">${contenido.nombre}</option>
 							</c:forEach>
-					        <option value="one">One</option>
-					        <option value="two">Two</option>
 					    </select>
 					
 					    <select name="wishlist" class="wishlist" multiple>
 					    	<c:forEach items="${lista_lista}" var="contenido">
-								<option value="${contenido.id}">${contenido.nombre}</option>		
+								<option value="${contenido.id}">${contenido.nombre}</option>
 							</c:forEach>
 					    </select>
 				    </div>
@@ -185,20 +175,12 @@
 					    <br>
 					    <input type="button" value="Remove from wishlist" onclick="RemoveItem();">
 				    </div>
-			    </div><!-- corralPutoJefe -->
+				    
+				    <input id="incluirButton" class=" autorButton w3-btn w3-border2" type="submit"
+						 name="incluir" value="<fmt:message key="menuAutor.incluir" bundle="${messages}"/>"/>
+					</form>
+			    </div><!-- moverVideosDiv -->
 						
-				<div id="listaUsuario" class="listasLista">
-					<c:forEach items="${listaUsuario}" var="video">
-						<div class="listaElemento">
-							${video.id}
-							<pre>   </pre>
-							${video.nombre}
-							<button class="userButton seguirButton" data-tipo="${lista.tipo}" data-idContenido="${lista.id}" data-siguiendo="false">
-								<fmt:message key="menuAutor.incluir" bundle="${messages}"/>
-							</button>
-						</div>		
-					</c:forEach>
-				</div>
 			</div> <!-- MANIPULAR VIDEOS CONTENIDOS -->	
 		</c:if><!-- IF USUARIO AUTENTICADO -->	
 	</div>

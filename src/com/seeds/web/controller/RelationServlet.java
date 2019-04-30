@@ -18,8 +18,17 @@ import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
+import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
+import com.isp.seeds.service.UsuarioServiceImpl;
+import com.isp.seeds.service.VideoServiceImpl;
+import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
+import com.isp.seeds.service.spi.UsuarioService;
+import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
+import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
@@ -32,6 +41,20 @@ import com.seeds.web.utils.WebUtils;
 public class RelationServlet extends HttpServlet {
 	
 	private static Logger logger = LogManager.getLogger(RelationServlet.class);
+	
+	private static ContenidoService contenidoSvc = null;
+	private static VideoService videoSvc = null;
+	private static ListaService listaSvc = null;
+	private static UsuarioService usuarioSvc = null;
+	
+	public  RelationServlet () {
+		contenidoSvc = new ContenidoServiceImpl();
+		videoSvc = new VideoServiceImpl();
+		listaSvc = new ListaServiceImpl();
+		usuarioSvc = new UsuarioServiceImpl();
+	}
+	
+	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter(ParameterNames.ACTION);
@@ -69,10 +92,10 @@ public class RelationServlet extends HttpServlet {
 				if(tipo==1||tipo==2||tipo==3 ) {
 					Integer nuevoValor = null;
 					try {
-						Contenido contenido = WebUtils.contenidoSvc.buscarId(idContenido);
+						Contenido contenido = contenidoSvc.buscarId(idContenido);
 						 nuevoValor = contenido.getReproducciones()+1;
 						contenido.setReproducciones(nuevoValor);
-						WebUtils.contenidoSvc.update(contenido);
+						contenidoSvc.update(contenido);
 
 					} catch (DataException e) {
 						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
@@ -108,7 +131,7 @@ public class RelationServlet extends HttpServlet {
 					}
 					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 					try {
-						WebUtils.contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);					
+						contenidoSvc.seguirContenido(idSesion, idContenido, nuevoValor);					
 					} catch (DataException e) {
 						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}				
@@ -117,12 +140,12 @@ public class RelationServlet extends HttpServlet {
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==1) {
 							Usuario usuario=null;
-							usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
+							usuario = usuarioSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
 						}
 						if(tipo==3) {
 							Lista lista=null;
-							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
+							lista = listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("siguiendo", lista.getSiguiendo());
 						}
 						String mensaje="Default";
@@ -165,7 +188,7 @@ public class RelationServlet extends HttpServlet {
 					}
 					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 					try {
-						WebUtils.contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);						
+						contenidoSvc.guardarContenido(idSesion, idContenido, nuevoValor);						
 					} catch (DataException e) {
 						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}
@@ -176,12 +199,12 @@ public class RelationServlet extends HttpServlet {
 							JsonObject usuarioJson = new JsonObject();
 							if(tipo==2) {
 								Video video=null;
-								video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
+								video = videoSvc.buscarId(idSesion, idContenido );
 								usuarioJson.addProperty("guardado", video.getGuardado());
 							}
 							if(tipo==3) {
 								Lista lista=null;
-								lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
+								lista = listaSvc.buscarId(idSesion, idContenido );
 								usuarioJson.addProperty("guardado", lista.getGuardado());
 							}
 							String mensaje="Default";
@@ -226,7 +249,7 @@ public class RelationServlet extends HttpServlet {
 					}
 					definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 					try {
-						WebUtils.contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);					
+						contenidoSvc.denunciarContenido(idSesion, idContenido, nuevoValor);					
 					} catch (DataException e) {
 						errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}				
@@ -235,17 +258,17 @@ public class RelationServlet extends HttpServlet {
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==1) {
 							Usuario usuario=null;
-							usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
+							usuario = usuarioSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("denunciado", usuario.getDenunciado());
 						}
 						if(tipo==2) {
 							Video video=null;
-							video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
+							video = videoSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("denunciado", video.getDenunciado());
 						}
 						if(tipo==3) {
 							Lista lista=null;
-							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
+							lista = listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("denunciado", lista.getDenunciado());
 						}
 						String mensaje="Default";
@@ -284,13 +307,13 @@ public class RelationServlet extends HttpServlet {
 						String nuevoValor = ValidationUtils.validString(errors, request.getParameter(ParameterNames.COMENTADO), ParameterNames.COMENTADO, true);
 						definedLogger (action, idSesion, idContenido, tipo, nuevoValor.toString(), 1);
 						try {
-							WebUtils.contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
+							contenidoSvc.comentarContenido(idSesion, idContenido, nuevoValor);
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
 					} else {
 						try {
-							WebUtils.contenidoSvc.comentarContenido(idSesion, idContenido, null);
+							contenidoSvc.comentarContenido(idSesion, idContenido, null);
 						} catch (DataException e) {
 							errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 						}
@@ -300,12 +323,12 @@ public class RelationServlet extends HttpServlet {
 						JsonObject usuarioJson = new JsonObject();
 						if(tipo==2) {
 							Video video=null;
-							video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
+							video = videoSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("guardado", video.getGuardado());
 						}
 						if(tipo==3) {
 							Lista lista=null;
-							lista = WebUtils.listaSvc.buscarId(idSesion, idContenido );
+							lista = listaSvc.buscarId(idSesion, idContenido );
 							usuarioJson.addProperty("guardado", lista.getGuardado());
 						}
 
@@ -343,13 +366,13 @@ public class RelationServlet extends HttpServlet {
 				if(tipo==1||tipo==2||tipo==3) {			
 				Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.MI_VALORACION), ParameterNames.MI_VALORACION, true);			
 					try {
-						WebUtils.contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
+						contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
 					} catch (DataException e) {					
 						 errorManagement ( errors, e, ErrorCodes.UNABLE_CHANGE_RELATION );
 					}
 					try {						
 						JsonObject objetoJson = new JsonObject();
-						objetoJson.addProperty("valor", WebUtils.contenidoSvc.getValoracion(idContenido));
+						objetoJson.addProperty("valor", contenidoSvc.getValoracion(idContenido));
 						response.setContentType("application/json;charset=ISO-8859-1");
 						response.getOutputStream().write(objetoJson.toString().getBytes());
 						

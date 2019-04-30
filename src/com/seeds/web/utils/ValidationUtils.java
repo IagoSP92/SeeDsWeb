@@ -65,7 +65,6 @@ public class ValidationUtils {
 	}
 	
 	public static Long validLong (ErrorManager errors, String longAntes, String parameter, Boolean required) {
-			
 			Long longDespues = null;
 			
 			if(!StringUtils.isEmptyOrWhitespaceOnly(longAntes)) {

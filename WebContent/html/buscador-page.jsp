@@ -1,6 +1,7 @@
 <%@include file="/html/common/header.jsp"%>
 
 <div class="mainWindow">
+<%@include file="/html/common/action-errors.jsp"%>
 
 	<h1><%
 		if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("BUSCAR") ){

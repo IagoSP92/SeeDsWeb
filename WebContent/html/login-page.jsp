@@ -12,31 +12,28 @@
 				<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.ENTRAR%>"/>
 			
 				<label class="w3-text-blue"><b><fmt:message key="form.email" bundle="${messages}"/></b></label>
+				<% parameterErrors = errors.getErrors(ParameterNames.EMAIL);
+					for (String error: parameterErrors) {									
+							%><li><fmt:message key="<%=error%>" bundle="${messages}"/></li><%
+					}%>	
 				<input  class="w3-input w3-border" type="email" name="<%=ParameterNames.EMAIL%>" 
 							placeholder="usuario@ejemplo.com"
 							value="<%=ParameterUtils.getParameter(request, ParameterNames.EMAIL)%>" />
-							<%
-								parameterErrors = errors.getErrors(ParameterNames.EMAIL);
-								for (String error: parameterErrors) {
-									if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
-										%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
-									}
-								}
-							%>
 				
 				<label class="w3-text-blue"><b><fmt:message key="form.pass" bundle="${messages}"/></b></label>
+				<% parameterErrors = errors.getErrors(ParameterNames.PASSWORD);
+					for (String error: parameterErrors) {									
+							%><li><fmt:message key="<%=error%>" bundle="${messages}"/></li><%
+					}%>	
 				<input class="w3-input w3-border" type="password" name="<%=ParameterNames.PASSWORD%>"/>
-							<%
-								parameterErrors = errors.getErrors(ParameterNames.PASSWORD);
-								for (String error: parameterErrors) {									
-									if(error.equals(ErrorCodes.MANDATORY_PARAMETER)){
-										%><li><fmt:message key="form.campoObligatorio" bundle="${messages}"/></li><%
-									}
-								}
-							%>
-				
-				<input class="w3-btn w3-blue" id="submit" type="submit" value=<fmt:message key="form.entrar" bundle="${messages}"/> /> 
-			
+								
+				<input class="w3-btn w3-blue" id="submit" type="submit" value=<fmt:message key="form.entrar" bundle="${messages}"/> />
+
+				<% parameterErrors = errors.getErrors(Actions.ENTRAR);
+					for (String error: parameterErrors) {									
+							%><li><fmt:message key="<%=error%>" bundle="${messages}"/></li><%
+					}%>	
+					
 			</form>
 			<br/><br/>
 			

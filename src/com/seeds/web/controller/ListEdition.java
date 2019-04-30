@@ -1,6 +1,8 @@
 package com.seeds.web.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +16,19 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonArray;
 import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.model.Categoria;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
+import com.isp.seeds.service.CategoriaServiceImpl;
+import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
+import com.isp.seeds.service.UsuarioServiceImpl;
+import com.isp.seeds.service.VideoServiceImpl;
+import com.isp.seeds.service.spi.CategoriaService;
+import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
+import com.isp.seeds.service.spi.UsuarioService;
+import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
@@ -31,6 +44,15 @@ import com.seeds.web.utils.WebUtils;
 public class ListEdition extends HttpServlet {
 	
 	private static Logger logger = LogManager.getLogger(ListEdition.class);
+	
+	private static ListaService listaSvc = null;
+	
+	public ListEdition() {
+		super();
+		listaSvc = new ListaServiceImpl();
+
+	}
+	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getParameter(ParameterNames.ACTION);
@@ -57,7 +79,7 @@ public class ListEdition extends HttpServlet {
 				Long idIncluir =ValidationUtils.validLong(errors, incluir, ParameterNames.ID_OPERAR, true);
 				
 				try {
-					WebUtils.listaSvc.meterVideo(idContenido, idIncluir, null);
+					listaSvc.meterVideo(idContenido, idIncluir, null);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.UPDATE_ERROR);
@@ -70,7 +92,7 @@ public class ListEdition extends HttpServlet {
 					Double infinito = Double.POSITIVE_INFINITY;
 					// Workaround para aprobechar funcion que devuelve resultados paginados
 					// Podrá ser añadida una sin paginación o controlarlo ene sta con un IF y un Boolean
-					videosLista = WebUtils.listaSvc.verVideosLista(idContenido, 0, infinito.intValue());
+					videosLista = listaSvc.verVideosLista(idContenido, 0, infinito.intValue());
 //					for(Video v: videosLista) {
 //						videosListaJson.add(number);;
 //						videosListaJson.add(string);

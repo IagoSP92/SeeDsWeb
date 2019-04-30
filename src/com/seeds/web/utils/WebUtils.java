@@ -7,20 +7,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.isp.seeds.model.Contenido;
 import com.isp.seeds.service.CategoriaServiceImpl;
-import com.isp.seeds.service.ContenidoServiceImpl;
-import com.isp.seeds.service.ListaServiceImpl;
-import com.isp.seeds.service.PaisServiceImpl;
-import com.isp.seeds.service.UsuarioServiceImpl;
-import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.CategoriaService;
-import com.isp.seeds.service.spi.ContenidoService;
-import com.isp.seeds.service.spi.ListaService;
-import com.isp.seeds.service.spi.PaisService;
-import com.isp.seeds.service.spi.UsuarioService;
-import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
-import com.seeds.web.config.ConfigurationManager;
-import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.controller.AttributeNames;
 import com.seeds.web.controller.ConstantValues;
 import com.seeds.web.controller.ParameterNames;
@@ -29,24 +17,24 @@ import com.seeds.web.controller.ParameterNames;
  * Commodity method para facilitar la implementacion de la paginacion, etc.
  *
  */
-public class WebUtils {
+public class WebUtils implements ConstantsInterface {
 
 	private static Logger logger = LogManager.getLogger(WebUtils.class.getName());
 		
-	public static int pageSize = Integer.valueOf(
-			ConfigurationManager.getInstance().getParameter(
-					ConfigurationParameterNames.RESULTS_PAGE_SIZE_DEFAULT)); 
 
-	public static int pagingPageCount = Integer.valueOf(
-			ConfigurationManager.getInstance().getParameter(
-					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 	
+	private static CategoriaService categoriaSvc = null;
+	
+	public WebUtils () {
+		categoriaSvc = new CategoriaServiceImpl();
+	}
+	/*
 	public static DateUtils dateUtils = null;
 	public static ContenidoService contenidoSvc = null;
 	public static VideoService videoSvc = null;
 	public static ListaService listaSvc = null;
 	public static UsuarioService usuarioSvc = null;
-	public static CategoriaService categoriaSvc = null;
+	
 	public static ValidationUtils validationUtils = null;
 	public static PaisService paisSvc = null;
 	
@@ -56,11 +44,11 @@ public class WebUtils {
 		listaSvc = new ListaServiceImpl();
 		usuarioSvc = new UsuarioServiceImpl();
 		dateUtils = new DateUtils();
-		categoriaSvc = new CategoriaServiceImpl();
+		
 		validationUtils = new ValidationUtils();
 		paisSvc = new PaisServiceImpl();
 	}
-	
+	*/
 	
 	public static HttpServletRequest pagParams (HttpServletRequest request, Results<Contenido> listado, int page) {
 		// PARAMETROS PAGINACION
@@ -104,6 +92,7 @@ public class WebUtils {
 		return idioma;
 	}
 	
+
 
 
 }

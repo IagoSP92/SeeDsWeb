@@ -87,6 +87,9 @@ public class ParameterNames {
 	public static final String COMENTARIOS = "comentarios";
 	
 	public static final String ID_OPERAR = "id_operar";
+	
+	public static final String WISHLIST = "wishlist";
+
 
 
 

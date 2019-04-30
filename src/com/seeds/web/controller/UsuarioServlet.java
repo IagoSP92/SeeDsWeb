@@ -37,6 +37,7 @@ import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
+import com.seeds.web.utils.ConstantsInterface;
 import com.seeds.web.utils.CookieManager;
 import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.LocaleManager;
@@ -47,7 +48,7 @@ import com.seeds.web.utils.WebUtils;
 
 
 @WebServlet("/usuario")
-public class UsuarioServlet extends HttpServlet {
+public class UsuarioServlet extends HttpServlet  implements ConstantsInterface {
 
 	private static Logger logger = LogManager.getLogger(UsuarioServlet.class);
 	
@@ -59,11 +60,18 @@ public class UsuarioServlet extends HttpServlet {
 			ConfigurationManager.getInstance().getParameter(
 					ConfigurationParameterNames.RESULTS_PAGING_PAGE_COUNT));
 	
+	private static UsuarioService usuarioSvc = null;
+	private static PaisService paisSvc = null;
+	private static ContenidoService contenidoSvc = null;
+	
 	private List<String> idsPais;
 	public UsuarioServlet() {
-		super();			
+		super();
+		usuarioSvc = new UsuarioServiceImpl();
+		paisSvc = new PaisServiceImpl();
+		contenidoSvc = new ContenidoServiceImpl();
 		try {
-			idsPais = WebUtils.paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());
+			idsPais = paisSvc.findAll("ES").stream().map(Pais::getIdPais).collect(Collectors.toList());
 		} catch (DataException e) {
 			logger.warn(e.getMessage(), e);
 		}
@@ -92,8 +100,14 @@ public class UsuarioServlet extends HttpServlet {
 			Usuario usuario = null;			
 			if (!errors.hasErrors()) {
 				try {
-					usuario = WebUtils.usuarioSvc.logIn(email, password);
+					usuario = usuarioSvc.logIn(email, password);
+					if(usuario!=null) {
 					SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
+					} else {
+						logger.warn("Login Error");
+						errors.add(Actions.ENTRAR,ErrorCodes.AUTHENTICATION_ERROR);
+					}
+					
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION,ErrorCodes.AUTHENTICATION_ERROR);
@@ -103,7 +117,8 @@ public class UsuarioServlet extends HttpServlet {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Autenticacion fallida: {}", errors);
 				}				
-				request.setAttribute(AttributeNames.ERRORS, errors);				
+				request.setAttribute(AttributeNames.ERRORS, errors);
+				
 				target = ViewPath.ENTRAR;	
 			} else {
 				if (logger.isDebugEnabled()) {
@@ -114,16 +129,19 @@ public class UsuarioServlet extends HttpServlet {
 				redirect = true;
 			}
 			
-		} else if (Actions.PRERREGISTRO.equalsIgnoreCase(action)) { //CHAPUZA
+		} else if (Actions.PRERREGISTRO.equalsIgnoreCase(action)) {
 			
+			cargarPaises(request, errors);
+			/*
 			List<Pais> paises = null;
 			try {
-				paises = WebUtils.paisSvc.findAll(WebUtils.getIdioma(request)).stream().map(Pais::getPais).collect(Collectors.toList());
+				paises = paisSvc.findAll(getIdioma(request)).stream().map(Pais::getPais).collect(Collectors.toList());
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 				errors.add(AttributeNames.PAISES, ErrorCodes.PRERREGISTRO_ERROR);
 			}
 			request.setAttribute(AttributeNames.PAISES, paises);
+			*/
 			target = ViewPath.REGISTRO;
 			
 		} else if (Actions.REGISTRO.equalsIgnoreCase(action)) {
@@ -162,7 +180,7 @@ public class UsuarioServlet extends HttpServlet {
 				usuario.setApellidos(apellidos);
 				usuario.setPais(pais);
 				try {
-					usuario = WebUtils.usuarioSvc.crearCuenta(usuario);
+					usuario = usuarioSvc.crearCuenta(usuario);
 					//SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
@@ -175,7 +193,8 @@ public class UsuarioServlet extends HttpServlet {
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
 					logger.debug("El registro no ha podido realizarse: {}", errors);
-				}				
+				}
+				cargarPaises(request, errors);
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.REGISTRO;			
 			}
@@ -252,7 +271,7 @@ public class UsuarioServlet extends HttpServlet {
 				
 				if (!errors.hasErrors()) {
 					try {					
-						WebUtils.usuarioSvc.editarPerfil(usuario);
+						usuarioSvc.editarPerfil(usuario);
 						SessionManager.set(request, SessionAttributeNames.USUARIO , usuario);
 					} catch (DataException e) {
 						logger.warn(e.getMessage(), e);
@@ -284,7 +303,7 @@ public class UsuarioServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
+					usuario = usuarioSvc.buscarId(idSesion, idContenido );
 					request.setAttribute(ParameterNames.DENUNCIADO, usuario.getDenunciado());
 					request.setAttribute(ParameterNames.SIGUIENDO, usuario.getSiguiendo());
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
@@ -296,7 +315,7 @@ public class UsuarioServlet extends HttpServlet {
 				}
 			} else {
 				try {
-					usuario = WebUtils.usuarioSvc.buscarId(null, idContenido );
+					usuario = usuarioSvc.buscarId(null, idContenido );
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
@@ -323,12 +342,12 @@ public class UsuarioServlet extends HttpServlet {
 					criteria.setAceptarUsuario(false);
 				}
 				criteria.setAutor(idContenido);
-				int page = WebUtils.
-						getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
+				int page = 
+						WebUtils.getPageNumber(request.getParameter(ParameterNames.PAGE), 1);
 				int startIndex= (page-1)*pageSize+1;
 				int count= pageSize;
 				try {					
-					resultados = WebUtils.contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
+					resultados = contenidoSvc.buscarCriteria(criteria, startIndex, count, idioma);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
@@ -362,7 +381,7 @@ public class UsuarioServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					usuario = WebUtils.usuarioSvc.buscarId(idSesion, idContenido );
+					usuario = usuarioSvc.buscarId(idSesion, idContenido );
 					JsonObject usuarioJson = new JsonObject();
 					usuarioJson.addProperty("denunciado", usuario.getDenunciado());
 					usuarioJson.addProperty("siguiendo", usuario.getSiguiendo());
@@ -423,6 +442,19 @@ public class UsuarioServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+	}
+	
+	
+	private static void cargarPaises(HttpServletRequest request, ErrorManager errors) {
+		List<Pais> paises = null;
+		try {
+			paises = paisSvc.findAll(WebUtils.getIdioma(request)).stream().map(Pais::getPais).collect(Collectors.toList());
+		} catch (DataException e) {
+			logger.warn(e.getMessage(), e);
+			errors.add(AttributeNames.PAISES, ErrorCodes.PRERREGISTRO_ERROR);
+		}
+		request.setAttribute(AttributeNames.PAISES, paises);		
+		
 	}
 
 }

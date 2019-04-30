@@ -27,15 +27,20 @@ import com.isp.seeds.model.Categoria;
 import com.isp.seeds.model.Pais;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;
+import com.isp.seeds.service.CategoriaServiceImpl;
 import com.isp.seeds.service.ContenidoServiceImpl;
+import com.isp.seeds.service.ListaServiceImpl;
 import com.isp.seeds.service.UsuarioServiceImpl;
 import com.isp.seeds.service.VideoServiceImpl;
+import com.isp.seeds.service.spi.CategoriaService;
 import com.isp.seeds.service.spi.ContenidoService;
+import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
+import com.seeds.web.utils.ConstantsInterface;
 import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.FileUtils;
 import com.seeds.web.utils.SessionAttributeNames;
@@ -45,7 +50,7 @@ import com.seeds.web.utils.WebUtils;
 
 
 @WebServlet("/video")
-public class VideoServlet extends HttpServlet {
+public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 	
 	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
 	// upload settings
@@ -54,14 +59,20 @@ public class VideoServlet extends HttpServlet {
 	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 50; // 50MB
 
 	private static Logger logger = LogManager.getLogger(VideoServlet.class);
+	private static ContenidoService contenidoSvc = null;
+	private static VideoService videoSvc = null;
+	private static CategoriaService categoriaSvc = null;
 	
 	
 	
 	private List<Long> idsCategoria;
 	public VideoServlet() {
-		super();			
+		super();	
+		contenidoSvc = new ContenidoServiceImpl();
+		videoSvc = new VideoServiceImpl();
+		categoriaSvc = new CategoriaServiceImpl();		
 		try {
-			idsCategoria = WebUtils.categoriaSvc.findAll("ES").stream().map(Categoria::getIdCategoria).collect(Collectors.toList());
+			idsCategoria = categoriaSvc.findAll("ES").stream().map(Categoria::getIdCategoria).collect(Collectors.toList());
 		} catch (DataException e) {
 			logger.warn(e.getMessage(), e);
 		}
@@ -128,8 +139,8 @@ public class VideoServlet extends HttpServlet {
 			if(SessionManager.get(request, SessionAttributeNames.USUARIO)!=null) {
 				Long idSesion= ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 				try {
-					video = WebUtils.videoSvc.buscarId(idSesion, idContenido );
-					video.setValoracion(WebUtils.contenidoSvc.getValoracion(idContenido));
+					video = videoSvc.buscarId(idSesion, idContenido );
+					video.setValoracion(contenidoSvc.getValoracion(idContenido));
 					request.setAttribute(ParameterNames.NOTA_DEL_VIDEO, video.getValoracion());
 					request.setAttribute(ParameterNames.COMENTARIOS, video.getComentarios());
 					request.setAttribute(ParameterNames.DENUNCIADO, video.getDenunciado());
@@ -148,8 +159,8 @@ public class VideoServlet extends HttpServlet {
 				}
 			} else {
 				try {
-					video = WebUtils.videoSvc.buscarId(null, idContenido );
-					video.setValoracion(WebUtils.contenidoSvc.getValoracion(idContenido));
+					video = videoSvc.buscarId(null, idContenido );
+					video.setValoracion(contenidoSvc.getValoracion(idContenido));
 					request.setAttribute(ParameterNames.AUTENTICADO, false);
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
@@ -158,7 +169,7 @@ public class VideoServlet extends HttpServlet {
 			}			
 			try {
 				request.setAttribute(AttributeNames.VIDEO, video);
-				request.setAttribute(AttributeNames.NOMBRE_AUTOR, WebUtils.contenidoSvc.buscarId(video.getAutor()).getNombre());
+				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(video.getAutor()).getNombre());
 //				Long idSesion = ((Usuario)SessionManager.get(request, SessionAttributeNames.USUARIO)).getId();
 //				request.setAttribute(ParameterNames.ID_SESION, idSesion);
 			} catch (DataException e) {
@@ -171,14 +182,8 @@ public class VideoServlet extends HttpServlet {
 
 		} else if (Actions.PRE_SUBIR_VIDEO.equalsIgnoreCase(action)) {
 			
-			List<Categoria> categorias = null;			
-			try {
-				categorias =WebUtils.categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
-			} catch (DataException e) {
-				logger.warn(e.getMessage(), e);
-				errors.add(AttributeNames.CATEGORIAS, ErrorCodes.PRE_SUBIR_VIDEO);
-			}
-			request.setAttribute(AttributeNames.CATEGORIAS, categorias);
+			cargarCategorias(request, errors);
+
 			target = ViewPath.SUBIR_VIDEO;
 			
 		} else if (Actions.SUBIR_VIDEO.equalsIgnoreCase(action)){
@@ -207,7 +212,7 @@ public class VideoServlet extends HttpServlet {
 				video.setFechaMod(new Date()); // FECHAS DE ALTA Y MODIFICACION SON LA ACTUAL
 				video.setAutor(idAutor);
 				try {
-					video.setCategoria(WebUtils.categoriaSvc.findById(idCategoria, "ES"));
+					video.setCategoria(categoriaSvc.findById(idCategoria, "ES"));
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(Actions.SUBIR_VIDEO, ErrorCodes.RECOVERY_ERROR);
@@ -217,7 +222,7 @@ public class VideoServlet extends HttpServlet {
 				
 				if (!errors.hasErrors()) {
 					try {
-						video = WebUtils.videoSvc.crearVideo(video);
+						video = videoSvc.crearVideo(video);
 					} catch (DataException e) {
 						logger.warn(e.getMessage(), e);
 						//errors
@@ -229,13 +234,12 @@ public class VideoServlet extends HttpServlet {
                 }
 				video.setUrl(ruta);
 				try {
-					WebUtils.videoSvc.editarVideo(video);
+					videoSvc.editarVideo(video);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					// errors
 				}
 			}
-
 			if (!errors.hasErrors()) {
 				
 				// Podriamos enviar a video detalle
@@ -248,6 +252,7 @@ public class VideoServlet extends HttpServlet {
 						.concat("&").concat(ParameterNames.DEFAULT).concat("=").concat(defaultSearch);
 						*/
 				//RedirectOrForward.send(request, response, false, target, true);
+				
 				target= ViewPath.DETALLE_VIDEO;
 				
 			} else {
@@ -255,7 +260,7 @@ public class VideoServlet extends HttpServlet {
 					logger.debug("Subir Video Fallido: {}", errors);
 				}				
 				request.setAttribute(AttributeNames.ERRORS, errors);
-				
+				cargarCategorias(request, errors);
 				target= ViewPath.SUBIR_VIDEO;
 			}
 
@@ -316,6 +321,18 @@ public class VideoServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+	}
+	
+	private static void cargarCategorias (HttpServletRequest request, ErrorManager errors){
+		
+		List<Categoria> categorias = null;			
+		try {
+			categorias =categoriaSvc.findAll(WebUtils.getIdioma(request)).stream().map(Categoria::getCategoria).collect(Collectors.toList());
+		} catch (DataException e) {
+			logger.warn(e.getMessage(), e);
+			errors.add(AttributeNames.CATEGORIAS, ErrorCodes.PRE_SUBIR_VIDEO);
+		}
+		request.setAttribute(AttributeNames.CATEGORIAS, categorias);
 	}
 
 }
