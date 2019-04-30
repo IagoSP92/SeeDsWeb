@@ -223,7 +223,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(Actions.CREAR_LISTA, ErrorCodes.RECOVERY_ERROR);
-				}			
+				}
 			}
 			if (!errors.hasErrors()) {
 				try {
@@ -318,6 +318,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Inluir: Lista={}", idContenido);
 			}
+			
 			List<Long> nuevosVideos = new ArrayList<Long>();
 			Long idVideo = null;
 			if(ids!=null){
