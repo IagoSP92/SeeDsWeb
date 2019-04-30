@@ -2,7 +2,7 @@
 
 <%@include file="/html/common/header.jsp"%>
 
-<div class="mainWindow" data-idContenido="${lista.id}" data-tipo="${lista.tipo}">
+<div class="mainWindow" data-idContenido="${lista.id}" data-tipo="${lista.tipo}" >
 
 	<div id="recuadro_lista" class="w3-border2">
 		<div class="cabeceraListaDiv">
@@ -156,6 +156,7 @@
 					<form action="/SeeDsWeb<%=ControllerPath.LISTA%>" method="post">
 						<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.INCLUIR%>"/>
 						<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${lista.id}"/>
+						<input type="hidden" name="<%=ParameterNames.LISTA_LISTA%>" value="${lista_lista}"/>
 						
 					<div id="recuadrosMagicos" class="inline-block">
 						<select name="possible" class="possible" multiple>
@@ -163,19 +164,24 @@
 								<option value="${contenido.id}">${contenido.nombre}</option>
 							</c:forEach>
 					    </select>
-					
+						<script type="text/javascript"> var i = 0;</script>
 					    <select name="wishlist" class="wishlist" multiple>
 					    	<c:forEach items="${lista_lista}" var="contenido">
-								<option value="${contenido.id}">${contenido.nombre}</option>
+								<option class="actuallyIn" data-item="${contenido.id.toString()}"
+								  value="${contenido.id}" onload="MyMoveItem2()">${contenido.nombre}</option>
 							</c:forEach>
 					    </select>
 				    </div>
-				    <div id="botonesMagicos" class="inline-block">				    
-					    <input type="button" value="Add to wishlist" onclick="MyMoveItem();">
+				    <div id="botonesMagicos" class="inline-block">
+				    
+				    
+				    	<input hidden type="hidden"  onload="MyMoveItem();">	
+				    	    
+					    <input type="button" value="Add to wishlist" onclick="MyMoveItem();">					    
 					    <br>
 					    <input type="button" value="Remove from wishlist" onclick="RemoveItem();">
 				    </div>
-				    
+
 				    <input id="incluirButton" class=" autorButton w3-btn w3-border2" type="submit"
 						 name="incluir" value="<fmt:message key="menuAutor.incluir" bundle="${messages}"/>"/>
 					</form>

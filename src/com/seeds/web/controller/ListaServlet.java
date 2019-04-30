@@ -127,13 +127,10 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 							}
 						} else {
 							listaUsuario = listaTodos;
-						}
-						
+						}						
 						request.setAttribute(ParameterNames.LISTA_LISTA, listaLista);
 						request.setAttribute(ParameterNames.LISTA_USUARIO, listaUsuario);						
-						
-					}				
-					
+					}					
 				} catch (DataException | NumberFormatException e) {
 					logger.warn(e.getMessage(), e);
 					errors.add(ParameterNames.ACTION, ErrorCodes.RECOVERY_ERROR);
@@ -306,7 +303,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			}
 			
 			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
-			target = ViewPath.HOME;
+			target = ViewPath.SUBIDOS;
 
 			
 		} else if (Actions.INCLUIR.equalsIgnoreCase(action)) {
@@ -321,6 +318,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			
 			List<Long> nuevosVideos = new ArrayList<Long>();
 			Long idVideo = null;
+			
 			if(ids!=null){
 				for(int i=0; i<ids.length;i++) {
 					idVideo= ValidationUtils.validLong(errors, ids[i], ParameterNames.WISHLIST, true);
@@ -355,7 +353,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			}
 			
 			//target= "SeeDsWeb/redirect?action=detalle&id="+lista.getId()+"&tipo=2";
-			target = ViewPath.HOME;
+			target = ViewPath.SUBIDOS;
 
 			
 		} else  {// LA ACTION RECIBIDA NO ESTA DEFINIDA

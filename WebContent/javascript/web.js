@@ -27,6 +27,7 @@ $(document).ready(function () {
 		});
 	})
 	
+	
 	$("#denunciarButton").click(function(){
 		$.ajax({
 			type: "GET",

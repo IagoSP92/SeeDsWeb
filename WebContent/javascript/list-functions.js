@@ -1,10 +1,22 @@
-$(document).ready(function(){
-	for(var i=0; i< lista_lista.length(); i++){
-		alert("${lista_lista['i']");
+
+
+$("#incluirButton").ready( function ()
+	{
+		
+        var selected = $('.wishlist option').val();
+        
+        alert($('.wishlist').size());
+        selected.appendTo('.wishlist');/*
+        $(".actuallyIn").attr("data-item").appendTo('.wishlist');
+        MyMoveItem(selected);*/
 	}
 	
-	
-});
+);
+
+function MyMoveItem2()
+{
+    $('.wishlist option').val().appendTo('.wishlist');
+}
 
 function MyMoveItem()
 {
@@ -17,9 +29,4 @@ function RemoveItem()
 {
     var selected = $('.wishlist option:selected');
     selected.appendTo('.possible');
-}
-
-function AlreadyInItem(item){
-    var selected = $(item);
-    selected.appendTo('.wishlist');
 }
