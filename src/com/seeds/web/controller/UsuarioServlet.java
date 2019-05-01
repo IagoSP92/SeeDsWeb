@@ -218,9 +218,10 @@ public class UsuarioServlet extends HttpServlet  implements ConstantsInterface {
 				logger.debug("Action {}: {}", action, ToStringBuilder.reflectionToString(request.getParameterMap()));
 			}
 			if (logger.isDebugEnabled()) {
-				logger.info("EDICION PERFIL -> nombre:{} descripcion:{} avatar:{} nombrereal:{} apeliidos:{} fecha de nacimiento:{} ",
-						request.getParameter(ParameterNames.NOMBRE), request.getParameter(ParameterNames.DESCRIPCION), request.getParameter(ParameterNames.AVATAR),
-						request.getParameter(ParameterNames.NOMBRE_REAL), request.getParameter(ParameterNames.APELLIDOS), request.getParameter(ParameterNames.FECHA_NAC));
+				logger.info("EDICION PERFIL -> nombre:{} descripcion:{}  nombrereal:{} apeliidos:{} fecha de nacimiento:{} ",
+						request.getParameter(ParameterNames.NOMBRE), request.getParameter(ParameterNames.DESCRIPCION),
+						request.getParameter(ParameterNames.NOMBRE_REAL), request.getParameter(ParameterNames.APELLIDOS),
+						request.getParameter(ParameterNames.FECHA_NAC));
 			}
 			Usuario usuario= (Usuario) SessionManager.get(request, SessionAttributeNames.USUARIO);
 			Long id= ValidationUtils.validLong(errors, request.getParameter(ParameterNames.ID_CONTENIDO), ParameterNames.ID_CONTENIDO, true) ;
@@ -228,13 +229,12 @@ public class UsuarioServlet extends HttpServlet  implements ConstantsInterface {
 				usuario.setId(id);	
 				String nombre = request.getParameter(ParameterNames.NOMBRE);
 				String descripcion = request.getParameter(ParameterNames.DESCRIPCION);
-				String avatar = request.getParameter(ParameterNames.AVATAR);
 				String nombreReal = request.getParameter(ParameterNames.NOMBRE_REAL);
 				String apellidos = request.getParameter(ParameterNames.APELLIDOS);
 				String fNac = request.getParameter(ParameterNames.FECHA_NAC);
 				if (logger.isDebugEnabled()) {
-					logger.info("EDICION PERFIL -> nombre:{} descripcion:{} avatar:{} nombrereal:{} apeliidos:{} fecha de nacimiento:{} ",
-							nombre, descripcion, avatar, nombreReal, apellidos, fNac);
+					logger.info("EDICION PERFIL -> nombre:{} descripcion:{} nombrereal:{} apeliidos:{} fecha de nacimiento:{} ",
+							nombre, descripcion, nombreReal, apellidos, fNac);
 				}			
 				usuario.setFechaMod(new Date()); 					
 				if(nombre!=null) {

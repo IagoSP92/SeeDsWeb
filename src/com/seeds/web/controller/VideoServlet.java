@@ -31,6 +31,7 @@ import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.spi.CategoriaService;
 import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.VideoService;
+import com.mysql.cj.util.StringUtils;
 import com.seeds.web.config.ConfigurationManager;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
@@ -144,6 +145,7 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 						request.setAttribute(ParameterNames.COMENTADO, video.getComentado());
 					}
 					request.setAttribute(ParameterNames.VALORACION, video.getValorado());
+					
 					request.setAttribute(ParameterNames.AUTENTICADO, true);
 					request.setAttribute(ParameterNames.ID_SESION, idSesion);					
 				} catch (DataException | NumberFormatException e) {
@@ -163,6 +165,9 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 			try {
 				request.setAttribute(AttributeNames.VIDEO, video);
 				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(video.getAutor()).getNombre());
+				if(video.getValoracion()==null) {
+					video.setValoracion(0d);
+				}
 
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
@@ -212,26 +217,32 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 				video.setNombre(nombre);
 				video.setDescripcion(descripcion);
 				
+				
+				
 				if (!errors.hasErrors()) {
 					try {
 						video = videoSvc.crearVideo(video);
 					} catch (DataException e) {
 						logger.warn(e.getMessage(), e);
-						//errors
+						errors.add(Actions.SUBIR_VIDEO, ErrorCodes.UNABLE_CREATE);
 					}
 				}
 				
 				if (!formItems.get(4).isFormField()) {
                     ruta= FileUtils.loadVideo(idAutor, video.getId(), formItems.get(4));
+                    if(StringUtils.isEmptyOrWhitespaceOnly(ruta)) {
+    					errors.add(ParameterNames.RUTA_VIDEO, ErrorCodes.MANDATORY_PARAMETER);
+                    }
                 }
 				video.setUrl(ruta);
 				try {
 					videoSvc.editarVideo(video);
 				} catch (DataException e) {
 					logger.warn(e.getMessage(), e);
-					// errors
+					errors.add(Actions.SUBIR_VIDEO, ErrorCodes.UNABLE_CREATE);
 				}
 			}
+
 			if (!errors.hasErrors()) {
 				
 				target= ViewPath.SUBIDOS;

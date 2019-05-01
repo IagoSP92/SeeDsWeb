@@ -31,6 +31,9 @@ public interface ErrorCodes {
 	public static final String UNABLE_CREATE  = "UNABLE_CREATE";
 	
 	public static final String PRE_SUBIR_VIDEO = "PRE_SUBIR_VIDEO";
+	
+	public static final String DELETE_ERROR = "DELETE_ERROR";
+
 
 	
 	

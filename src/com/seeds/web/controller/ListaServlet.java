@@ -145,6 +145,9 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 				request.setAttribute(AttributeNames.NOMBRE_AUTOR, contenidoSvc.buscarId(lista.getAutor()).getNombre());	
 				request.setAttribute(ParameterNames.ID_CONTENIDO, lista.getId());
 				request.setAttribute(ParameterNames.TIPO, lista.getTipo());
+				if(lista.getValoracion()==null) {
+					lista.setValoracion(0d);
+				}
 			} catch (DataException e) {
 				logger.warn(e.getMessage(), e);
 			} catch (NumberFormatException e) {
@@ -331,6 +334,38 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			if (errors.hasErrors()) {	
 				if (logger.isDebugEnabled()) {
 					logger.debug("La edicion no ha podido redefinirse: {}", errors);
+				}				
+				request.setAttribute(AttributeNames.ERRORS, errors);				
+				target = ViewPath.HOME;
+			}
+			target = ViewPath.SUBIDOS;
+			
+		} else if (Actions.ELIMINAR.equalsIgnoreCase(action)) {
+
+			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
+			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Eliminar: Lista={}", idContenido);
+			}
+			
+
+			if (!errors.hasErrors()) {
+				try {
+					Lista lista = listaSvc.buscarId(null, idContenido);
+					listaSvc.eliminarLista(lista);
+				} catch (DataException e) {
+					logger.warn(e.getMessage(), e);
+					errors.add(Actions.INCLUIR, ErrorCodes.DELETE_ERROR);
+				}			
+			}
+			
+			if (!errors.hasErrors()) {
+				logger.warn("La lista ha sido eliminada");
+			}
+	
+			if (errors.hasErrors()) {	
+				if (logger.isDebugEnabled()) {
+					logger.debug("La lista no ha podido eliminarse: {}", errors);
 				}				
 				request.setAttribute(AttributeNames.ERRORS, errors);				
 				target = ViewPath.HOME;

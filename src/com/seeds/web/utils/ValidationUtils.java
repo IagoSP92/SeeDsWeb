@@ -59,7 +59,6 @@ public class ValidationUtils {
 			if(required) {
 				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
 			}
-			// AÑADIR ERROR
 		}		
 		return booleanDespues;
 	}
@@ -73,7 +72,6 @@ public class ValidationUtils {
 				if(required) {
 					errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
 				}
-				// AÑADIR ERROR
 			}
 			
 			return longDespues;
@@ -90,7 +88,6 @@ public class ValidationUtils {
 			if(required) {
 				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
 			}
-			// AÑADIR ERROR
 		}	
 		return doubleDespues;
 	}
@@ -105,7 +102,6 @@ public class ValidationUtils {
 			if(required) {
 				errors.add(parameter, ErrorCodes.MANDATORY_PARAMETER);
 			}
-			// AÑADIR ERROR
 		}	
 		return intDespues;
 	}
@@ -218,12 +214,12 @@ public class ValidationUtils {
 	
 	
 	private static boolean passIsValid (String pass) {
-
+		//SE PERMITE CUALQUIERA NO VACIA
 		return true;
 	}
 	
 	private static boolean stringIsValid (String cadena) {
-
+		//SE PERMITE CUALQUIERA NO VACIA
 		return true;
 	}
 	

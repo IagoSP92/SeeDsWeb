@@ -71,29 +71,7 @@ public class WebUtils implements ConstantsInterface {
 		return idioma;
 	}
 	
-	/*
-	public class RedirectOrForward {
-		
-		public static final void send(HttpServletRequest request, HttpServletResponse response,
-				Boolean redirect, String target, Boolean send) throws ServletException, IOException {
-			System.out.println(redirect+","+target+" "+send);
-			if(send) {
-				StringBuilder s = new StringBuilder();
-				s.append(request.getContextPath()).append(target);
-				
-				if (redirect) {
-					response.sendRedirect(s.toString());
-				} else {
-					request.getRequestDispatcher(target).forward(request, response);
-				}
-			} else {
-				target = request.getHeader("referer");
-				System.out.println(target);
-				response.sendRedirect(target);
-			}
-		}
-	}
-*/
+
 
 
 }

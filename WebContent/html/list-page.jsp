@@ -177,9 +177,9 @@
 				    
 				    	<input hidden type="hidden"  onload="MyMoveItem();">	
 				    	    
-					    <input type="button" value="Add to wishlist" onclick="MyMoveItem();">					    
+					    <input type="button" value="<fmt:message key="editar.incluirLista" bundle="${messages}"/>" onclick="MyMoveItem();">					    
 					    <br>
-					    <input type="button" value="Remove from wishlist" onclick="RemoveItem();">
+					    <input type="button" value="<fmt:message key="editar.excluirLista" bundle="${messages}"/>" onclick="RemoveItem();">
 				    </div>
 
 				    <input id="incluirButton" class=" autorButton w3-btn w3-border2" type="submit"

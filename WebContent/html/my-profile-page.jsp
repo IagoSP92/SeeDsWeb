@@ -39,10 +39,7 @@
 				<input type="text" name="<%=ParameterNames.DESCRIPCION%>" value="${usuario.descripcion}"> 
 			</div></div><br/>
 			
-			<div class="editarCampoDiv">  <span><strong> <fmt:message key="editar.avatar" bundle="${messages}"/> </strong></span> ${usuario.avatarUrl} 
-				<div class="edicionSpan" hidden=true> <fmt:message key="editar.nuevo" bundle="${messages}"/>
-				<input type="text" name="<%=ParameterNames.AVATAR%>" value="${usuario.avatarUrl}">
-			</div></div><br/>
+
 			
 			<div class="editarCampoDiv">  <span><strong> <fmt:message key="editar.real" bundle="${messages}"/> </strong></span> ${usuario.nombreReal} 
 				<div class="edicionSpan" hidden=true> <fmt:message key="editar.nuevo" bundle="${messages}"/>
