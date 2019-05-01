@@ -130,23 +130,7 @@
 						 name="lista" value="<fmt:message key="editar.guardarEdicion" bundle="${messages}"/>"/>
 				</form>
 								
-				<div id="eliminarDiv"><!-- BOTONES PARA ELIMINACION -->
-				<br/>
-					<button class=" autorButton w3-btn w3-border" id="eliminarButton">
-						<fmt:message key="menuAutor.eliminar" bundle="${messages}"/>
-					</button>
-					<button class=" autorButton w3-btn w3-border" id="cancelarEliminarButton" hidden=true>
-						<fmt:message key="menuAutor.cancelar" bundle="${messages}"/>
-					</button>
 					
-					<h5 id="textConfirm" hidden=true><fmt:message key="menuAutor.confirmEliminar" bundle="${messages}"/></h5>
-					<a href="<%=ControllerPath.LISTA%>?<%=ParameterNames.ACTION%>=<%=Actions.ELIMINAR%>
-							&<%=ParameterNames.ID_CONTENIDO%>=${lista.id}" hidden=true  id="confirmButtonA">
-						<button class=" autorButton w3-btn w3-border"  id="confirmButton">
-							<fmt:message key="menuAutor.eliminar" bundle="${messages}"/>
-						</button>
-					</a>
-				</div><!-- FIN BOTONES ELIMINACION -->		
 			</div><!-- EDICION DETALLES/ELIMINAR -->
 		
 			<div id="operacionesLista" hidden=true> <!-- MANIPULAR VIDEOS CONTENIDOS -->		

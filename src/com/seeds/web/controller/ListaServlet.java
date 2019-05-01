@@ -340,39 +340,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 			}
 			target = ViewPath.SUBIDOS;
 			
-		} else if (Actions.ELIMINAR.equalsIgnoreCase(action)) {
-
-			Long idContenido = Long.parseLong( request.getParameter(ParameterNames.ID_CONTENIDO));
-			request.setAttribute(ParameterNames.ID_CONTENIDO, idContenido);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Eliminar: Lista={}", idContenido);
-			}
-			
-
-			if (!errors.hasErrors()) {
-				try {
-					Lista lista = listaSvc.buscarId(null, idContenido);
-					listaSvc.eliminarLista(lista);
-				} catch (DataException e) {
-					logger.warn(e.getMessage(), e);
-					errors.add(Actions.INCLUIR, ErrorCodes.DELETE_ERROR);
-				}			
-			}
-			
-			if (!errors.hasErrors()) {
-				logger.warn("La lista ha sido eliminada");
-			}
-	
-			if (errors.hasErrors()) {	
-				if (logger.isDebugEnabled()) {
-					logger.debug("La lista no ha podido eliminarse: {}", errors);
-				}				
-				request.setAttribute(AttributeNames.ERRORS, errors);				
-				target = ViewPath.HOME;
-			}
-			target = ViewPath.SUBIDOS;
-			
-		} else  {
+		}  else  {
 			// LA ACTION RECIBIDA NO ESTA DEFINIDA
 			errors.add(ParameterNames.ACTION, ErrorCodes.INVALID_ACTION);
 			logger.error("Action desconocida");
