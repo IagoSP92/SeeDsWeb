@@ -3,16 +3,16 @@ USE SEEDS;
 INSERT INTO IDIOMA (ID_IDIOMA)
 VALUES ('ES'), ('EN');
 
-INSERT INTO PAIS (ID_PAIS/*, NOMBRE_PAIS*/)
+INSERT INTO PAIS (ID_PAIS)
 VALUES
-('AD'/*, 'ANDORRA'*/),
-('DE'/*, 'ALEMANIA'*/),
-('ES'/*, 'ESPAÑA'*/),
-('FR'/*, 'FRANCIA'*/),
-('GB'/*, 'REINO UNIDO'*/),
-('IT'/*, 'ITALIA'*/),
-('PT'/*, 'PORTUGAL'*/),
-('US'/*, 'ESTADOS UNIDOS'*/);
+('AD'),
+('DE'),
+('ES'),
+('FR'),
+('GB'),
+('IT'),
+('PT'),
+('US');
 
 INSERT INTO PAIS_IDIOMA (ID_IDIOMA, ID_PAIS, NOMBRE_PAIS)
 VALUES
@@ -33,13 +33,13 @@ VALUES
 ('EN', 'PT', 'PORTUGAL'),
 ('EN', 'US', 'UNITED STATES');
 
-INSERT INTO CATEGORIA (ID_CATEGORIA/*, NOMBRE_CATEGORIA*/)
+INSERT INTO CATEGORIA (ID_CATEGORIA)
 VALUES
-('1'/*, 'VIDEOCLIPS'*/),
-('2'/*, 'SERIES'*/),
-('3'/*, 'CORTOS'*/),
-('4'/*, 'DOCUMENTAL'*/),
-('5'/*, 'GUIAS'*/);
+('1'),
+('2'),
+('3'),
+('4'),
+('5');
 
 INSERT INTO CATEGORIA_IDIOMA (ID_IDIOMA, ID_CATEGORIA, NOMBRE_CATEGORIA)
 VALUES
@@ -54,29 +54,29 @@ VALUES
 ('EN', '4', 'DOCUMENTARY'),
 ('EN', '5', 'GUIDES');
 
-INSERT INTO ETIQUETA (ID_ETIQUETA/*, NOMBRE_ETIQUETA*/)
+INSERT INTO ETIQUETA (ID_ETIQUETA)
 VALUES
-('1'/*, 'ACCION'*/),
-('2'/*, 'DRAMA'*/),
-('3'/*, 'ANIMACION'*/),
-('4'/*, 'COMEDIA'*/),
-('5'/*, 'ROMANTICISMO'*/),
-('6'/*, 'JAZZ'*/),
-('7'/*, 'SOUL'*/),
-('8'/*, 'POP'*/),
-('9'/*, 'ROCK'*/),
-('10'/*, 'BLUES'*/),
-('11'/*, 'TECHNO'*/),
-('12'/*, 'HOUSE'*/),
-('13'/*, 'BELICO'*/),
-('14'/*, 'AVENTURA'*/),
-('15'/*, 'HISTORICO'*/),
-('16'/*, 'TECNOLOGIA'*/),
-('17'/*, 'NATURALEZA'*/),
-('18'/*, 'OCEANOGRAFIA'*/),
-('19'/*, 'PROGRAMACION'*/),
-('20'/*, 'JAVA'*/),
-('21'/*, 'CLASICA'*/);
+('1'),
+('2'),
+('3'),
+('4'),
+('5'),
+('6'),
+('7'),
+('8'),
+('9'),
+('10'),
+('11'),
+('12'),
+('13'),
+('14'),
+('15'),
+('16'),
+('17'),
+('18'),
+('19'),
+('20'),
+('21');
 
 INSERT INTO ETIQUETA_IDIOMA (ID_IDIOMA, ID_ETIQUETA, NOMBRE_ETIQUETA)
 VALUES
@@ -157,7 +157,7 @@ VALUES
 ( '5','enrique5@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'ENRIQUE',  'LAMELA GARCIA', 'ES', STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s') ),
 ( '6','facundo6@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'FACUNDO',  'PIPAS PAJARO', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
 ( '7','gonzalo7@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'GONZALO',  'FALGUERA PEREZ', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
-( '8','helena8@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'HELENA',   'LEDO DOVAL', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
+( '8','helena8@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'HELENA',   'GARCIA GUTIERREZ', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
 ( '9','iago9@gmail.com',      '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'IAGO',     'MONTES VAZQUEZ', 'ES', STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s') ),
 ('10','javier10@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'JAVIAR',   'DIAZ MARTINEZ', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
 ('11','kevin11@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'KEVIN',    'GARCIA BARCO', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
@@ -166,7 +166,7 @@ VALUES
 ('14','nerea14@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'NEREA',    'LOPEZ DIEGUEZ', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
 ('15','oscar15@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'OSCAR',    'SANTOS LOPEZ', 'ES', STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s') ),
 ('16','patricia16@gmail.com', '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'PATRICIA', 'CASTIÑEIRA GUILLEN', 'ES', STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s') ),
-('17','quique17@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'QUIQUE',   'APER ITIVO', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
+('17','quique17@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'QUIQUE',   'ASPER DIAZ', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
 ('18','rocio18@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'ROCIO',    'GARCIA DIEGUEZ', 'ES' , STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s')),
 ('19','silvia19@gmail.com',   '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'SILVIA',   'RIOS GARCIA', 'ES', STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s') ),
 ('20','tania20@gmail.com',    '123456','Hola! Disfruten de mis videos!','C:\\img.jpg', 'TANIA',    'LEDO BORGES', 'ES', STR_TO_DATE('15/02/90','%d/%m/%Y %H:%i:%s') );
@@ -186,8 +186,8 @@ VALUES
 ('Pim Pam Theory ep5', STR_TO_DATE('10/02/11','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/02/11','%d/%m/%Y %H:%i:%s'), '2', 2,  '10'),
 ('Pim Pam Theory', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '2', 3,  '40'),
 ('Remix Lacasitos', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '3', 2,  '50'),
-('Bailar pegados es rozar', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '4', 2,  '10'),
-('Cuatro Estaciones con Piña', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '5', 2,  '10'),
+('Bailar plegados', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '4', 2,  '10'),
+('Cuatro Estaciones de Metro', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '5', 2,  '10'),
 ('El Pachino', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '6', 2,  '10'),
 ('Ritual de Reproduccionn de Gamusino', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '7', 2,  '10'),
 ('El mundo se ahoga', STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), STR_TO_DATE('10/10/10','%d/%m/%Y %H:%i:%s'), '8', 2,  '10'),
@@ -210,8 +210,8 @@ VALUES
 ('31', '2', 'Quinto capitulo de Pim Pam Theory ep5',  'C:\\videos\\999\\999.mp4'),
 
 ('33', '3', 'Remix Lacasitos','C:\\videos\\999\\999.mp4'),
-('34', '4', 'Bailar pegados es rozar',  'C:\\videos\\999\\999.mp4'),
-('35', '5', 'Cuatro Estaciones con Piña',  'C:\\videos\\999\\999.mp4'),
+('34', '4', 'Bailar plegados es gozar',  'C:\\videos\\999\\999.mp4'),
+('35', '5', 'Cuatro Estaciones en hora punta',  'C:\\videos\\999\\999.mp4'),
 ('36', '6', 'El Pachino', 'C:\\videos\\999\\999.mp4'),
 ('37', '7', 'Ritual de Reproduccionn de Gamusino', 'C:\\videos\\999\\999.mp4'),
 ('38', '8', 'El mundo se ahoga', 'C:\\videos\\999\\999.mp4'),
