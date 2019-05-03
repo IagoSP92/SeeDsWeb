@@ -35,7 +35,7 @@
 			<span id="detalleVisitas" class="detalleSpan"><b><fmt:message key="detalle.reproducciones" bundle="${messages}"/></b></span> ${video.reproducciones}
 			<span class="detalleSpan"><b><fmt:message key="detalle.fecha" bundle="${messages}"/></b></span> ${video.fechaAlta}			
 			<div class="descripcionVideoDiv">
-				<span><b><fmt:message key="detalle.descripcion" bundle="${messages}"/></b></span><p id="pDescripcion>"> ${usuario.descripcion}</p>
+				<span><b><fmt:message key="detalle.descripcion" bundle="${messages}"/></b></span><p id="pDescripcion>"> ${video.descripcion}</p>
 			</div>
 		</div><!-- datosVideoDiv -->
 	</div><!-- recuadroVideoDiv -->

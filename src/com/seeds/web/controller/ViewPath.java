@@ -2,6 +2,9 @@ package com.seeds.web.controller;
 
 public class ViewPath {	
 	
+	public static final String ROOT = "/SeeDsWeb/";
+
+	
 	public static final String HOME = "/html/index.jsp";
 	public static final String ENTRAR = "/html/login-page.jsp";
 	public static final String REGISTRO = "/html/registro-page.jsp";

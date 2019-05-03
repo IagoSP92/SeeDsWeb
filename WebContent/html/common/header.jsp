@@ -15,13 +15,15 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>See D's</title>
+	<title>See D's Share your Show</title>
 	 
 	<script src="<%=request.getContextPath()%>/javascript/jquery-3.3.1.min.js" type="text/javascript"></script> 
 	<script src="/SeeDsWeb/javascript/web.js"></script>
 
 	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/w3css.css">
 	<link rel="stylesheet" type="text/css" media="screen" href="/SeeDsWeb/css/main.css">
+	
+	<link rel="icon" href="<%=ViewPath.ROOT%>img/icon/icono.png" type="image/png" size="32x32">
 	
 </head>
 
@@ -39,13 +41,13 @@
 		</div>
 		<div class="flagsDiv">
 			<div class="flag">
-			<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES">
-				<img src="/SeeDsWeb/img/flags/ES.png">
+			<a href="<%=ViewPath.ROOT%><%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=es-ES">
+				<img src="<%=ViewPath.ROOT%>img/flags/ES.png">
 			</a>
 			</div>
 			<div class="flag">
-			<a href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB">
-				<img src="/SeeDsWeb/img/flags/EN.png">
+			<a href="<%=ViewPath.ROOT%><%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.CAMBIAR_LOCALE%>&locale=en-GB">
+				<img src="<%=ViewPath.ROOT%>img/flags/EN.png">
 			</a>
 			</div>
 		</div>

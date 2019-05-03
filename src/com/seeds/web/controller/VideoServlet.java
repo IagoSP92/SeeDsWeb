@@ -48,9 +48,9 @@ public class VideoServlet extends HttpServlet  implements ConstantsInterface {
 	
 	private static final String UPLOAD_DIRECTORY = ConfigurationManager.getInstance().getParameter("upload.directory");
 	// upload settings
-	private static final int MEMORY_THRESHOLD   = 1024 * 1024 * 30;  // 30MB
-	private static final int MAX_FILE_SIZE      = 1024 * 1024 * 40; // 40MB
-	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 50; // 50MB
+	private static final int MEMORY_THRESHOLD   = 1024 * 1024 * 300;  // 300MB
+	private static final int MAX_FILE_SIZE      = 1024 * 1024 * 400; // 400MB
+	private static final int MAX_REQUEST_SIZE   = 1024 * 1024 * 500; // 500MB
 
 	private static Logger logger = LogManager.getLogger(VideoServlet.class);
 	private static ContenidoService contenidoSvc = null;
