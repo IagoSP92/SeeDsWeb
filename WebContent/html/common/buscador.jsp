@@ -67,7 +67,7 @@
 <!-- Total de resultados  -->
 <p>
 	<c:if test="${not empty total}">
-		<h3><%
+		<h3 class="subtitulo"><%
 			if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("BUSCAR") ){
 				%>
 				<fmt:message key="busqueda.titulo2" bundle="${messages}">

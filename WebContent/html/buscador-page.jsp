@@ -3,7 +3,7 @@
 <div class="mainWindow">
 <%@include file="/html/common/action-errors.jsp"%>
 
-	<h1><%
+	<h1 class="titulo"><%
 		if(ParameterUtils.getParameter(request, ParameterNames.ACTION).equalsIgnoreCase("BUSCAR") ){
 			%> <fmt:message key="busqueda.titulo1" bundle="${messages}"></fmt:message>  <%   
 		}
