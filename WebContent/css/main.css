@@ -2,8 +2,12 @@
 
 html, body {
 	width: 100%;
-	height: 98%;
+	height: 100%;
 	background-color: rgb(235, 253, 255);
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	background-color: rgb(251, 253, 221);
+	background-color: rgb(252, 253, 232);
+	position:relative;
 }
 
 :root {
@@ -103,8 +107,10 @@ html, body {
 }
 
 #mainLogo {
-	width: 140px;
-	height: 75px;
+	margin-top:5px;
+	margin-left: 5px;
+	width: 130px;
+	height: 65px;
 	alt: "SeeDs Logo";
 
 }
@@ -132,7 +138,12 @@ html, body {
 	width: 100%;
 	border: 1px solid var(--fondo_claro);;
 }
-
+#spanUserName {
+	display: inline-block;
+	margin-left:2%;
+	color: white;
+	font-size:1.2em;
+}
 .userButton {
 	margin: 5px;
 	background-color: rgb(239, 248, 255);
@@ -157,6 +168,7 @@ html, body {
 	justify-content: center;
 	text-justify: distribute;
 	border: 2px solid var(--fondo_claro);
+	z-index: 5;
 }
 
 .navButton {
@@ -187,12 +199,6 @@ box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
 
 
 
-#buscarButton {
-	padding:8px 16px;vertical-align:middle;
-	overflow:hidden;
-	text-decoration:none;color:var(--fondo_oscuro);
-	background-color: var(--fondo_muy_claro);
-	cursor:pointer;white-space:nowrap}
 
 .hover:hover {
 	box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
@@ -203,33 +209,58 @@ box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
 
 
 .thumbDiv {
-	background-color: rgb(149, 199, 240);
-	background-color: var(--fondo_claro2);
-	border: 1px solid var(--fondo_claro);;
+	background-color: rgb(33, 166, 243);
+	/*background-color: var(--fondo_claro2);*/
+	border: 2px solid var(--fondo_claro);
 	padding: 10px;
 	margin: 20px;
 	width: 45%;
 	height: 100px;
 	display: inline-block;
+	color: #172B4D;
+	box-shadow:5px 5px rgb(128, 196, 252);
+	background-color: var(--fondo_intermedio);
+	color: #1961e3;
+	font-size: 1.2em;
+	overflow: hidden;
+	position:relative;
+
+}
+.nombreThumb{
+	position:relative;
+	
+}
+.fechaThumb{
+	position:relative;
+	vertical-align: bottom;		
+}
+.dataThumb{
+	display: inline;
+	position:relative;
+	width: 50%;
+
+}
+.icoThumb{
+	vertical-align: top;		
+	display: inline;
+	position: absolute;
+	float: right;
+	bottom: 2px;
+	right:2px;
+
+
+	
 }
 
 .comentario {
 	background-color: rgb(149, 199, 240);
 	background-color: var( --fondo_muy_claro);
-	border: 1px solid #026aa7;
+	border: 1px solid #7fc8f1;
 	padding: 10px;
 	margin: 20px;
 }
 
-#footer {
-	margin-bottom:0px;
-	bottom: 0%;
-	width: 100%;
-	z-index: -1;
-	background-color: rgba(142, 210, 236, 0.767);
-	height: 35px;
-	color: rgb(30, 55, 97);
-}
+
 
 .a_sinsub {
 	text-decoration: none;
@@ -257,9 +288,7 @@ box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
 	width: 30%;
 }
 
-#spanUserName {
 
-}
 
 
 
@@ -272,6 +301,19 @@ box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)
 	margin: 10px;
 	display: inline-block;
 	color: #172B4D;
+	background-color:var(--w3blue);
+	color: white;
+	font-size: 1.1em;
+	border: 2px solid var(--fondo_claro);
+}
+#buscarButton {
+	padding:8px 16px;vertical-align:middle;
+	overflow:hidden;
+	text-decoration:none;color:var(--fondo_oscuro);
+	background-color: var(--fondo_muy_claro);
+	cursor:pointer;white-space:nowrap;
+	color:  rgb(32, 51, 85);
+	font-size: 1.1em;
 }
 
 
@@ -286,6 +328,9 @@ button:hover {
 
 input, select{
 	background-color: var(--fondo_muy_claro);
+	background-color: rgb(255, 255, 255);
+	border: 2px solid var(--fondo_claro);
+
 }
 
 video {
@@ -293,5 +338,17 @@ video {
 	height: var(--alto_reproductor1);
 }
 
+#footer {
+	vertical-align: center;
 
-/**/
+	width: 100%;
+	background-color: rgba(142, 210, 236, 0.767);
+	height: 35px;
+	color: rgb(30, 55, 97);
+	/*float: bottom;*/
+	
+	  
+position: fixed;
+   bottom:-0px;
+	
+}

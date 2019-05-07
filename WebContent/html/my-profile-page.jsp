@@ -30,8 +30,8 @@
 			<br/>			
 			
 			<div class="editarCampoDiv" > <span> <strong><fmt:message key="editar.nombre" bundle="${messages}"/></strong> </span> ${usuario.nombre}			
-				<div class="edicionSpan" hidden=true> <span class="rotuloCampo"><%=ParameterNames.NOMBRE%>:</span>
-					<input type="text" name="<%=ParameterNames.NOMBRE%>" value="${usuario.nombre}"/>	
+				<div class="edicionSpan" hidden=true> <fmt:message key="editar.nuevo" bundle="${messages}"/> 
+				<input type="text" name="<%=ParameterNames.NOMBRE%>" value="${usuario.nombre}"/>	
 			</div></div><br/>
 			
 			<div class="editarCampoDiv"> <span><strong> <fmt:message key="editar.descripcion" bundle="${messages}"/> </strong></span> ${usuario.descripcion} 

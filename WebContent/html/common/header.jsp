@@ -36,7 +36,7 @@
 		
 		<div id="mainLogoDiv">
 			<a href="/SeeDsWeb/html/index.jsp">
-				<img id="mainLogo" src="/SeeDsWeb/img/seedsLogo.JPG" alt="SeeDs Logo"/>
+				<img id="mainLogo" src="/SeeDsWeb/img/seedsLogo.png" alt="SeeDs Logo"/>
 			</a>
 		</div>
 		<div class="flagsDiv">

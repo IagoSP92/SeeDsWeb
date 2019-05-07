@@ -142,11 +142,23 @@
 				</c:url>
 
 				<a class="a_sinsub" href="${urlDetalle}">
-					${contenido.nombre}<br>
-					${contenido.getTipo()}<br>
-					${contenido.fechaAlta}
+					<div id="dataThumb">
+						<div class="nombreThumb">${contenido.nombre}</div>
+						<br/>
+						<div class="fechaThumb">${contenido.fechaAlta}</div>
+					</div>
+					<div class="icoThumb">
+						<c:if test="${contenido.getTipo() == 1}">
+							<img src="<%=ViewPath.ROOT%>img/icon/icoUserAzul.png">
+						</c:if>
+						<c:if test="${contenido.getTipo() == 2}">
+							<img src="<%=ViewPath.ROOT%>img/icon/icoVideoAzul.png">
+						</c:if>
+						<c:if test="${contenido.getTipo() == 3}">
+							<img src="<%=ViewPath.ROOT%>img/icon/icoListAzul.png">
+						</c:if>
+					</div>		
 				</a>
-
 			</div>
 		</c:forEach>
 	</div>

@@ -5,10 +5,10 @@
 
 <div id="user-menu">
 	
-	<span id="spanUserName"><%
+	<%
 		Usuario u = (Usuario) request.getSession().getAttribute(SessionAttributeNames.USUARIO);
 		if (u == null) {	
-	%></span>
+	%>
 	
 	<a class="a_sinsub"  href="/SeeDsWeb<%=ViewPath.ENTRAR%>">
 		<button class="userButton">
@@ -26,7 +26,7 @@
 		} else {
 		%>	<!-- usuario autenticado -->			
 			<div id="usuario">
-				<span><%=u.getNombre()%></span>
+				<div id="spanUserName"><%=u.getNombre()%></div>
 				
 				<a class="a_sinsub" href="/SeeDsWeb/<%=ControllerPath.USUARIO%>?<%=ParameterNames.ACTION%>=<%=Actions.MI_PERFIL%>">
 					<button class="userButton">
