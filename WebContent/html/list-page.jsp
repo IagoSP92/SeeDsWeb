@@ -12,6 +12,14 @@
 
 		<div class="datosListaDiv">
 			<span><b><fmt:message key="detalle.valoracion" bundle="${messages}"/></b></span> ${lista.valoracion}
+			
+			<div id="detalleValoracion" class="inline-block"> ${lista.valoracion} </div>	
+			<input id="insertarNota" hidden=true name="<%=ParameterNames.MI_VALORACION%>" type="text" size=2
+				value="<%=ParameterUtils.getParameter(request, ParameterNames.VALORACION_MIN) %>"/>
+			<button hidden=true class="insertarNotaButton" >
+				<fmt:message key="detalle.valorar" bundle="${messages}"/>
+			</button>
+			
 			<span><b><fmt:message key="detalle.reproducciones" bundle="${messages}"/></b></span> ${lista.reproducciones}
 			<span><b><fmt:message key="detalle.fecha" bundle="${messages}"/></b></span> ${lista.fechaAlta}		
 			<span><b><fmt:message key="detalle.visitas" bundle="${messages}"/></b></span> ${lista.reproducciones}	

@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.exceptions.DataException;
 import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.service.ContenidoServiceImpl;
@@ -25,8 +25,6 @@ import com.isp.seeds.service.spi.ListaService;
 import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
-import com.seeds.web.config.ConfigurationManager;
-import com.seeds.web.config.ConfigurationParameterNames;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
 import com.seeds.web.utils.ConstantsInterface;

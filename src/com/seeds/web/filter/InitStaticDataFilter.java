@@ -1,7 +1,6 @@
 package com.seeds.web.filter;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,17 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.isp.seeds.Exceptions.DataException;
-import com.isp.seeds.model.Pais;
-import com.isp.seeds.service.PaisServiceImpl;
-import com.isp.seeds.service.spi.PaisService;
-import com.seeds.web.controller.ConstantValues;
-import com.seeds.web.utils.SessionManager;
 
 
 @WebFilter("/*")

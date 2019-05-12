@@ -3,13 +3,15 @@
 <%@include file="/html/common/header.jsp"%>
 
 <div class="mainWindow" data-idContenido="${usuario.id}" data-tipo="${usuario.tipo}">
+
+
 	
-	<div id="recuadro_usuario">	
+	<div id="recuadro_usuario" class="w3-border2">	
 		<div id="nombrePerfilDiv" class="detalle-titulo"><h1> ${usuario.nombre} </h1></div>
-		<div id="avatarPerfilDiv">  ${usuario.avatarUrl}   </div>
 		<div id="descripcionPerfilDiv"> ${usuario.descripcion} </div>
-		<div id="fechaPerfilDiv"> <span><fmt:message key="detalle.miembroDesde" bundle="${messages}"/></span>${usuario.fechaAlta} </div>
-		<span><fmt:message key="detalle.visitas" bundle="${messages}"/></span> ${usuario.reproducciones}		
+		<br/>
+		<div id="fechaPerfilDiv"> <span><b><fmt:message key="detalle.miembroDesde" bundle="${messages}"/></b></span>${usuario.fechaAlta} </div>
+		<span><b><fmt:message key="detalle.visitas" bundle="${messages}"/></b></span> ${usuario.reproducciones}		
 	</div>	
 	
 	<div id="perfilAutenticadosDiv">	

@@ -24,7 +24,7 @@
 		<div class="datosVideoDiv w3-border2">
 			<span class="detalleSpan"><b><fmt:message key="detalle.valoracion" bundle="${messages}"/></b></span> 
 			
-			<div id="detalleValoracion" class="inline-block"> ${video.valoracion} </div>			
+			<div id="detalleValoracion" class="inline-block"> ${video.valoracion} </div>		
 			<input id="insertarNota" hidden=true name="<%=ParameterNames.MI_VALORACION%>" type="text" size=2
 				value="<%=ParameterUtils.getParameter(request, ParameterNames.VALORACION_MIN) %>"/>
 

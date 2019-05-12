@@ -16,7 +16,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.exceptions.DataException;
 import com.isp.seeds.model.Categoria;
 import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Lista;
@@ -25,14 +25,10 @@ import com.isp.seeds.model.Video;
 import com.isp.seeds.service.CategoriaServiceImpl;
 import com.isp.seeds.service.ContenidoServiceImpl;
 import com.isp.seeds.service.ListaServiceImpl;
-import com.isp.seeds.service.UsuarioServiceImpl;
-import com.isp.seeds.service.VideoServiceImpl;
 import com.isp.seeds.service.criteria.ContenidoCriteria;
 import com.isp.seeds.service.spi.CategoriaService;
 import com.isp.seeds.service.spi.ContenidoService;
 import com.isp.seeds.service.spi.ListaService;
-import com.isp.seeds.service.spi.UsuarioService;
-import com.isp.seeds.service.spi.VideoService;
 import com.isp.seeds.service.util.Results;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
@@ -246,7 +242,7 @@ public class ListaServlet extends HttpServlet  implements  ConstantsInterface {
 				if (logger.isDebugEnabled()) {
 					logger.debug("List Created: {}", errors);
 				}
-				target = ViewPath.HOME;
+				target = ViewPath.SUBIDOS;
 			}
 
 

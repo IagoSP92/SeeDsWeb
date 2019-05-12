@@ -21,7 +21,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.exceptions.DataException;
 import com.isp.seeds.model.Categoria;
 import com.isp.seeds.model.Usuario;
 import com.isp.seeds.model.Video;

@@ -19,7 +19,7 @@
 		</button>
 	</a>
 	
-	<div id="recuadro_usuario">
+	<div id="recuadro_usuario"  class="w3-border2">
 		<form action="/SeeDsWeb/<%=ControllerPath.USUARIO%>" method="post">	
 			<input type="hidden" name="<%=ParameterNames.ACTION%>" value="<%=Actions.EDITAR_PERFIL%>"/>
 			<input type="hidden" name="<%=ParameterNames.ID_CONTENIDO%>" value="${usuario.id}"/>
@@ -52,8 +52,7 @@
 			</div></div><br/>
 			
 			<div class="editarCampoDiv"> <span><strong> <fmt:message key="editar.fechaNac" bundle="${messages}"/></strong> </span> ${usuario.fechaNac} 
-				<div class="edicionSpan" hidden=true> <fmt:message key="editar.nuevo" bundle="${messages}"/>
-				<input type="date" name="<%=ParameterNames.FECHA_NAC%>" value="${usuario.fechaNac}">
+
 			</div></div><br/>
 			
 			<input id="botonEditarPerilSalvar" class="w3-btn w3-border2 w3-text-blue2" hidden=true type="submit" name="usuario" value="<fmt:message key="editar.guardarEdicion" bundle="${messages}"/>"/>

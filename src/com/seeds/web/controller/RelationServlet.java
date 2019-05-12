@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
-import com.isp.seeds.Exceptions.DataException;
+import com.isp.seeds.exceptions.DataException;
 import com.isp.seeds.model.Contenido;
 import com.isp.seeds.model.Lista;
 import com.isp.seeds.model.Usuario;
@@ -28,11 +28,9 @@ import com.isp.seeds.service.spi.UsuarioService;
 import com.isp.seeds.service.spi.VideoService;
 import com.seeds.web.model.ErrorCodes;
 import com.seeds.web.model.ErrorManager;
-import com.seeds.web.utils.DateUtils;
 import com.seeds.web.utils.SessionAttributeNames;
 import com.seeds.web.utils.SessionManager;
 import com.seeds.web.utils.ValidationUtils;
-import com.seeds.web.utils.WebUtils;
 
 /**
  * Servlet implementation class RelationService
