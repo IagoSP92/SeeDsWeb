@@ -361,7 +361,7 @@ public class RelationServlet extends HttpServlet {
 				
 			} else if (Actions.VALORAR.equalsIgnoreCase(action)) {
 				
-				if(tipo==1||tipo==2||tipo==3) {			
+				if(tipo==2||tipo==3) {	
 				Integer nuevoValor= ValidationUtils.validInt(errors, request.getParameter(ParameterNames.MI_VALORACION), ParameterNames.MI_VALORACION, true);			
 					try {
 						contenidoSvc.valorarContenido(idSesion, idContenido, nuevoValor);
@@ -371,6 +371,7 @@ public class RelationServlet extends HttpServlet {
 					try {						
 						JsonObject objetoJson = new JsonObject();
 						objetoJson.addProperty("valor", contenidoSvc.getValoracion(idContenido));
+						
 						response.setContentType("application/json;charset=ISO-8859-1");
 						response.getOutputStream().write(objetoJson.toString().getBytes());
 						

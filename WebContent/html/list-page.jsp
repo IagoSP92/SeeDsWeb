@@ -11,7 +11,7 @@
 		</div>		
 
 		<div class="datosListaDiv">
-			<span><b><fmt:message key="detalle.valoracion" bundle="${messages}"/></b></span> ${lista.valoracion}
+			<span><b><fmt:message key="detalle.valoracion" bundle="${messages}"/></b></span>
 			
 			<div id="detalleValoracion" class="inline-block"> ${lista.valoracion} </div>	
 			<input id="insertarNota" hidden=true name="<%=ParameterNames.MI_VALORACION%>" type="text" size=2
